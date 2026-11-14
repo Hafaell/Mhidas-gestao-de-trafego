@@ -1,0 +1,4 @@
+{#- Caixa "O que esse resultado mostra" (comentário do gestor, opcional). -#}
+{%- macro caixa_leitura(texto) -%}
+{% if texto %}<div class="card leitura"><h3>O que esse resultado mostra</h3><p>{{ texto }}</p></div>{% endif %}
+{%- endmacro -%}

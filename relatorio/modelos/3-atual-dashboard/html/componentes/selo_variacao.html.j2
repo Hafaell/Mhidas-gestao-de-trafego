@@ -1,0 +1,4 @@
+{#- Selo de variação contra o período anterior. `v` é um objeto Variacao (texto + estado: bom, ruim ou neutro). -#}
+{%- macro selo_variacao(v) -%}
+  {%- if v -%}<span class="var {{ v.estado }}">{{ v.texto }}</span>{%- endif -%}
+{%- endmacro -%}

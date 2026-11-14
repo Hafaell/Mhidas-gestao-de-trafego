@@ -1,0 +1,28 @@
+{#- Última página: fluxos "do anúncio ao resultado", comparação com o período anterior e leitura do mês. -#}
+{%- from "componentes/cabecalho.html.j2" import cabecalho with context -%}
+{%- from "componentes/investimento.html.j2" import investimento with context -%}
+{%- from "componentes/fluxo.html.j2" import fluxo -%}
+{%- from "componentes/tabela_comparacao.html.j2" import tabela_comparacao with context -%}
+{%- from "componentes/rodape.html.j2" import rodape with context -%}
+{%- macro pagina_resumo(secoes_com_fluxo, n, total) -%}
+<section class="pagina">
+  {{ cabecalho() }}
+  <main class="corpo">
+    {{ investimento() }}
+    {% if secoes_com_fluxo %}
+    <div class="bloco">
+      <h2>Do anúncio ao resultado</h2>
+      {% for s in secoes_com_fluxo %}{{ fluxo(s) }}{% endfor %}
+    </div>
+    {% endif %}
+    {% if relatorio.comparacao %}{{ tabela_comparacao(relatorio.comparacao) }}{% endif %}
+    {% if relatorio.observacoes %}
+    <div>
+      <h2>Leitura do mês</h2>
+      <div class="card obs"><p>{{ relatorio.observacoes }}</p></div>
+    </div>
+    {% endif %}
+  </main>
+  {{ rodape(n, total) }}
+</section>
+{%- endmacro -%}

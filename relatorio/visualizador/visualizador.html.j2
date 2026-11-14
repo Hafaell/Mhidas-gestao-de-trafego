@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ titulo }}</title>
+<link rel="stylesheet" href="/visualizador.css">
+</head>
+<body>
+<header>
+  <div><strong>{{ titulo }}</strong><span>Agência Lupa · visualização local</span></div>
+  <div class="acoes">
+    <a class="btn sec" href="/relatorio.html" target="_blank" rel="noopener">Abrir em nova aba</a>
+    <a class="btn" href="/baixar" download="{{ nome_pdf }}">Baixar PDF</a>
+  </div>
+</header>
+<main><iframe src="/relatorio.html" title="Relatório"></iframe></main>
+</body>
+</html>

@@ -35,9 +35,9 @@ Este arquivo guarda como o relatório dos clientes deve funcionar. Ler antes de 
 
 ## Modelo NOVO: layout dashboard (APROVADO em 14/11/2026)
 
-Substitui o modelo de 13/11/2026 (4 páginas, uma por seção). Mesmo visual, mas com os cards nas posições do dashboard antigo do gestor (imagens e PDF em `relatorio/modelo-antigo/`). Referência visual salva em `relatorio/modelo-aprovado/` (PDF, imagens das páginas e dados). Consultar antes de gerar qualquer relatório.
+Substitui o modelo de 13/11/2026 (4 páginas, uma por seção). Mesmo visual, mas com os cards nas posições do dashboard antigo do gestor (imagens e PDF em `relatorio/modelos/1-antigo/`). Referência visual salva em `relatorio/modelos/3-atual-dashboard/referencia/` (PDF, imagens das páginas e dados). Consultar antes de gerar qualquer relatório. Linha do tempo dos 3 modelos em `relatorio/modelos/LEIAME.md`.
 
-Gerado por `relatorio/gerar.py` com `relatorio/modelo/relatorio.html.j2` (ver "Como gerar" no fim). Visual:
+Gerado por `relatorio/gerar.py` com o modelo em `relatorio/modelos/3-atual-dashboard/` (HTML em peças + um CSS, ver "Como o código está organizado" no fim). Visual:
 - PDF A4 em pé, fundo cinza-claro, cards brancos.
 - **Cabeçalho (igual em todas as páginas):** azul-marinho, foto do cliente à esquerda (moldura arredondada), logo da Meta, título centralizado em 2 linhas (nome do cliente / "Relatório de leads · Meta Ads"), e à direita duas caixas: "Período" e "Comparado a".
 - **Bloco "Investimento do período"** logo abaixo do cabeçalho, em todas as páginas: card grande com o total, barra dividida por etapa e legenda Topo/Meio/Fundo com valor e %. **Decisão do gestor (14/11/2026): manter este bloco como no primeiro modelo, não trocar por 4 cards pequenos.**
@@ -86,8 +86,8 @@ Visitas ao perfil, cliques na bio e seguidores podem precisar da API do Instagra
 **Layout (aprovado em 14/11/2026, igual ao dashboard de exemplo do gestor):**
 - Linha de cima, 4 cards: Valor Gasto | Visualização 15 seg | Custo 15 seg | Tempo médio assistido (este último some se não houver dado)
 - Abaixo, à esquerda, 3 linhas de 2 cards: Vídeo 50% | Valor Gasto / Vídeo 50%, depois 75%, depois 95%
-- Abaixo, à direita, **gráfico de funil de verdade** (trapézios empilhados que afunilam): Vídeo 15 seg → Vídeo 50% → Vídeo 95%, com o número real dentro de cada faixa. A largura do desenho é fixa e sempre diminui (é forma, não escala), porque 50% pode ser maior que 15 seg (ver nota abaixo). Cores em tons de laranja (cor do Meio), claro para escuro. O exemplo do gestor usava azul; se ele preferir azul, é só trocar `cores` em `montar_video`.
-- Código: `montar_video` em `relatorio/gerar.py` e bloco `s.vv` em `relatorio/modelo/relatorio.html.j2`. Mesmos nomes de dados do JSON de antes (`views_15s`, `video_50`, `video_75`, `video_95`).
+- Abaixo, à direita, **gráfico de funil de verdade** (trapézios empilhados que afunilam): Vídeo 15 seg → Vídeo 50% → Vídeo 95%, com o número real dentro de cada faixa. A largura do desenho é fixa e sempre diminui (é forma, não escala), porque 50% pode ser maior que 15 seg (ver nota abaixo). Cores em tons de laranja (cor do Meio), claro para escuro. O exemplo do gestor usava azul; se ele preferir azul, é só trocar `CORES_FUNIL` em `relatorio/midas/secoes/video.py`.
+- Código: classe `SecaoVideo` em `relatorio/midas/secoes/video.py` e peças `pagina_video` e `funil_video` em `relatorio/modelos/3-atual-dashboard/html/`. Mesmos nomes de dados do JSON de antes (`views_15s`, `video_50`, `video_75`, `video_95`).
 
 Nota: 15 seg aqui é ThruPlay (15 s ou vídeo completo). Em vídeo de ~30 s, 50% cai perto dos 15 s, então `video_p50` pode ficar um pouco acima ou abaixo do ThruPlay (aconteceu no exemplo do gestor: 7.886 contra 7.802, e na campanha do Dr. Rodrigo em 01/11 a 13/11: 3.533 contra 3.495). [Certa, visto nos dados]
 
@@ -236,6 +236,15 @@ Passo a passo para renovar:
 
 - `.claude/skills/find-skills` (vercel-labs/skills): busca de skills.
 - `.claude/skills/meta-ads-cli` (tristanmanchester/agent-skills): guia para ler dados pela ferramenta oficial da Meta (`pip install meta-ads`, comando `meta`). Só leitura neste projeto. A ferramenta precisa de `ACCESS_TOKEN` no `.env`; o conector do claude.ai (opção escolhida) não precisa de token. Testado em 13/11/2026: instala e responde, testes da skill passam (16/16). Ainda sem teste com conta real.
+
+## Como o código está organizado (regra do gestor, 14/11/2026)
+
+O gestor pediu código limpo, em programação orientada a objetos, com o HTML separado do CSS e do Python. Regras para qualquer mudança:
+- **Python** em `relatorio/midas/` (uma responsabilidade por arquivo, ver `midas/__init__.py`): `Formatador` (pt-BR), `Calculo`/`Variacao`/`Kpi` (métricas), `Secao` e uma subclasse por seção em `midas/secoes/` (seção nova = classe nova + uma linha em `secoes/__init__.py`), `Relatorio`/`Cliente`/`Periodo`, `RenderizadorHtml`, `ExportadorPdf`, `ServidorLocal`. `gerar.py` e `servir.py` são só a porta de entrada.
+- **HTML** do modelo atual em `relatorio/modelos/3-atual-dashboard/html/`: `relatorio.html.j2` só monta; `componentes/` tem as peças (cabeçalho, kpi_card, funil_video...) e `paginas/` as páginas A4. HTML novo (qualquer arquivo) parte desse modelo e desses componentes.
+- **CSS** em um arquivo só: `relatorio/modelos/3-atual-dashboard/css/relatorio.css`, ligado ao HTML por `<link>`. O `gerar.py` copia o CSS para `saida/` ao lado do HTML.
+- **Modelos antigos nunca se apagam.** Cada versão do visual tem sua pasta em `relatorio/modelos/`: `1-antigo` (dashboard do gestor, antes do projeto), `2-quatro-paginas` (13/11/2026), `3-atual-dashboard` (14/11/2026, o atual). Modelo novo = pasta nova (`4-...`) com `html/` e `css/`, e `--modelo 4-...` no `gerar.py`.
+- Antes de dar uma refatoração por boa, comparar o relatório de exemplo antes e depois, página a página (`pdf.js --png`). Em 14/11/2026 as 8 páginas de 3 casos saíram idênticas.
 
 ## Como gerar o relatório (HTML) e abrir em localhost
 

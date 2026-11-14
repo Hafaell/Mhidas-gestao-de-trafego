@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Relatório Meta Ads · {{ cliente.nome }}</title>
+<style>
+  @page { size: A4; margin: 0; }
+  :root {
+    --bg: #f4f5f9;
+    --card: #ffffff;
+    --line: #e3e6ee;
+    --ink: #0f172a;
+    --ink-2: #475467;
+    --muted: #8a94a6;
+    --navy: #0b1020;
+    --navy-2: #1b2552;
+    --topo: #2a78d6;  --topo-tint: #eaf2fc;
+    --meio: #eb6834;  --meio-tint: #fdefe8;
+    --fundo: #1baf7a; --fundo-tint: #e5f6ef;
+    --bom: #006300;   --bom-tint: #e6f4e6;
+    --ruim: #b42318;  --ruim-tint: #fdecea;
+    --neutro: #475467; --neutro-tint: #eef0f4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); }
+  body {
+    font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    font-feature-settings: "tnum" 1, "cv11" 1;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .pagina {
+    width: 210mm; height: 297mm; position: relative; overflow: hidden;
+    background: var(--bg); display: flex; flex-direction: column;
+    page-break-after: always; break-after: page;
+  }
+  .pagina:last-child { page-break-after: auto; break-after: auto; }
+
+  /* ---------- cabeçalho ---------- */
+  .cab {
+    background: radial-gradient(120% 140% at 100% 0%, var(--navy-2) 0%, var(--navy) 60%);
+    color: #fff; padding: 8mm 13mm 7.5mm; display: flex; align-items: center; gap: 6mm;
+  }
+  .cab.compacto { padding: 6.5mm 13mm; }
+  .avatar {
+    width: 22mm; height: 22mm; border-radius: 50%; flex: none; overflow: hidden;
+    background: linear-gradient(135deg, #3a4a8c, #24305f); display: grid; place-items: center;
+    box-shadow: 0 0 0 2px rgba(255,255,255,.9), 0 0 0 5px rgba(255,255,255,.12);
+    font-weight: 700; font-size: 26px; letter-spacing: .5px;
+  }
+  .cab.compacto .avatar { width: 12mm; height: 12mm; font-size: 15px; box-shadow: 0 0 0 1.5px rgba(255,255,255,.85); }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .cab-id { flex: 1; min-width: 0; }
+  .cab-nome { font-size: 25px; font-weight: 800; letter-spacing: -.3px; line-height: 1.15; }
+  .cab.compacto .cab-nome { font-size: 16px; }
+  .cab-sub { font-size: 12px; color: #b9c2dc; margin-top: 3px; }
+  .cab-dir { text-align: right; }
+  .cab-tipo { display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 700;
+              letter-spacing: 1.2px; text-transform: uppercase; color: #cdd5ee; }
+  .cab-tipo svg { width: 22px; height: 12px; }
+  .chip-periodo { display: inline-block; margin-top: 7px; padding: 6px 12px; border-radius: 999px;
+                  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18);
+                  font-size: 12.5px; font-weight: 600; }
+  .cab.compacto .chip-periodo { margin-top: 0; padding: 5px 10px; font-size: 11px; }
+  .cab.compacto .cab-comp { margin-top: 4px; }
+  .cab-comp { font-size: 10px; color: #9aa5c6; margin-top: 5px; }
+
+  /* ---------- corpo ---------- */
+  .corpo { flex: 1; min-height: 0; padding: 7mm 13mm 0; display: flex; flex-direction: column; gap: 5mm; }
+  h2 { font-size: 11px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: var(--ink-2); margin-bottom: 2.5mm; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; }
+
+  /* resumo de investimento */
+  .invest { padding: 6mm 7mm 5mm; }
+  .invest-topo { display: flex; align-items: flex-end; justify-content: space-between; gap: 6mm; }
+  .rot { font-size: 12px; color: var(--ink-2); font-weight: 500; }
+  .invest-valor { font-size: 40px; font-weight: 800; letter-spacing: -1px; line-height: 1.1; margin-top: 2px; }
+  .barra { display: flex; gap: 2px; height: 14px; margin: 4.5mm 0 4mm; }
+  .barra span { display: block; height: 100%; }
+  .barra span:first-child { border-radius: 4px 0 0 4px; }
+  .barra span:last-child { border-radius: 0 4px 4px 0; }
+  .barra span:only-child { border-radius: 4px; }
+  .legenda { display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: 4mm; }
+  .leg { border-top: 1px solid var(--line); padding-top: 3.5mm; }
+  .leg-nome { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; color: var(--ink); }
+  .leg-nome i { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+  .leg-nome small { font-weight: 500; color: var(--muted); }
+  .leg-valor { font-size: 19px; font-weight: 700; margin-top: 2.5mm; letter-spacing: -.3px; }
+  .leg-share { font-size: 11px; color: var(--ink-2); margin-top: 1px; }
+
+  /* resultados principais */
+  .resultados { display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: 4mm; }
+  .res { padding: 4.5mm 5.5mm 4.5mm; position: relative; overflow: hidden; }
+  .res::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--cor); }
+  .res-etapa { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700;
+               letter-spacing: .8px; text-transform: uppercase; color: var(--ink-2); }
+  .res-etapa .ic { width: 20px; height: 20px; }
+  .res-valor { font-size: 30px; font-weight: 800; letter-spacing: -.6px; margin-top: 2mm; line-height: 1.1; }
+  .res-rot { font-size: 12.5px; font-weight: 600; margin-top: 1mm; }
+  .res-nota { font-size: 11px; color: var(--ink-2); margin-top: 1.5mm; }
+
+  .obs { padding: 4.5mm 6mm; border-left: 4px solid var(--navy-2); }
+  .obs p { font-size: 12.5px; line-height: 1.6; color: var(--ink); }
+
+  /* variação vs período anterior */
+  .var { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 700;
+         padding: 3px 7px; border-radius: 999px; white-space: nowrap; }
+  .var.bom { color: var(--bom); background: var(--bom-tint); }
+  .var.ruim { color: var(--ruim); background: var(--ruim-tint); }
+  .var.neutro { color: var(--neutro); background: var(--neutro-tint); }
+  .var-txt { font-size: 10px; color: var(--muted); margin-left: 4px; }
+
+  /* ícones de seção */
+  .ic { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; flex: none; background: var(--cor); }
+  .ic svg { width: 62%; height: 62%; }
+
+  /* faixa da seção */
+  .faixa { display: flex; align-items: center; gap: 4mm; padding: 5mm 6mm; }
+  .faixa .ic { width: 42px; height: 42px; border-radius: 12px; }
+  .faixa-tit { flex: 1; }
+  .faixa-tit h1 { font-size: 20px; font-weight: 800; letter-spacing: -.3px; }
+  .etiqueta { display: inline-block; margin-top: 4px; font-size: 10.5px; font-weight: 700; letter-spacing: .6px;
+              text-transform: uppercase; padding: 3px 8px; border-radius: 6px; background: var(--tint); color: var(--ink); }
+  .etiqueta i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; background: var(--cor); margin-right: 5px; }
+  .tema { font-size: 11.5px; color: var(--ink-2); margin-left: 8px; }
+  .faixa-inv { text-align: right; }
+  /* tabela de comparação */
+  .comp { padding: 2mm 6mm 3mm; }
+  .comp table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .comp th { font-size: 10px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--muted);
+             text-align: right; padding: 3mm 0 2mm; }
+  .comp th:first-child, .comp td:first-child { text-align: left; }
+  .comp td { padding: 1.7mm 0; border-top: 1px solid var(--line); text-align: right; }
+  .comp td:first-child { font-weight: 600; }
+  .comp td:first-child i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 8px; }
+  .comp td.atual { font-weight: 700; }
+  .comp td.ant { color: var(--ink-2); }
+  .leitura { padding: 5mm 6mm; border-left: 4px solid var(--cor); }
+  .leitura h3 { font-size: 12px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--ink-2); margin-bottom: 2mm; }
+  .leitura p { font-size: 12.5px; line-height: 1.6; }
+  .faixa-inv b { display: block; font-size: 20px; font-weight: 800; letter-spacing: -.3px; }
+  .faixa-inv span { font-size: 11px; color: var(--ink-2); }
+
+  /* grade de KPIs */
+  .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
+  .kpi { padding: 5mm 5mm 4.5mm; min-height: 31mm; display: flex; flex-direction: column; }
+  .kpi.destaque { background: var(--tint); border-color: transparent; }
+  .kpi-rot { font-size: 11.5px; font-weight: 600; color: var(--ink-2); }
+  .kpi-valor { font-size: 27px; font-weight: 800; letter-spacing: -.6px; margin-top: 2mm; line-height: 1.1; }
+  .kpi-nota { font-size: 10.5px; color: var(--ink-2); margin-top: 1.5mm; }
+  .kpi-var { margin-top: auto; padding-top: 3mm; display: flex; align-items: center; }
+
+  /* fluxo (do alcance ao seguidor / do anúncio à conversa) */
+  .grafico { padding: 6mm; }
+  .grafico h3 { font-size: 14px; font-weight: 700; margin-bottom: 1mm; }
+  .grafico .sub { font-size: 11px; color: var(--ink-2); margin-bottom: 5mm; }
+  .fluxo { display: flex; align-items: stretch; }
+  .passo { flex: 1; border-radius: 12px; padding: 5mm 4.5mm; background: var(--tint); position: relative; }
+  .passo:nth-child(1) { background: var(--cor); color: #fff; }
+  .passo:nth-child(1) .passo-rot { color: rgba(255,255,255,.85); }
+  .passo-rot { font-size: 11.5px; font-weight: 600; color: var(--ink-2); }
+  .passo-valor { font-size: 24px; font-weight: 800; letter-spacing: -.5px; margin-top: 1.5mm; }
+  .seta { width: 30mm; flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center;
+          text-align: center; padding: 0 2mm; }
+  .seta b { font-size: 15px; font-weight: 800; }
+  .seta svg { width: 100%; height: 10px; margin: 1.5mm 0; }
+  .seta span { font-size: 9.5px; color: var(--ink-2); line-height: 1.3; }
+
+  .kpis-4 { gap: 3mm; }
+  .kpis-4 .kpi { padding: 5mm 4mm 4.5mm; }
+  .kpis-4 .kpi-valor { font-size: 22px; white-space: nowrap; }
+  .kpis-4 .kpi-rot { min-height: 2.6em; }
+
+  /* vídeo: cards à esquerda, funil à direita */
+  .vv-corpo { display: grid; grid-template-columns: 1fr 76mm; gap: 4mm; align-items: stretch; }
+  .vv-pares { display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-rows: 1fr; gap: 4mm; }
+  .vv-funil { display: flex; flex-direction: column; padding: 5mm; }
+  .vv-funil svg { width: 100%; height: auto; margin: auto 0; }
+  .vv-funil .f-rot { font-size: 12px; font-weight: 600; fill: #fff; opacity: .92; }
+  .vv-funil .f-val { font-size: 22px; font-weight: 800; fill: #fff; letter-spacing: -.3px; }
+  .ret-nota { margin-top: 4mm; font-size: 11.5px; color: var(--ink-2); }
+  .ret-nota b { color: var(--ink); }
+
+  /* rodapé */
+  .rod { display: flex; justify-content: space-between; align-items: center; padding: 5mm 13mm 6mm;
+         font-size: 10px; color: var(--muted); }
+  .rod .ag { font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; color: var(--ink); font-size: 11px; }
+</style>
+</head>
+<body>
+
+{%- macro icone(nome) -%}
+  {%- if nome == 'instagram' -%}
+  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".6" fill="#fff"/></svg>
+  {%- elif nome == 'video' -%}
+  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><rect x="2.5" y="5" width="14" height="14" rx="3"/><path d="M16.5 10l5-3v10l-5-3z"/></svg>
+  {%- elif nome == 'whatsapp' -%}
+  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M4 20l1.3-4A8 8 0 1 1 8.4 19z"/><path d="M9 9.5c.3 2.2 2.3 4.3 4.6 4.8l1-1.2 1.8.8" stroke-linecap="round"/></svg>
+  {%- endif -%}
+{%- endmacro -%}
+
+{%- macro var(v) -%}
+  {%- if v -%}<span class="var {{ v.estado }}">{{ v.texto }}</span>{%- endif -%}
+{%- endmacro -%}
+
+{%- macro kpi_card(k) -%}
+<div class="card kpi{{ ' destaque' if k.destaque }}">
+  <div class="kpi-rot">{{ k.rotulo }}</div>
+  <div class="kpi-valor">{{ k.valor }}</div>
+  {% if k.nota %}<div class="kpi-nota">{{ k.nota }}</div>{% endif %}
+  {% if k.var %}<div class="kpi-var">{{ var(k.var) }}</div>{% endif %}
+</div>
+{%- endmacro -%}
+
+{%- macro cabecalho(compacto=False) -%}
+<header class="cab{{ ' compacto' if compacto }}">
+  <div class="avatar">{% if foto %}<img src="{{ foto }}" alt="">{% else %}{{ iniciais }}{% endif %}</div>
+  <div class="cab-id">
+    <div class="cab-nome">{{ cliente.nome }}</div>
+    {% if not compacto %}<div class="cab-sub">{{ cliente.descricao }}{% if cliente.instagram %} · {{ cliente.instagram }}{% endif %}</div>{% endif %}
+  </div>
+  <div class="cab-dir">
+    {% if not compacto %}
+    <div class="cab-tipo"><svg viewBox="0 0 44 24" fill="none" stroke="#7fb0ff" stroke-width="4" stroke-linecap="round"><path d="M4 16c3-10 9-12 18 0s15 10 18 0c-2-9-9-11-18 0S7 25 4 16z"/></svg>Relatório de leads · Meta Ads</div><br>
+    {% endif %}
+    <span class="chip-periodo">{{ periodo_txt }}</span>
+    {% if anterior_txt %}<div class="cab-comp">Variações comparadas a {{ anterior_txt }}</div>{% endif %}
+  </div>
+</header>
+{%- endmacro -%}
+
+{%- macro rodape(n) -%}
+<footer class="rod">
+  <span class="ag">{{ agencia }}</span>
+  <span>Relatório gerado em {{ gerado_em }}</span>
+  <span>Página {{ n }} de {{ total_paginas }}</span>
+</footer>
+{%- endmacro -%}
+
+<!-- ================= PÁGINA 1: RESUMO ================= -->
+<section class="pagina">
+  {{ cabecalho() }}
+  <main class="corpo">
+    <div>
+      <h2>Investimento do período</h2>
+      <div class="card invest">
+        <div class="invest-topo">
+          <div>
+            <div class="rot">Valor total investido</div>
+            <div class="invest-valor">{{ total_fmt }}</div>
+          </div>
+          <div>{{ var(total_var) }}</div>
+        </div>
+        <div class="barra" role="img" aria-label="Divisão do investimento por etapa do funil">
+          {% for s in secoes %}<span style="width: {{ (s.share * 100)|round(2) }}%; background: var(--{{ s.etapa }})"></span>{% endfor %}
+        </div>
+        <div class="legenda" style="--n: {{ secoes|length }}">
+          {% for s in secoes %}
+          <div class="leg">
+            <div class="leg-nome"><i style="background: var(--{{ s.etapa }})"></i>{{ s.nome_etapa }} <small>· {{ s.rotulo }}</small></div>
+            <div class="leg-valor">{{ s.investido_fmt }}</div>
+            <div class="leg-share">{{ s.share_fmt }} do investimento</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h2>Resultados principais</h2>
+      <div class="resultados" style="--n: {{ secoes|length }}">
+        {% for s in secoes %}
+        <div class="card res" style="--cor: var(--{{ s.etapa }})">
+          <div class="res-etapa"><span class="ic" style="--cor: var(--{{ s.etapa }})">{{ icone(s.icone) }}</span>{{ s.nome_etapa }} de funil</div>
+          <div class="res-valor">{{ s.destaque.valor }}</div>
+          <div class="res-rot">{{ s.destaque.rotulo }}</div>
+          <div class="res-nota">{{ s.destaque.nota }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% if comparacao %}
+    <div>
+      <h2>Comparação com o período anterior ({{ anterior_txt }})</h2>
+      <div class="card comp">
+        <table>
+          <thead><tr><th>Indicador</th><th>Período anterior</th><th>Este período</th><th>Variação</th></tr></thead>
+          <tbody>
+          {% for c in comparacao %}
+            <tr><td><i style="background: {{ 'var(--' ~ c.etapa ~ ')' if c.etapa else 'var(--navy-2)' }}"></i>{{ c.rotulo }}</td>
+                <td class="ant">{{ c.anterior }}</td><td class="atual">{{ c.atual }}</td><td>{{ var(c.var) }}</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if observacoes %}
+    <div>
+      <h2>Leitura do mês</h2>
+      <div class="card obs"><p>{{ observacoes }}</p></div>
+    </div>
+    {% endif %}
+  </main>
+  {{ rodape(1) }}
+</section>
+
+<!-- ================= PÁGINAS DAS SEÇÕES ================= -->
+{% for s in secoes %}
+<section class="pagina" style="--cor: var(--{{ s.etapa }}); --tint: var(--{{ s.etapa }}-tint)">
+  {{ cabecalho(True) }}
+  <main class="corpo">
+    <div class="card faixa">
+      <span class="ic">{{ icone(s.icone) }}</span>
+      <div class="faixa-tit">
+        <h1>{{ s.titulo }}</h1>
+        <span class="etiqueta"><i></i>{{ s.nome_etapa }} de funil · {{ s.rotulo }}</span>{% if s.tema %}<span class="tema">{{ s.tema }}</span>{% endif %}
+      </div>
+      <div class="faixa-inv"><b>{{ s.investido_fmt }}</b><span>{{ s.share_fmt }} do investimento total</span></div>
+    </div>
+
+    {% if s.kpis %}
+    <div class="kpis">
+      {% for k in s.kpis %}{{ kpi_card(k) }}{% endfor %}
+    </div>
+    {% endif %}
+
+    {% if s.fluxo %}
+    <div class="card grafico">
+      <h3>{{ s.fluxo.titulo }}</h3>
+      <div class="sub">Quantas pessoas avançaram em cada etapa no período</div>
+      <div class="fluxo">
+        {% for p in s.fluxo.passos %}
+          {% if not loop.first %}
+          <div class="seta">
+            <b>{{ p.taxa }}</b>
+            <svg viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M2 5H94M88 1l6 4-6 4" fill="none" stroke="var(--cor)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
+            <span>{{ p.taxa_txt }}</span>
+          </div>
+          {% endif %}
+          <div class="passo"><div class="passo-rot">{{ p.rotulo }}</div><div class="passo-valor">{{ p.valor }}</div></div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if s.vv %}
+    <div class="kpis{{ ' kpis-4' if s.vv.topo|length > 3 }}"{% if s.vv.topo|length > 3 %} style="grid-template-columns: repeat({{ s.vv.topo|length }}, 1fr)"{% endif %}>
+      {% for k in s.vv.topo %}{{ kpi_card(k) }}{% endfor %}
+    </div>
+    <div class="vv-corpo">
+      <div class="vv-pares">
+        {% for p in s.vv.pares %}{{ kpi_card(p.qtd) }}{{ kpi_card(p.custo) }}{% endfor %}
+      </div>
+      <div class="card grafico vv-funil">
+        <h3>{{ s.vv.funil.titulo }}</h3>
+        <div class="sub">Visualizações em cada ponto do vídeo</div>
+        <svg viewBox="0 0 200 {{ s.vv.funil.altura_total }}" role="img" aria-label="Funil de visualização de vídeo">
+          {% for e in s.vv.funil.etapas %}
+          <polygon points="{{ e.pontos }}" fill="{{ e.cor }}" stroke-linejoin="round"/>
+          <text x="100" y="{{ e.y_rot }}" text-anchor="middle" class="f-rot">{{ e.rotulo }}</text>
+          <text x="100" y="{{ e.y_val }}" text-anchor="middle" class="f-val">{{ e.valor }}</text>
+          {% endfor %}
+        </svg>
+        <div class="ret-nota"><b>{{ s.vv.funil.retencao_final }}</b> de quem passou dos 15 segundos assistiu até 95% do vídeo.</div>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if s.comentario %}
+    <div class="card leitura"><h3>O que esse resultado mostra</h3><p>{{ s.comentario }}</p></div>
+    {% endif %}
+  </main>
+  {{ rodape(loop.index + 1) }}
+</section>
+{% endfor %}
+
+</body>
+</html>

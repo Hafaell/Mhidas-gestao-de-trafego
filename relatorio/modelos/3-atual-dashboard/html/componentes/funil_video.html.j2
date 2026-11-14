@@ -1,0 +1,15 @@
+{#- Funil de verdade (trapézios empilhados) com as visualizações do vídeo. `f` é um objeto FunilVideo. -#}
+{%- macro funil_video(f) -%}
+<div class="card grafico vv-funil">
+  <h3>{{ f.titulo }}</h3>
+  <div class="sub">Visualizações em cada ponto do vídeo</div>
+  <svg viewBox="0 0 200 {{ f.altura_total }}" role="img" aria-label="Funil de visualização de vídeo">
+    {% for e in f.etapas %}
+    <polygon points="{{ e.pontos }}" fill="{{ e.cor }}" stroke-linejoin="round"/>
+    <text x="100" y="{{ e.y_rotulo }}" text-anchor="middle" class="f-rot">{{ e.rotulo }}</text>
+    <text x="100" y="{{ e.y_valor }}" text-anchor="middle" class="f-val">{{ e.valor }}</text>
+    {% endfor %}
+  </svg>
+  <div class="ret-nota"><b>{{ f.retencao_final }}</b> de quem passou dos 15 segundos assistiu até 95% do vídeo.</div>
+</div>
+{%- endmacro -%}

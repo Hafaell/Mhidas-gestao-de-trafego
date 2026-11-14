@@ -1,0 +1,28 @@
+{#- Bloco "Investimento do período": total, barra dividida por etapa e legenda Topo/Meio/Fundo. -#}
+{%- from "componentes/selo_variacao.html.j2" import selo_variacao -%}
+{%- macro investimento() -%}
+<div>
+  <h2>Investimento do período</h2>
+  <div class="card invest">
+    <div class="invest-topo">
+      <div>
+        <div class="rot">Valor total investido</div>
+        <div class="invest-valor">{{ relatorio.total_fmt }}</div>
+      </div>
+      <div>{{ selo_variacao(relatorio.total_variacao) }}</div>
+    </div>
+    <div class="barra" role="img" aria-label="Divisão do investimento por etapa do funil">
+      {% for s in relatorio.secoes %}<span style="width: {{ (s.participacao * 100)|round(2) }}%; background: var(--{{ s.etapa }})"></span>{% endfor %}
+    </div>
+    <div class="legenda" style="--n: {{ relatorio.secoes|length }}">
+      {% for s in relatorio.secoes %}
+      <div class="leg">
+        <div class="leg-nome"><i style="background: var(--{{ s.etapa }})"></i>{{ s.nome_etapa }} <small>· {{ s.rotulo_etapa }}</small></div>
+        <div class="leg-valor">{{ s.investido_fmt }}</div>
+        <div class="leg-share">{{ s.participacao_fmt }} do investimento</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{%- endmacro -%}

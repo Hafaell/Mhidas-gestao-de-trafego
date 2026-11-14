@@ -1,0 +1,37 @@
+{#-
+  Modelo atual do relatório Meta Ads (layout dashboard, aprovado em 14/11/2026).
+  Este arquivo só monta o esqueleto e escolhe as páginas. Cada peça vive em seu arquivo:
+    componentes/  peças reaproveitáveis (cabeçalho, cards, funil...)
+    paginas/      uma página A4 completa
+  O estilo está em ../css/relatorio.css. O objeto `relatorio` vem de midas/relatorio.py.
+-#}
+{%- from "paginas/pagina_instagram_whatsapp.html.j2" import pagina_instagram_whatsapp with context -%}
+{%- from "paginas/pagina_video.html.j2" import pagina_video with context -%}
+{%- from "paginas/pagina_resumo.html.j2" import pagina_resumo with context -%}
+
+{#- Quais páginas existem: página 1 = topo + fundo, página de vídeo = meio, última = fluxos + comparação + leitura -#}
+{%- set topo_e_fundo = relatorio.secoes|selectattr('chave','in',['instagram','whatsapp'])|list -%}
+{%- set videos = relatorio.secoes|selectattr('chave','equalto','video')|list -%}
+{%- set tem_resumo = (topo_e_fundo or relatorio.comparacao or relatorio.observacoes) -%}
+{%- set total_paginas = (1 if topo_e_fundo else 0) + (1 if videos else 0) + (1 if tem_resumo else 0) -%}
+{%- set contador = namespace(n=0) -%}
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Relatório Meta Ads · {{ relatorio.cliente.nome }}</title>
+<link rel="stylesheet" href="relatorio.css">
+</head>
+<body>
+{% if topo_e_fundo %}{% set contador.n = contador.n + 1 %}
+{{ pagina_instagram_whatsapp(topo_e_fundo, contador.n, total_paginas) }}
+{% endif %}
+{% for secao in videos %}{% set contador.n = contador.n + 1 %}
+{{ pagina_video(secao, contador.n, total_paginas) }}
+{% endfor %}
+{% if tem_resumo %}{% set contador.n = contador.n + 1 %}
+{{ pagina_resumo(topo_e_fundo, contador.n, total_paginas) }}
+{% endif %}
+</body>
+</html>

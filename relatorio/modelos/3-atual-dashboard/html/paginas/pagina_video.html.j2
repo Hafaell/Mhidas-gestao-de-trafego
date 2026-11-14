@@ -1,0 +1,29 @@
+{#- Página do meio de funil (vídeo): cards de topo, pares de métricas à esquerda e funil à direita. -#}
+{%- from "componentes/cabecalho.html.j2" import cabecalho with context -%}
+{%- from "componentes/investimento.html.j2" import investimento with context -%}
+{%- from "componentes/banda.html.j2" import banda -%}
+{%- from "componentes/kpi_card.html.j2" import kpi_card -%}
+{%- from "componentes/funil_video.html.j2" import funil_video -%}
+{%- from "componentes/caixa_leitura.html.j2" import caixa_leitura -%}
+{%- from "componentes/rodape.html.j2" import rodape with context -%}
+{%- macro pagina_video(s, n, total) -%}
+{%- set quatro = s.painel.topo|length > 3 -%}
+<section class="pagina" style="--cor: var(--{{ s.etapa }}); --tint: var(--{{ s.etapa }}-tint)">
+  {{ cabecalho() }}
+  <main class="corpo">
+    {{ investimento() }}
+    {{ banda(s) }}
+    <div class="kpis{{ ' kpis-4' if quatro }}"{% if quatro %} style="grid-template-columns: repeat({{ s.painel.topo|length }}, 1fr)"{% endif %}>
+      {% for k in s.painel.topo %}{{ kpi_card(k) }}{% endfor %}
+    </div>
+    <div class="vv-corpo">
+      <div class="vv-pares">
+        {% for p in s.painel.pares %}{{ kpi_card(p.quantidade) }}{{ kpi_card(p.custo) }}{% endfor %}
+      </div>
+      {{ funil_video(s.painel.funil) }}
+    </div>
+    {{ caixa_leitura(s.comentario) }}
+  </main>
+  {{ rodape(n, total) }}
+</section>
+{%- endmacro -%}

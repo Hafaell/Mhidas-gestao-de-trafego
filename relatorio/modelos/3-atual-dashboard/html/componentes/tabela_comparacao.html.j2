@@ -1,0 +1,18 @@
+{#- Tabela "este período x período anterior". `linhas` são objetos LinhaComparacao. -#}
+{%- from "componentes/selo_variacao.html.j2" import selo_variacao -%}
+{%- macro tabela_comparacao(linhas) -%}
+<div>
+  <h2>Comparação com o período anterior ({{ relatorio.anterior_txt }})</h2>
+  <div class="card comp">
+    <table>
+      <thead><tr><th>Indicador</th><th>Período anterior</th><th>Este período</th><th>Variação</th></tr></thead>
+      <tbody>
+      {% for c in linhas %}
+        <tr><td><i style="background: {{ 'var(--' ~ c.etapa ~ ')' if c.etapa else 'var(--navy-2)' }}"></i>{{ c.rotulo }}</td>
+            <td class="ant">{{ c.anterior }}</td><td class="atual">{{ c.atual }}</td><td>{{ selo_variacao(c.variacao) }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{%- endmacro -%}
