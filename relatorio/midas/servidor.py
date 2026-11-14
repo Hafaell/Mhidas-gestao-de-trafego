@@ -13,7 +13,7 @@ from .exportador_pdf import ExportadorPdf
 
 
 class ServidorLocal:
-    """Serve um relatório de saida/. Só aceita conexão deste computador (127.0.0.1)."""
+    """Serve um relatório da pasta de saída (temporária). Só aceita conexão deste computador (127.0.0.1)."""
 
     def __init__(self, nome: str, exportador: ExportadorPdf, porta: int = 8000, pasta_saida: Path = SAIDA):
         self.pasta_saida = pasta_saida
@@ -31,7 +31,7 @@ class ServidorLocal:
     def relatorio_mais_recente(pasta_saida: Path = SAIDA) -> str:
         htmls = sorted(pasta_saida.glob("*.html"), key=lambda p: p.stat().st_mtime, reverse=True)
         if not htmls:
-            sys.exit("Nenhum relatório em saida/. Gere um antes com relatorio/gerar.py.")
+            sys.exit(f"Nenhum relatório em {pasta_saida}. Gere um antes com relatorio/gerar.py.")
         return htmls[0].stem
 
     @property

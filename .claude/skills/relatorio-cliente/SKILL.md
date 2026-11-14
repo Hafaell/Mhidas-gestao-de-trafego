@@ -7,7 +7,7 @@ description: Use quando o gestor pedir o relatório de um ou mais clientes da Ag
 
 Esta skill organiza o pedido e despacha **um agente `montador-relatorio` por cliente, em paralelo**. Quem busca os dados e gera o HTML é o agente. A sessão principal só prepara, despacha e junta os resultados.
 
-Antes de tudo, leia `memoria/relatorio-meta-ads.md` (regras do relatório e mapa de métricas).
+Antes de tudo, leia `memoria/relatorio-meta-ads.md` (regras do relatório).
 
 ## Passo 1: entender o pedido
 
@@ -61,11 +61,11 @@ Quando todos voltarem, responda ao gestor com uma tabela curta:
 
 - **Entrega só em HTML, sem PDF** (regra do gestor, 14/11/2026). Não liste nem mande arquivo PDF: o gestor baixa pelo botão "Baixar PDF" da própria página.
 - **Ver relatório** é obrigatório: para cada cliente, suba o servidor local em segundo plano e mande o link `http://localhost:<porta>`:
-  `python3 relatorio/servir.py <nome-sem-extensão> --porta <porta> --sem-abrir` (rode com `run_in_background`). Uma porta por cliente, começando em 8000. Antes de mandar o link, confirme com `curl -sI http://localhost:<porta>` que respondeu 200.
+  `python3 relatorio/servir.py <nome-sem-extensão> --porta <porta> --sem-abrir` (rode com `run_in_background`). Uma porta por cliente, começando em 8000. Antes de mandar o link, confirme que respondeu 200 com `curl -s -o /dev/null -w "%{http_code}" http://localhost:<porta>` (não use `curl -I`: o servidor não aceita HEAD e responde 501).
 - Pendências que o agente devolveu (dado que faltou, campanha fora do modelo, texto em rascunho, página estourada).
 - Se algum agente falhou, diga qual e por quê. Não esconda falha atrás de "concluído".
 
-Pedido de ajuste depois ("muda o texto do vídeo", "o tema é Joelho"): edite o JSON em `saida/dados/` e rode `python3 relatorio/gerar.py <json>` de novo. Não precisa buscar os dados outra vez.
+Pedido de ajuste depois ("muda o texto do vídeo", "o tema é Joelho"): edite o JSON que o agente devolveu (na pasta temporária, `python3 relatorio/gerar.py --pasta-saida`) e rode `python3 relatorio/gerar.py <json>` de novo. Não precisa buscar os dados outra vez. Se o JSON já sumiu da pasta temporária, rode o agente de novo.
 
 ## Regras que não mudam
 

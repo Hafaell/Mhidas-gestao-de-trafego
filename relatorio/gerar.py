@@ -3,12 +3,14 @@
 
 Uso:
     python3 relatorio/gerar.py relatorio/exemplos/cliente-exemplo.json
-    python3 relatorio/gerar.py dados.json --saida saida/ --com-pdf
+    python3 relatorio/gerar.py dados.json --com-pdf
     python3 relatorio/gerar.py dados.json --modelo 3-atual-dashboard
+    python3 relatorio/gerar.py --pasta-saida     # mostra onde ficam os relatórios gerados
 
 O JSON segue o formato de relatorio/exemplos/cliente-exemplo.json.
 Seções ausentes no JSON simplesmente não aparecem no relatório.
-Entrega: só o HTML (+ relatorio.css ao lado). O PDF sai pelo botão do servir.py.
+Entrega: só o HTML (+ relatorio.css ao lado), na pasta temporária do sistema
+(<temp>/midas/). O PDF sai pelo botão do servir.py.
 """
 import argparse
 import json
@@ -23,13 +25,19 @@ from midas.renderizador import RenderizadorHtml
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("dados", help="arquivo JSON com os dados do cliente")
-    ap.add_argument("--saida", default=str(SAIDA), help="pasta de saída (padrão: saida/)")
+    ap.add_argument("dados", nargs="?", help="arquivo JSON com os dados do cliente")
+    ap.add_argument("--saida", default=str(SAIDA), help=f"pasta de saída (padrão: {SAIDA})")
+    ap.add_argument("--pasta-saida", action="store_true", help="só mostra a pasta de saída e sai")
     ap.add_argument("--com-pdf", action="store_true",
-                    help="grava também o PDF em saida/ (padrão: só o HTML)")
+                    help="grava também o PDF na pasta de saída (padrão: só o HTML)")
     ap.add_argument("--modelo", default=MODELO_ATUAL,
                     help=f"pasta de relatorio/modelos/ com o visual (padrão: {MODELO_ATUAL})")
     args = ap.parse_args()
+    if args.pasta_saida:
+        print(SAIDA)
+        return
+    if not args.dados:
+        ap.error("informe o arquivo JSON com os dados do cliente")
 
     arquivo = Path(args.dados).resolve()
     relatorio = Relatorio(json.loads(arquivo.read_text(encoding="utf-8")), pasta_fotos=arquivo.parent)

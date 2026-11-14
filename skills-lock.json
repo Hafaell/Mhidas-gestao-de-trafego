@@ -6,12 +6,6 @@
       "sourceType": "github",
       "skillPath": "skills/find-skills/SKILL.md",
       "computedHash": "7bc223e2aafbdbf6e50ea243ba6ef67fe432bb069ab439fea0390795dac0bf7f"
-    },
-    "meta-ads-cli": {
-      "source": "tristanmanchester/agent-skills",
-      "sourceType": "github",
-      "skillPath": "meta-ads-cli/SKILL.md",
-      "computedHash": "12207f83f2ed5f35c684d0b5d6fdeeb4a154f75de03bab007af4501d6c0617f9"
     }
   }
 }

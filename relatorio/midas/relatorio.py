@@ -9,6 +9,7 @@ from datetime import date
 from pathlib import Path
 from typing import List, Optional
 
+from .config import PASTA_FOTOS
 from .formatacao import Formatador
 from .metricas import Calculo, Variacao
 from .secoes import SECOES_NA_ORDEM, LinhaComparacao, Secao
@@ -54,8 +55,9 @@ class Cliente:
             return None
         if caminho.startswith(("http://", "https://", "data:")):
             return caminho
-        arquivo = (pasta / caminho).resolve()
-        if not arquivo.exists():
+        # Procura ao lado do JSON e, se não achar, em clientes/fotos/ (onde a foto fica guardada).
+        arquivo = next((c.resolve() for c in (pasta / caminho, PASTA_FOTOS / caminho) if c.exists()), None)
+        if arquivo is None:
             return None
         mime = mimetypes.guess_type(arquivo.name)[0] or "image/jpeg"
         return f"data:{mime};base64,{base64.b64encode(arquivo.read_bytes()).decode()}"
