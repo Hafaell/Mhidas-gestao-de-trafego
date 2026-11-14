@@ -185,6 +185,69 @@
   .rod { display: flex; justify-content: space-between; align-items: center; padding: 5mm 13mm 6mm;
          font-size: 10px; color: var(--muted); }
   .rod .ag { font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; color: var(--ink); font-size: 11px; }
+
+  /* ======== LAYOUT NOVO: mesma disposição do dashboard antigo ======== */
+  .cab { padding: 6mm 13mm; gap: 5mm; }
+  .cab .avatar { width: 20mm; height: 20mm; border-radius: 14px; font-size: 22px;
+                 box-shadow: 0 0 0 2px rgba(255,255,255,.85); }
+  .logo-meta { width: 17mm; flex: none; }
+  .logo-meta svg { width: 100%; height: auto; display: block; }
+  .cab-centro { flex: 1; min-width: 0; text-align: center; }
+  .cab-centro .l1 { font-size: 17px; font-weight: 800; letter-spacing: .3px; text-transform: uppercase; line-height: 1.2; }
+  .cab-centro .l2 { font-size: 12.5px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; line-height: 1.3; margin-top: 1px; }
+  .cab-centro .l3 { font-size: 10px; color: #9aa5c6; margin-top: 2px; }
+  .filtros { width: 44mm; flex: none; display: flex; flex-direction: column; gap: 2mm; }
+  .filtro { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); border-radius: 6px; padding: 1.6mm 3mm; }
+  .filtro small { display: block; font-size: 8px; letter-spacing: .8px; text-transform: uppercase; color: #aab4d4; }
+  .filtro b { display: block; font-size: 10.5px; font-weight: 700; }
+
+  .corpo { padding: 5mm 13mm 0; gap: 3.5mm; flex: 1 1 auto; }
+
+  /* resumo do topo: Total | Topo | Meio | Fundo */
+  .resumo { display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: 3mm; }
+  .rs { padding: 3.5mm 4mm 3.5mm 5mm; position: relative; overflow: hidden; text-align: center; }
+  .rs::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--cor); }
+  .rs-rot { font-size: 10px; font-weight: 600; color: var(--ink-2); }
+  .rs-valor { font-size: 21px; font-weight: 800; letter-spacing: -.4px; margin-top: 1mm; line-height: 1.1; white-space: nowrap; }
+  .rs-sub { font-size: 9.5px; color: var(--muted); margin-top: 1mm; }
+  .rs .var { margin-top: 1.2mm; }
+
+  /* faixa de seção: barra escura de largura total, ícone + título centralizados */
+  .banda { margin: 0 -13mm; background: var(--navy); color: #fff; padding: 3.2mm 13mm; text-align: center; }
+  .banda-t { display: inline-flex; align-items: center; gap: 3mm; }
+  .banda .ic { width: 28px; height: 28px; border-radius: 50%; }
+  .banda h1 { font-size: 15px; font-weight: 800; letter-spacing: .2px; }
+  .banda-s { font-size: 10px; color: #b9c2dc; margin-top: 1mm; }
+  .banda-s i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; background: var(--cor); margin-right: 5px; }
+
+  /* cards compactos */
+  .kpi { min-height: 0; padding: 3mm 4mm 2.5mm; }
+  .kpi-rot { font-size: 10.5px; }
+  .kpi-valor { font-size: 21px; margin-top: 1mm; }
+  .kpi-var { padding-top: 1.5mm; }
+  .kpis { gap: 3mm; }
+  .grafico { padding: 4mm 5mm; }
+  .grafico h3 { font-size: 12px; margin-bottom: 3mm; }
+  .passo { padding: 3mm 4mm; }
+  .passo-valor { font-size: 20px; margin-top: 1mm; }
+  .passo-rot { font-size: 10.5px; }
+  .seta { width: 28mm; }
+  .seta b { font-size: 13px; }
+  .leitura { padding: 3mm 5mm; }
+  .leitura h3 { font-size: 10px; margin-bottom: 1mm; }
+  .leitura p { font-size: 11px; line-height: 1.5; }
+  .vv-corpo { grid-template-columns: 1fr 74mm; }
+  .vv-pares { gap: 3mm; }
+  .vv-funil { padding: 4mm 5mm; }
+  .vv-funil .sub { margin-bottom: 3mm; }
+  .invest { padding: 4mm 6mm 3.5mm; }
+  .invest-valor { font-size: 34px; }
+  .barra { margin: 3mm 0 3mm; height: 12px; }
+  .leg { padding-top: 2.5mm; }
+  .leg-valor { margin-top: 1.5mm; }
+  h2 { margin-bottom: 2mm; }
+  .rod { padding: 3mm 13mm 4.5mm; margin-top: auto; }
+  .bloco { display: flex; flex-direction: column; gap: 2.5mm; }
 </style>
 </head>
 <body>
@@ -212,141 +275,114 @@
 </div>
 {%- endmacro -%}
 
-{%- macro cabecalho(compacto=False) -%}
-<header class="cab{{ ' compacto' if compacto }}">
+
+{%- macro cabecalho() -%}
+<header class="cab">
   <div class="avatar">{% if foto %}<img src="{{ foto }}" alt="">{% else %}{{ iniciais }}{% endif %}</div>
-  <div class="cab-id">
-    <div class="cab-nome">{{ cliente.nome }}</div>
-    {% if not compacto %}<div class="cab-sub">{{ cliente.descricao }}{% if cliente.instagram %} · {{ cliente.instagram }}{% endif %}</div>{% endif %}
+  <div class="logo-meta"><svg viewBox="0 0 64 34" fill="none" stroke="#2b8cff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 25C11 8 19 5 32 17s21 16 24 0c-2-15-12-18-24-6S11 38 8 25z"/></svg></div>
+  <div class="cab-centro">
+    <div class="l1">{{ cliente.nome }}</div>
+    <div class="l2">Relatório de leads · Meta Ads</div>
+    <div class="l3">{{ cliente.descricao }}{% if cliente.instagram %} · {{ cliente.instagram }}{% endif %}</div>
   </div>
-  <div class="cab-dir">
-    {% if not compacto %}
-    <div class="cab-tipo"><svg viewBox="0 0 44 24" fill="none" stroke="#7fb0ff" stroke-width="4" stroke-linecap="round"><path d="M4 16c3-10 9-12 18 0s15 10 18 0c-2-9-9-11-18 0S7 25 4 16z"/></svg>Relatório de leads · Meta Ads</div><br>
-    {% endif %}
-    <span class="chip-periodo">{{ periodo_txt }}</span>
-    {% if anterior_txt %}<div class="cab-comp">Variações comparadas a {{ anterior_txt }}</div>{% endif %}
+  <div class="filtros">
+    <div class="filtro"><small>Período</small><b>{{ periodo_txt }}</b></div>
+    {% if anterior_txt %}<div class="filtro"><small>Comparado a</small><b>{{ anterior_txt }}</b></div>{% endif %}
   </div>
 </header>
 {%- endmacro -%}
 
-{%- macro rodape(n) -%}
+{%- macro resumo() -%}
+<div>
+  <h2>Investimento do período</h2>
+  <div class="card invest">
+    <div class="invest-topo">
+      <div>
+        <div class="rot">Valor total investido</div>
+        <div class="invest-valor">{{ total_fmt }}</div>
+      </div>
+      <div>{{ var(total_var) }}</div>
+    </div>
+    <div class="barra" role="img" aria-label="Divisão do investimento por etapa do funil">
+      {% for s in secoes %}<span style="width: {{ (s.share * 100)|round(2) }}%; background: var(--{{ s.etapa }})"></span>{% endfor %}
+    </div>
+    <div class="legenda" style="--n: {{ secoes|length }}">
+      {% for s in secoes %}
+      <div class="leg">
+        <div class="leg-nome"><i style="background: var(--{{ s.etapa }})"></i>{{ s.nome_etapa }} <small>· {{ s.rotulo }}</small></div>
+        <div class="leg-valor">{{ s.investido_fmt }}</div>
+        <div class="leg-share">{{ s.share_fmt }} do investimento</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{%- endmacro -%}
+
+{%- macro rodape(n, total) -%}
 <footer class="rod">
   <span class="ag">{{ agencia }}</span>
   <span>Relatório gerado em {{ gerado_em }}</span>
-  <span>Página {{ n }} de {{ total_paginas }}</span>
+  <span>Página {{ n }} de {{ total }}</span>
 </footer>
 {%- endmacro -%}
 
-<!-- ================= PÁGINA 1: RESUMO ================= -->
+{%- macro banda(s) -%}
+<div class="banda" style="--cor: var(--{{ s.etapa }})">
+  <div class="banda-t"><span class="ic" style="--cor: var(--{{ s.etapa }})">{{ icone(s.icone) }}</span><h1>{{ s.titulo }}{% if s.tema %} · {{ s.tema }}{% endif %}</h1></div>
+  <div class="banda-s"><i></i>{{ s.nome_etapa }} de funil · {{ s.rotulo }} · {{ s.share_fmt }} do investimento total</div>
+</div>
+{%- endmacro -%}
+
+{%- macro fluxo(s) -%}
+{% if s.fluxo %}
+<div class="card grafico" style="--cor: var(--{{ s.etapa }}); --tint: var(--{{ s.etapa }}-tint)">
+  <h3>{{ s.fluxo.titulo }}</h3>
+  <div class="fluxo">
+    {% for p in s.fluxo.passos %}
+      {% if not loop.first %}
+      <div class="seta"><b>{{ p.taxa }}</b>
+        <svg viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M2 5H94M88 1l6 4-6 4" fill="none" stroke="var(--cor)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
+        <span>{{ p.taxa_txt }}</span></div>
+      {% endif %}
+      <div class="passo"><div class="passo-rot">{{ p.rotulo }}</div><div class="passo-valor">{{ p.valor }}</div></div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+{%- endmacro -%}
+
+{%- set p1 = secoes|selectattr('chave','in',['instagram','whatsapp'])|list -%}
+{%- set pv = secoes|selectattr('chave','equalto','video')|list -%}
+{%- set p3 = (p1 or comparacao or observacoes) -%}
+{%- set total = (1 if p1 else 0) + (1 if pv else 0) + (1 if p3 else 0) -%}
+{%- set ns = namespace(n=0) -%}
+
+<!-- ===== PÁGINA 1: topo (Instagram) + fundo (WhatsApp), como no dashboard antigo ===== -->
+{% if p1 %}{% set ns.n = ns.n + 1 %}
 <section class="pagina">
   {{ cabecalho() }}
   <main class="corpo">
-    <div>
-      <h2>Investimento do período</h2>
-      <div class="card invest">
-        <div class="invest-topo">
-          <div>
-            <div class="rot">Valor total investido</div>
-            <div class="invest-valor">{{ total_fmt }}</div>
-          </div>
-          <div>{{ var(total_var) }}</div>
-        </div>
-        <div class="barra" role="img" aria-label="Divisão do investimento por etapa do funil">
-          {% for s in secoes %}<span style="width: {{ (s.share * 100)|round(2) }}%; background: var(--{{ s.etapa }})"></span>{% endfor %}
-        </div>
-        <div class="legenda" style="--n: {{ secoes|length }}">
-          {% for s in secoes %}
-          <div class="leg">
-            <div class="leg-nome"><i style="background: var(--{{ s.etapa }})"></i>{{ s.nome_etapa }} <small>· {{ s.rotulo }}</small></div>
-            <div class="leg-valor">{{ s.investido_fmt }}</div>
-            <div class="leg-share">{{ s.share_fmt }} do investimento</div>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
+    {{ resumo() }}
+    {% for s in p1 %}
+    <div class="bloco" style="--cor: var(--{{ s.etapa }}); --tint: var(--{{ s.etapa }}-tint)">
+      {{ banda(s) }}
+      <div class="kpis">{% for k in s.kpis %}{{ kpi_card(k) }}{% endfor %}</div>
+      {% if s.comentario %}<div class="card leitura"><h3>O que esse resultado mostra</h3><p>{{ s.comentario }}</p></div>{% endif %}
     </div>
-
-    <div>
-      <h2>Resultados principais</h2>
-      <div class="resultados" style="--n: {{ secoes|length }}">
-        {% for s in secoes %}
-        <div class="card res" style="--cor: var(--{{ s.etapa }})">
-          <div class="res-etapa"><span class="ic" style="--cor: var(--{{ s.etapa }})">{{ icone(s.icone) }}</span>{{ s.nome_etapa }} de funil</div>
-          <div class="res-valor">{{ s.destaque.valor }}</div>
-          <div class="res-rot">{{ s.destaque.rotulo }}</div>
-          <div class="res-nota">{{ s.destaque.nota }}</div>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-
-    {% if comparacao %}
-    <div>
-      <h2>Comparação com o período anterior ({{ anterior_txt }})</h2>
-      <div class="card comp">
-        <table>
-          <thead><tr><th>Indicador</th><th>Período anterior</th><th>Este período</th><th>Variação</th></tr></thead>
-          <tbody>
-          {% for c in comparacao %}
-            <tr><td><i style="background: {{ 'var(--' ~ c.etapa ~ ')' if c.etapa else 'var(--navy-2)' }}"></i>{{ c.rotulo }}</td>
-                <td class="ant">{{ c.anterior }}</td><td class="atual">{{ c.atual }}</td><td>{{ var(c.var) }}</td></tr>
-          {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-    {% endif %}
-
-    {% if observacoes %}
-    <div>
-      <h2>Leitura do mês</h2>
-      <div class="card obs"><p>{{ observacoes }}</p></div>
-    </div>
-    {% endif %}
+    {% endfor %}
   </main>
-  {{ rodape(1) }}
+  {{ rodape(ns.n, total) }}
 </section>
+{% endif %}
 
-<!-- ================= PÁGINAS DAS SEÇÕES ================= -->
-{% for s in secoes %}
+<!-- ===== PÁGINA 2: meio de funil (vídeo) ===== -->
+{% for s in pv %}{% set ns.n = ns.n + 1 %}
 <section class="pagina" style="--cor: var(--{{ s.etapa }}); --tint: var(--{{ s.etapa }}-tint)">
-  {{ cabecalho(True) }}
+  {{ cabecalho() }}
   <main class="corpo">
-    <div class="card faixa">
-      <span class="ic">{{ icone(s.icone) }}</span>
-      <div class="faixa-tit">
-        <h1>{{ s.titulo }}</h1>
-        <span class="etiqueta"><i></i>{{ s.nome_etapa }} de funil · {{ s.rotulo }}</span>{% if s.tema %}<span class="tema">{{ s.tema }}</span>{% endif %}
-      </div>
-      <div class="faixa-inv"><b>{{ s.investido_fmt }}</b><span>{{ s.share_fmt }} do investimento total</span></div>
-    </div>
-
-    {% if s.kpis %}
-    <div class="kpis">
-      {% for k in s.kpis %}{{ kpi_card(k) }}{% endfor %}
-    </div>
-    {% endif %}
-
-    {% if s.fluxo %}
-    <div class="card grafico">
-      <h3>{{ s.fluxo.titulo }}</h3>
-      <div class="sub">Quantas pessoas avançaram em cada etapa no período</div>
-      <div class="fluxo">
-        {% for p in s.fluxo.passos %}
-          {% if not loop.first %}
-          <div class="seta">
-            <b>{{ p.taxa }}</b>
-            <svg viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M2 5H94M88 1l6 4-6 4" fill="none" stroke="var(--cor)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
-            <span>{{ p.taxa_txt }}</span>
-          </div>
-          {% endif %}
-          <div class="passo"><div class="passo-rot">{{ p.rotulo }}</div><div class="passo-valor">{{ p.valor }}</div></div>
-        {% endfor %}
-      </div>
-    </div>
-    {% endif %}
-
-    {% if s.vv %}
+    {{ resumo() }}
+    {{ banda(s) }}
     <div class="kpis{{ ' kpis-4' if s.vv.topo|length > 3 }}"{% if s.vv.topo|length > 3 %} style="grid-template-columns: repeat({{ s.vv.topo|length }}, 1fr)"{% endif %}>
       {% for k in s.vv.topo %}{{ kpi_card(k) }}{% endfor %}
     </div>
@@ -367,15 +403,50 @@
         <div class="ret-nota"><b>{{ s.vv.funil.retencao_final }}</b> de quem passou dos 15 segundos assistiu até 95% do vídeo.</div>
       </div>
     </div>
-    {% endif %}
-
-    {% if s.comentario %}
-    <div class="card leitura"><h3>O que esse resultado mostra</h3><p>{{ s.comentario }}</p></div>
-    {% endif %}
+    {% if s.comentario %}<div class="card leitura"><h3>O que esse resultado mostra</h3><p>{{ s.comentario }}</p></div>{% endif %}
   </main>
-  {{ rodape(loop.index + 1) }}
+  {{ rodape(ns.n, total) }}
 </section>
 {% endfor %}
+
+<!-- ===== PÁGINA 3: fluxos, comparação com o período anterior + leitura do mês ===== -->
+{% if p3 %}{% set ns.n = ns.n + 1 %}
+<section class="pagina">
+  {{ cabecalho() }}
+  <main class="corpo">
+    {{ resumo() }}
+    {% if p1 %}
+    <div class="bloco">
+      <h2>Do anúncio ao resultado</h2>
+      {% for s in p1 %}{{ fluxo(s) }}{% endfor %}
+    </div>
+    {% endif %}
+    {% if comparacao %}
+    <div>
+      <h2>Comparação com o período anterior ({{ anterior_txt }})</h2>
+      <div class="card comp">
+        <table>
+          <thead><tr><th>Indicador</th><th>Período anterior</th><th>Este período</th><th>Variação</th></tr></thead>
+          <tbody>
+          {% for c in comparacao %}
+            <tr><td><i style="background: {{ 'var(--' ~ c.etapa ~ ')' if c.etapa else 'var(--navy-2)' }}"></i>{{ c.rotulo }}</td>
+                <td class="ant">{{ c.anterior }}</td><td class="atual">{{ c.atual }}</td><td>{{ var(c.var) }}</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+    {% if observacoes %}
+    <div>
+      <h2>Leitura do mês</h2>
+      <div class="card obs"><p>{{ observacoes }}</p></div>
+    </div>
+    {% endif %}
+  </main>
+  {{ rodape(ns.n, total) }}
+</section>
+{% endif %}
 
 </body>
 </html>

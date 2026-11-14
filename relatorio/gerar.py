@@ -330,6 +330,8 @@ def main():
     ap.add_argument("dados", help="arquivo JSON com os dados do cliente")
     ap.add_argument("--saida", default=str(RAIZ / "saida"), help="pasta de saída (padrão: saida/)")
     ap.add_argument("--sem-pdf", action="store_true", help="gera só o HTML")
+    ap.add_argument("--modelo", default="relatorio.html.j2",
+                    help="template em relatorio/modelo/ (padrão: o modelo dashboard aprovado)")
     args = ap.parse_args()
 
     arq = Path(args.dados).resolve()
@@ -338,11 +340,13 @@ def main():
     variacao_neutra(ctx)
 
     env = Environment(loader=FileSystemLoader(AQUI / "modelo"), autoescape=select_autoescape(["html", "j2"]))
-    html = env.get_template("relatorio.html.j2").render(**ctx)
+    html = env.get_template(args.modelo).render(**ctx)
 
     saida = Path(args.saida)
     saida.mkdir(parents=True, exist_ok=True)
     nome = f"relatorio-{slug(dados['cliente']['nome'])}-{dados['periodo']['inicio'][:7]}"
+    if args.modelo != "relatorio.html.j2":
+        nome += "-" + args.modelo.replace(".html.j2", "").replace("relatorio-", "")
     html_path = saida / f"{nome}.html"
     html_path.write_text(html, encoding="utf-8")
     print(f"HTML: {html_path}")

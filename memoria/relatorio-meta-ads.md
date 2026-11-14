@@ -33,23 +33,31 @@ Este arquivo guarda como o relatório dos clientes deve funcionar. Ler antes de 
 - Rodapé: faixa preta com `AGÊNCIA LUPA` centralizado.
 - Formato brasileiro: `R$ 1.737,03`, milhar com ponto (`151.043`), decimal com vírgula.
 
-## Modelo NOVO (APROVADO em 13/11/2026)
+## Modelo NOVO: layout dashboard (APROVADO em 14/11/2026)
 
-Referência visual salva em `relatorio/modelo-aprovado/` (PDF, imagens das páginas e dados). Consultar antes de gerar qualquer relatório.
+Substitui o modelo de 13/11/2026 (4 páginas, uma por seção). Mesmo visual, mas com os cards nas posições do dashboard antigo do gestor (imagens e PDF em `relatorio/modelo-antigo/`). Referência visual salva em `relatorio/modelo-aprovado/` (PDF, imagens das páginas e dados). Consultar antes de gerar qualquer relatório.
 
-Gerado por `relatorio/gerar.py` (ver seção "Como gerar" no fim). Visual:
-- PDF A4 em pé, fundo cinza-claro, cards brancos, cabeçalho azul-marinho com foto redonda, nome, período e "Relatório de leads · Meta Ads".
+Gerado por `relatorio/gerar.py` com `relatorio/modelo/relatorio.html.j2` (ver "Como gerar" no fim). Visual:
+- PDF A4 em pé, fundo cinza-claro, cards brancos.
+- **Cabeçalho (igual em todas as páginas):** azul-marinho, foto do cliente à esquerda (moldura arredondada), logo da Meta, título centralizado em 2 linhas (nome do cliente / "Relatório de leads · Meta Ads"), e à direita duas caixas: "Período" e "Comparado a".
+- **Bloco "Investimento do período"** logo abaixo do cabeçalho, em todas as páginas: card grande com o total, barra dividida por etapa e legenda Topo/Meio/Fundo com valor e %. **Decisão do gestor (14/11/2026): manter este bloco como no primeiro modelo, não trocar por 4 cards pequenos.**
+- **Faixas de seção:** barra escura de largura total, ícone redondo + título centralizados, e linha pequena com etapa e % do investimento.
 - Cores fixas por etapa (validadas para daltonismo): Topo `#2a78d6` azul, Meio `#eb6834` laranja, Fundo `#1baf7a` verde.
 - Variação contra o período anterior em selo: verde = melhorou, vermelho = piorou, cinza = investimento (neutro). Para custos, cair é bom.
-- Página 1: investimento total + barra dividida por etapa, resultados principais (seguidores, views 15s, conversas), tabela "período anterior x este período", "Leitura do mês" (texto do gestor).
-- Uma página por seção: faixa com título e etapa, 6 cards de métricas, gráfico (fluxo com taxas entre etapas; no vídeo, funil ao lado dos cards, ver Seção 2) e caixa opcional "O que esse resultado mostra".
-- O card "Meio" foi adicionado no resumo (o modelo antigo só tinha Topo e Fundo).
+- Cada seção tem a caixa "O que esse resultado mostra" (comentário do gestor, opcional).
+
+**Páginas:**
+1. Investimento do período + Crescimento do Instagram (2 linhas de 3 cards) + Captação de Leads no WhatsApp (2 linhas de 3 cards).
+2. Investimento do período + Meio de Funil (vídeo), ver Seção 2.
+3. Investimento do período + "Do anúncio ao resultado" (fluxos com taxas entre etapas) + comparação com o período anterior + "Leitura do mês" (texto do gestor).
+
+Página 1 é apertada: se `pdf.js` avisar "página 1 estourou", encurtar os comentários.
 
 ## Estrutura do relatório Meta Ads (dados que sempre aparecem)
 
-Cada página repete o cabeçalho e o bloco de resumo, e depois traz uma seção.
+Cada página repete o cabeçalho e o bloco "Investimento do período", e depois traz as seções daquela página.
 
-### Bloco de resumo (topo de todas as páginas)
+### Bloco "Investimento do período" (topo de todas as páginas)
 | Card | Origem |
 |---|---|
 | Valor Total Investido | soma do gasto de todas as campanhas no período |
@@ -113,9 +121,10 @@ Leitura de teste (Dr. Rodrigo, 01/11 a 13/11/2026, só leitura): `🔥[MEIO] CP2
 - Valor Investido / Conversas Iniciadas (custo por conversa)
 
 ### Ordem das páginas no PDF
-1. Resumo + Crescimento do Instagram + Captação de Leads (WhatsApp)
-2. Resumo + Meio de Funil (vídeo)
-3. Google Ads, quando o cliente tiver (ver abaixo)
+1. Investimento + Crescimento do Instagram + Captação de Leads (WhatsApp)
+2. Investimento + Meio de Funil (vídeo)
+3. Investimento + fluxos + comparação com o período anterior + Leitura do mês
+4. Google Ads, quando o cliente tiver (ver abaixo)
 
 ## Estrutura do relatório Google Ads (quando houver)
 
