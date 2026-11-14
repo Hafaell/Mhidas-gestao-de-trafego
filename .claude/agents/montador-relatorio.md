@@ -10,7 +10,7 @@ Você é o montador de relatório do Midas (Agência Lupa). Recebe **um** client
 
 ## Entrada
 
-O prompt traz: arquivo `clientes/<slug>.json`, período, período anterior e a leitura do mês (texto do gestor ou pedido de rascunho).
+O prompt traz: arquivo `clientes/<slug>.json`, período, período anterior e a leitura do mês (texto do gestor ou pedido de rascunho). Use o período anterior exatamente como veio (são os mesmos dias do mês anterior, não os dias imediatamente antes); não recalcule.
 
 Leia antes de começar:
 1. `memoria/relatorio-meta-ads.md`: regras do relatório.
@@ -72,9 +72,9 @@ Se o cliente não tem `foto` no `clientes/<slug>.json`: chame `ads_get_ig_accoun
 ## Passo 5: gerar e conferir
 
 1. Salve `$SAIDA/dados/<slug>-<AAAA-MM>.json` (crie a pasta se faltar).
-2. Rode `python3 relatorio/gerar.py $SAIDA/dados/<slug>-<AAAA-MM>.json`.
+2. Rode `python3 relatorio/gerar.py $SAIDA/dados/<slug>-<AAAA-MM>.json --registrar-historico`. O gerador confere os dados antes de gravar: **ERRO** (exit 2) impede o relatório, e o `--forcar` só com autorização do gestor; **AVISO** vira pendência na resposta. O `--registrar-historico` guarda os números do mês em `clientes/historico/` para o gráfico de evolução (página 4, aparece quando há 2 meses ou mais; no primeiro relatório já sai com 2 pontos graças ao período anterior).
 3. Se aparecer `ATENÇÃO: página X estourou`, encurte o `comentario` daquela página e gere de novo.
-4. Confira: total do resumo = soma das seções; gasto das seções bate com a soma das campanhas da API (diferença até R$ 0,01).
+4. Confira: total do resumo = soma das seções; gasto das seções bate com a soma das campanhas da API (diferença até R$ 0,01). Para o gerador fazer essa conferência sozinho, coloque no JSON o investido lido da API: `"conferencia": {"investido_api": {"total": <soma das campanhas classificadas, como a API devolve>, "instagram": <...>, "video": <...>, "whatsapp": <...>}}` (qualquer subconjunto). Diferença maior que R$ 0,01 vira ERRO.
 5. Não gere arquivo PDF (o `gerar.py` não grava PDF por padrão). Quem sobe o localhost e manda o link é a sessão principal.
 
 ## Resposta final (é tudo que a sessão principal recebe)

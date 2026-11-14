@@ -11,6 +11,8 @@ class SecaoWhatsapp(Secao):
     rotulo_etapa = "Foco em consulta"
     titulo = "Captação de leads no WhatsApp"
     icone = "whatsapp"
+    campo_evolucao, rotulo_evolucao = "conversas", "Conversas iniciadas"
+    campos_desejaveis = ("impressoes", "alcance", "cliques", "conversas")
 
     def montar_kpis(self):
         v, a = self.valor, self.valor_anterior

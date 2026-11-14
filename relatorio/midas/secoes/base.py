@@ -47,6 +47,10 @@ class Secao(ABC):
     rotulo_etapa: str     # "Pessoas novas", "Vídeo", "Foco em consulta"
     titulo: str
     icone: str
+    campo_evolucao: Optional[str] = None    # campo do JSON que vira gráfico de evolução mensal
+    rotulo_evolucao: str = ""
+    campos_obrigatorios: tuple = ()         # sem esses campos o relatório não sai (ver conferencia.py)
+    campos_desejaveis: tuple = ()           # sem esses campos sai, com aviso (pendência)
 
     def __init__(self, dados: dict):
         self.dados = dados

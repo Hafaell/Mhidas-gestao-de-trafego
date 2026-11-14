@@ -6,7 +6,7 @@ Cada versão do visual tem sua pasta. As antigas ficam só como imagem (PNG) par
 |---|---|---|
 | `1-antigo/` | antes do projeto | Dashboard que o gestor montava à mão. Referência da posição dos cards. |
 | `2-quatro-paginas/` | 13/11/2026 | Primeiro modelo do Midas (4 páginas, uma por seção). Código no commit `e361ef7`. |
-| `3-atual-dashboard/` | 14/11/2026 | **Modelo atual**, aprovado. 3 páginas. É o que o `gerar.py` usa. |
+| `3-atual-dashboard/` | 14/11/2026 | **Modelo atual**, aprovado. 3 páginas, mais a página 4 de evolução mensal quando há histórico. É o que o `gerar.py` usa. |
 
 Estrutura de um modelo executável (`3-atual-dashboard/`):
 

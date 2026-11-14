@@ -18,6 +18,7 @@ Ler antes de gerar ou alterar qualquer relatório. Decisões do gestor de 13 e 1
 ## Fluxo
 
 1. Gestor pede o relatório de um ou mais clientes (padrão: mês anterior completo).
+   - **Período anterior (regra do gestor, 14/11/2026):** os **mesmos dias do mês anterior**, com a mesma quantidade de dias. Pediu 09 a 20/11, compara com 09 a 20/10; pediu 01 a 15, compara com 01 a 15 do mês anterior. Nunca "os dias imediatamente antes" (não vale 25/10 a 08/11). Se o intervalo cair nos dias 30 e 31 e o mês anterior for mais curto, mantém a quantidade de dias e deixa terminar no dia 1 (20 a 31/10 compara com 20/09 a 01/10). Exceção minha, ainda não confirmada pelo gestor: mês inteiro (dia 1 ao último) compara com o mês anterior inteiro. Para calcular: `python3 relatorio/gerar.py --periodo-anterior <início> <fim>`.
 2. Skill `relatorio-cliente` localiza os clientes e despacha um agente `montador-relatorio` por cliente, em paralelo.
 3. O agente busca os dados, classifica as campanhas, monta o JSON e roda `gerar.py`.
 4. A sessão principal sobe o localhost e manda os links.
@@ -31,6 +32,7 @@ O mapa completo de métricas (campo da API para cada card) está em `.claude/age
 | Cadastro do cliente (conta, @, tema do vídeo, classificação das campanhas) | `clientes/<slug>.json` (fora do git) | sempre |
 | Foto do cliente | `clientes/fotos/<slug>.jpg` (fora do git) | sempre |
 | JSON de dados do mês, HTML e CSS gerados | pasta temporária: `<temp>/midas/` (ver `python3 relatorio/gerar.py --pasta-saida`) | uso único |
+| Histórico mensal (números do mês, para o gráfico de evolução) | `clientes/historico/<slug>.json` (fora do git, gravado por `gerar.py --registrar-historico`) | sempre |
 | Token do Instagram | `.env` (`ACCESS_TOKEN`, fora do git) | ~60 dias |
 
 ## Modelo atual (`relatorio/modelos/3-atual-dashboard/`, aprovado em 14/11/2026)
@@ -46,7 +48,8 @@ A4 em pé, fundo cinza-claro, cards brancos. Imagens de referência em `referenc
 **Páginas:**
 1. Investimento + **Crescimento do Instagram** (Topo) + **Captação de Leads no WhatsApp** (Fundo). Página apertada: se aparecer "página 1 estourou", encurtar os comentários.
 2. Investimento + **Meio de Funil Video View <tema>**.
-3. Investimento + "Do anúncio ao resultado" (fluxos com taxas) + comparação com o período anterior + "Leitura do mês" (texto do gestor).
+3. Investimento + "Do anúncio ao resultado" (fluxos com taxas) + comparação com o período anterior.
+4. Investimento + **Evolução nos últimos meses** (4 gráficos de linha: investimento total e um indicador por seção: novos seguidores, visualizações 15 seg, conversas) + "Leitura do mês" (texto do gestor). Só existe com 2 meses ou mais de dados (o primeiro relatório já tem 2 pontos, pelo período anterior). Mês parcial aparece com `*`. Sem a página 4, a Leitura do mês fica no fim da página 3.
 
 ### Cards por seção
 
@@ -67,7 +70,7 @@ A4 em pé, fundo cinza-claro, cards brancos. Imagens de referência em `referenc
 
 ## Token do Instagram (`ACCESS_TOKEN` no `.env`)
 
-Estendido em 14/11/2026, vence por volta de **13/01/2027**. A partir de **06/01/2027**, avisar o gestor no início de qualquer sessão de relatório. Erro 190 = vencido.
+Estendido em 14/11/2026, vence por volta de **13/01/2027**. O `python3 relatorio/verificar_token.py` confere a validade no início de cada pedido de relatório (a skill `relatorio-cliente` roda sozinha): avisa se faltam menos de 7 dias e para tudo se vencer (erro 190). Ele nunca mostra o token.
 
 Renovar:
 1. developers.facebook.com/tools/explorer, app `App Cursosobredireito`, "Obter token de acesso do usuário".
@@ -78,6 +81,7 @@ Renovar:
 
 ## Código (regra do gestor: orientado a objetos, HTML, CSS e Python separados)
 
+- **Conferência antes de gerar** (`midas/conferencia.py`): ERRO impede o relatório (cliques na bio vazio, valor negativo, investido diferente do `conferencia.investido_api` lido da API), AVISO vira pendência (campo sem dado, funil estranho como mais conversas que cliques, sem período anterior, foto não achada). Campo obrigatório ou desejável de cada seção: atributos `campos_obrigatorios` e `campos_desejaveis` na classe dela.
 - **Python** em `relatorio/midas/` (mapa em `midas/__init__.py`). Seção nova = classe nova em `midas/secoes/` + uma linha em `secoes/__init__.py`. `gerar.py` e `servir.py` são só a porta de entrada. Caminhos todos em `midas/config.py`.
 - **HTML** em peças (`html/componentes/`, `html/paginas/`); **CSS** em um arquivo só.
 - Modelo novo = pasta nova em `relatorio/modelos/` (ver o `LEIAME.md` de lá).

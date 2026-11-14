@@ -10,6 +10,7 @@ SAIDA = Path(tempfile.gettempdir()) / "midas"
 # O que precisa durar de um mês para o outro fica em clientes/ (fora do git).
 PASTA_CLIENTES = RAIZ / "clientes"
 PASTA_FOTOS = PASTA_CLIENTES / "fotos"                     # foto de perfil de cada cliente
+PASTA_HISTORICO = PASTA_CLIENTES / "historico"             # números de cada mês, por cliente (gráfico de evolução)
 
 # Cada versão do visual do relatório mora em uma pasta de relatorio/modelos/.
 PASTA_MODELOS = PASTA_RELATORIO / "modelos"

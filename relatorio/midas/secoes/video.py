@@ -47,6 +47,8 @@ class SecaoVideo(Secao):
     rotulo_etapa = "Vídeo"
     titulo = "Visualização de vídeo"
     icone = "video"
+    campo_evolucao, rotulo_evolucao = "views_15s", "Visualizações 15 seg"
+    campos_desejaveis = ("views_15s", "video_50", "video_75", "video_95")
 
     # Desenho do funil: (rótulo, campo, largura do topo, largura da base) em um quadro de 200 de largura.
     # A largura sempre diminui: é forma de funil, não escala (50% pode ser maior que 15 seg).

@@ -11,6 +11,9 @@ class SecaoInstagram(Secao):
     rotulo_etapa = "Pessoas novas"
     titulo = "Crescimento do Instagram"
     icone = "instagram"
+    campo_evolucao, rotulo_evolucao = "novos_seguidores", "Novos seguidores"
+    campos_obrigatorios = ("cliques_bio",)     # regra do gestor: nunca fica "–"
+    campos_desejaveis = ("alcance", "visitas_perfil", "novos_seguidores")
 
     def montar_kpis(self):
         v, a = self.valor, self.valor_anterior

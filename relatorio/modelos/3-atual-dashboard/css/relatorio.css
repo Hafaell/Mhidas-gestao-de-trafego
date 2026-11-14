@@ -220,3 +220,19 @@ h2 {
 
 .rod { display: flex; justify-content: space-between; align-items: center; padding: 3mm 13mm 4.5mm; margin-top: auto; font-size: 10px; color: var(--muted); }
 .rod .ag { font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; color: var(--ink); font-size: 11px; }
+
+
+/* ---------- Evolução nos últimos meses ---------- */
+
+.evol { display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: 3mm; }
+.evol-card { padding: 2.5mm 3mm 1.5mm; border-top: 3px solid var(--cor); }
+.evol-rot { font-size: 10px; font-weight: 600; color: var(--ink-2); }
+.evol-valor { font-size: 15px; font-weight: 800; letter-spacing: -.3px; margin: 1px 0 1mm; }
+.evol-valor .var { font-size: 9px; vertical-align: 2px; margin-left: 2px; }
+.evol svg { display: block; width: 100%; height: auto; }
+.evol-linha { fill: none; stroke: var(--cor); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
+.evol-ponto { fill: var(--card); stroke: var(--cor); stroke-width: 1.2; }
+.evol-ponto.ultimo { fill: var(--cor); }
+.evol-mes { font-size: 5.4px; fill: var(--muted); }
+.evol-mes.ultimo { fill: var(--ink); font-weight: 700; }
+.evol-nota { font-size: 9.5px; color: var(--muted); margin-top: 1.5mm; }

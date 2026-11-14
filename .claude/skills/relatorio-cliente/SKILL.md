@@ -17,7 +17,7 @@ Extraia da mensagem do gestor:
 |---|---|
 | Clientes | Um ou vários nomes. "Todos" = todos os arquivos em `clientes/`. |
 | Período | Mês citado ("relatório de outubro"). Sem mês: **mês anterior completo** (dia 1 ao último dia). |
-| Período anterior | Mês imediatamente antes do período, para as comparações. |
+| Período anterior | **Os mesmos dias do mês anterior**, com a mesma quantidade de dias (pediu 09 a 20/11, compara com 09 a 20/10; nunca os dias imediatamente antes). Calcule com `python3 relatorio/gerar.py --periodo-anterior <início> <fim>`, sem fazer a conta de cabeça. Regra completa em `memoria/relatorio-meta-ads.md`. |
 | Leitura do mês | Se o gestor escreveu um texto para o cliente, ele vai literal em `observacoes`. |
 
 ## Passo 2: localizar cada cliente
@@ -31,13 +31,16 @@ Para cada nome, procure em `clientes/*.json` (campos `nome` e `apelidos`, sem di
 
 Mais de 5 clientes de uma vez: confirme a lista com o gestor antes de despachar (regra do CLAUDE.md sobre criar arquivos em massa).
 
-## Passo 3: checagem rápida do ambiente (uma vez por sessão)
+## Passo 3: checagem rápida do ambiente e do token (uma vez por sessão)
 
 ```bash
 python3 -c "import jinja2" && node -e "require('playwright')"
+python3 relatorio/verificar_token.py
 ```
 
-Se falhar, pare e avise o gestor do que falta (`pip install jinja2`, `npm install playwright` e `npx playwright install chromium`). Não instale nada sem ele pedir.
+Se a primeira falhar, pare e avise o gestor do que falta (`pip install jinja2`, `npm install playwright` e `npx playwright install chromium`). Não instale nada sem ele pedir.
+
+O `verificar_token.py` confere o `ACCESS_TOKEN` do Instagram (os cliques na bio dependem dele) e nunca mostra o token. Saída 0: siga. Saída 1 (vence em menos de 7 dias): avise o gestor, mas pode seguir se ele mandar. Saída 2 (vencido ou inválido): **pare e avise**, sem despachar agentes. Saída 3 (não deu para verificar, sem token ou sem rede): avise e pergunte se segue.
 
 ## Passo 4: despachar os agentes em paralelo
 
@@ -62,6 +65,7 @@ Quando todos voltarem, responda ao gestor com uma tabela curta:
 - **Entrega só em HTML, sem PDF** (regra do gestor, 14/11/2026). Não liste nem mande arquivo PDF: o gestor baixa pelo botão "Baixar PDF" da própria página.
 - **Ver relatório** é obrigatório: para cada cliente, suba o servidor local em segundo plano e mande o link `http://localhost:<porta>`:
   `python3 relatorio/servir.py <nome-sem-extensão> --porta <porta> --sem-abrir` (rode com `run_in_background`). Uma porta por cliente, começando em 8000. Antes de mandar o link, confirme que respondeu 200 com `curl -s -o /dev/null -w "%{http_code}" http://localhost:<porta>` (não use `curl -I`: o servidor não aceita HEAD e responde 501).
+- Conferência do gerador: se o agente devolveu ERRO da conferência (exit 2 do `gerar.py`), o relatório daquele cliente não saiu. Diga qual foi o erro.
 - Pendências que o agente devolveu (dado que faltou, campanha fora do modelo, texto em rascunho, página estourada).
 - Se algum agente falhou, diga qual e por quê. Não esconda falha atrás de "concluído".
 

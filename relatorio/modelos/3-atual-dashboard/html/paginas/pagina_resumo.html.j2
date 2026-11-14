@@ -16,7 +16,8 @@
     </div>
     {% endif %}
     {% if relatorio.comparacao %}{{ tabela_comparacao(relatorio.comparacao) }}{% endif %}
-    {% if relatorio.observacoes %}
+    {#- Com a página de evolução, a leitura do mês vai para o fim dela. -#}
+    {% if relatorio.observacoes and not relatorio.evolucao.cards %}
     <div>
       <h2>Leitura do mês</h2>
       <div class="card obs"><p>{{ relatorio.observacoes }}</p></div>

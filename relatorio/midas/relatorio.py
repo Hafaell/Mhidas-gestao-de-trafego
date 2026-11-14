@@ -2,15 +2,18 @@
 from __future__ import annotations
 
 import base64
+import calendar
 import mimetypes
 import re
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 from typing import List, Optional
 
 from .config import PASTA_FOTOS
+from .evolucao import Evolucao
 from .formatacao import Formatador
+from .historico import Historico
 from .metricas import Calculo, Variacao
 from .secoes import SECOES_NA_ORDEM, LinhaComparacao, Secao
 
@@ -30,6 +33,23 @@ class Periodo:
     def mes(self) -> str:
         """AAAA-MM, usado no nome do arquivo."""
         return self.inicio[:7]
+
+    def anterior_equivalente(self) -> "Periodo":
+        """Período anterior para comparação (regra do gestor, 14/11/2026): os mesmos dias do mês anterior
+        e a mesma quantidade de dias. 09 a 20/11 compara com 09 a 20/10. Se o intervalo atravessar o fim do
+        mês (20 a 31/10 contra 20/09 a 31/09), mantém os dias e termina em 01/10.
+        Exceção: mês inteiro (dia 1 ao último dia) compara com o mês anterior inteiro."""
+        ini, fim = date.fromisoformat(self.inicio), date.fromisoformat(self.fim)
+        ano, mes = (ini.year, ini.month - 1) if ini.month > 1 else (ini.year - 1, 12)
+        dias_do_mes_anterior = calendar.monthrange(ano, mes)[1]
+        mes_inteiro = (ini.day == 1 and ini.month == fim.month and ini.year == fim.year
+                       and fim.day == calendar.monthrange(fim.year, fim.month)[1])
+        if mes_inteiro:
+            novo_ini, novo_fim = date(ano, mes, 1), date(ano, mes, dias_do_mes_anterior)
+        else:
+            novo_ini = date(ano, mes, min(ini.day, dias_do_mes_anterior))
+            novo_fim = novo_ini + (fim - ini)
+        return Periodo(novo_ini.isoformat(), novo_fim.isoformat())
 
 
 class Cliente:
@@ -66,7 +86,7 @@ class Cliente:
 class Relatorio:
     """Tudo que o modelo de HTML precisa: cliente, períodos, seções, totais e comparação."""
 
-    def __init__(self, dados: dict, pasta_fotos: Path):
+    def __init__(self, dados: dict, pasta_fotos: Path, historico: Optional[Historico] = None):
         self.agencia: str = dados.get("agencia", "Agência Lupa")
         self.cliente = Cliente(dados["cliente"], pasta_fotos)
         self.periodo = Periodo(**dados["periodo"])
@@ -81,6 +101,7 @@ class Relatorio:
         for s in self.secoes:
             s.definir_participacao(self.total)
         self.comparacao: List[LinhaComparacao] = self._montar_comparacao() if self.periodo_anterior else []
+        self.evolucao = Evolucao(self, historico)
 
     # ---- montagem ----
 
@@ -99,6 +120,15 @@ class Relatorio:
             "Investimento total", None, Formatador.moeda(self.total), Formatador.moeda(self.total_anterior),
             Variacao.calcular(self.total, self.total_anterior, neutra=True))
         return [total] + [linha for s in self.secoes for linha in s.linhas_comparacao()]
+
+    def registrar_em(self, historico: Historico) -> None:
+        """Grava no histórico o mês deste relatório (sobrescreve) e o anterior (só se ainda não existir)."""
+        indicadores = self.evolucao.indicadores()
+        historico.registrar(self.periodo.mes, self.periodo.inicio, self.periodo.fim,
+                            {i.campo: i.atual for i in indicadores})
+        if self.periodo_anterior:
+            historico.registrar(self.periodo_anterior.mes, self.periodo_anterior.inicio, self.periodo_anterior.fim,
+                                {i.campo: i.anterior for i in indicadores}, sobrescrever=False)
 
     # ---- o que o HTML mostra ----
 

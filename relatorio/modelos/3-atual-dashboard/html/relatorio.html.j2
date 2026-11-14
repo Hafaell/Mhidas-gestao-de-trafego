@@ -8,12 +8,14 @@
 {%- from "paginas/pagina_instagram_whatsapp.html.j2" import pagina_instagram_whatsapp with context -%}
 {%- from "paginas/pagina_video.html.j2" import pagina_video with context -%}
 {%- from "paginas/pagina_resumo.html.j2" import pagina_resumo with context -%}
+{%- from "paginas/pagina_evolucao.html.j2" import pagina_evolucao with context -%}
 
-{#- Quais páginas existem: página 1 = topo + fundo, página de vídeo = meio, última = fluxos + comparação + leitura -#}
+{#- Quais páginas existem: página 1 = topo + fundo, página de vídeo = meio, depois fluxos + comparação,
+    e por último evolução + leitura do mês (a leitura fica na página de fluxos se não houver evolução). -#}
 {%- set topo_e_fundo = relatorio.secoes|selectattr('chave','in',['instagram','whatsapp'])|list -%}
 {%- set videos = relatorio.secoes|selectattr('chave','equalto','video')|list -%}
-{%- set tem_resumo = (topo_e_fundo or relatorio.comparacao or relatorio.observacoes) -%}
-{%- set total_paginas = (1 if topo_e_fundo else 0) + (1 if videos else 0) + (1 if tem_resumo else 0) -%}
+{%- set tem_resumo = (topo_e_fundo or relatorio.comparacao or (relatorio.observacoes and not relatorio.evolucao.cards)) -%}
+{%- set total_paginas = (1 if topo_e_fundo else 0) + (1 if videos else 0) + (1 if tem_resumo else 0) + (1 if relatorio.evolucao.cards else 0) -%}
 {%- set contador = namespace(n=0) -%}
 
 <!doctype html>
@@ -32,6 +34,9 @@
 {% endfor %}
 {% if tem_resumo %}{% set contador.n = contador.n + 1 %}
 {{ pagina_resumo(topo_e_fundo, contador.n, total_paginas) }}
+{% endif %}
+{% if relatorio.evolucao.cards %}{% set contador.n = contador.n + 1 %}
+{{ pagina_evolucao(contador.n, total_paginas) }}
 {% endif %}
 </body>
 </html>
