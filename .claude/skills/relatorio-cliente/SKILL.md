@@ -1,11 +1,11 @@
 ---
 name: relatorio-cliente
-description: Use quando o gestor pedir o relatório de um ou mais clientes da Agência Lupa, em qualquer forma ("faz o relatório do Dr. Fulano", "relatório de outubro da Clínica X", "gera os relatórios da Ana e do Rodrigo", "relatório de todos os clientes"). Cobre relatório mensal de Meta Ads em PDF no modelo aprovado.
+description: Use quando o gestor pedir o relatório de um ou mais clientes da Agência Lupa, em qualquer forma ("faz o relatório do Dr. Fulano", "relatório de outubro da Clínica X", "gera os relatórios da Ana e do Rodrigo", "relatório de todos os clientes"). Cobre relatório mensal de Meta Ads no modelo aprovado, entregue em HTML aberto em localhost (sem arquivo PDF).
 ---
 
 # Relatório de cliente (Meta Ads)
 
-Esta skill organiza o pedido e despacha **um agente `montador-relatorio` por cliente, em paralelo**. Quem busca os dados e gera o PDF é o agente. A sessão principal só prepara, despacha e junta os resultados.
+Esta skill organiza o pedido e despacha **um agente `montador-relatorio` por cliente, em paralelo**. Quem busca os dados e gera o HTML é o agente. A sessão principal só prepara, despacha e junta os resultados.
 
 Antes de tudo, leia `memoria/relatorio-meta-ads.md` (regras do relatório e mapa de métricas).
 
@@ -56,14 +56,14 @@ Leitura do mês do gestor: <texto literal, ou "nenhuma, escreva um rascunho">
 
 Quando todos voltarem, responda ao gestor com uma tabela curta:
 
-| Cliente | Status | Ver relatório | PDF | Pendências |
-|---|---|---|---|---|
+| Cliente | Status | Ver relatório | Pendências |
+|---|---|---|---|
 
-- **Ver relatório** é obrigatório: link markdown para o `Link HTML` que o agente devolveu, ex. `[abrir](file:///C:/.../saida/relatorio-x-2026-10.html)`, para o gestor abrir no navegador direto do chat. Se o agente não devolveu, gere você com `pathlib.Path(...).resolve().as_uri()`.
-- Caminho de cada PDF como link clicável.
+- **Entrega só em HTML, sem PDF** (regra do gestor, 14/11/2026). Não liste nem mande arquivo PDF: o gestor baixa pelo botão "Baixar PDF" da própria página.
+- **Ver relatório** é obrigatório: para cada cliente, suba o servidor local em segundo plano e mande o link `http://localhost:<porta>`:
+  `python3 relatorio/servir.py <nome-sem-extensão> --porta <porta> --sem-abrir` (rode com `run_in_background`). Uma porta por cliente, começando em 8000. Antes de mandar o link, confirme com `curl -sI http://localhost:<porta>` que respondeu 200.
 - Pendências que o agente devolveu (dado que faltou, campanha fora do modelo, texto em rascunho, página estourada).
 - Se algum agente falhou, diga qual e por quê. Não esconda falha atrás de "concluído".
-- Ofereça abrir um deles com `python3 relatorio/servir.py <nome-sem-extensão>`.
 
 Pedido de ajuste depois ("muda o texto do vídeo", "o tema é Joelho"): edite o JSON em `saida/dados/` e rode `python3 relatorio/gerar.py <json>` de novo. Não precisa buscar os dados outra vez.
 

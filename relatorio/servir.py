@@ -10,7 +10,9 @@ Abre em http://localhost:8000 (só acessível neste computador).
 """
 import argparse
 import html
+import subprocess
 import sys
+import tempfile
 import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -72,7 +74,8 @@ def escolher_relatorio(nome):
 
 def fazer_handler(base: Path):
     html_path = base.with_suffix(".html")
-    pdf_path = base.with_suffix(".pdf")
+    pdf_nome = base.name + ".pdf"
+    pdf_js = RAIZ / "relatorio" / "pdf.js"
     titulo = base.name.replace("relatorio-", "Relatório ").replace("-", " ")
 
     class Handler(BaseHTTPRequestHandler):
@@ -89,16 +92,22 @@ def fazer_handler(base: Path):
         def do_GET(self):
             rota = self.path.split("?")[0]
             if rota in ("/", "/index.html"):
-                pagina = PAGINA.format(titulo=html.escape(titulo), nome_pdf=html.escape(pdf_path.name))
+                pagina = PAGINA.format(titulo=html.escape(titulo), nome_pdf=html.escape(pdf_nome))
                 self._enviar(200, "text/html; charset=utf-8", pagina.encode("utf-8"))
             elif rota == "/relatorio.html":
                 self._enviar(200, "text/html; charset=utf-8", html_path.read_bytes())
             elif rota == "/baixar":
-                if not pdf_path.exists():
-                    self._enviar(404, "text/plain; charset=utf-8", "PDF não encontrado. Gere com relatorio/gerar.py.".encode("utf-8"))
-                    return
-                self._enviar(200, "application/pdf", pdf_path.read_bytes(),
-                             {"Content-Disposition": f'attachment; filename="{pdf_path.name}"'})
+                # O PDF não fica salvo em saida/: é gerado na hora a partir do HTML.
+                with tempfile.TemporaryDirectory() as tmp:
+                    destino = Path(tmp) / pdf_nome
+                    r = subprocess.run(["node", str(pdf_js), str(html_path), str(destino)],
+                                       capture_output=True, text=True)
+                    if r.returncode != 0 or not destino.exists():
+                        sys.stderr.write(r.stderr)
+                        self._enviar(500, "text/plain; charset=utf-8", "Não consegui gerar o PDF.".encode("utf-8"))
+                        return
+                    self._enviar(200, "application/pdf", destino.read_bytes(),
+                                 {"Content-Disposition": f'attachment; filename="{pdf_nome}"'})
             else:
                 self._enviar(404, "text/plain; charset=utf-8", b"Nao encontrado")
 

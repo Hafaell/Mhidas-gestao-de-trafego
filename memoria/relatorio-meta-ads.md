@@ -12,7 +12,7 @@ Este arquivo guarda como o relatório dos clientes deve funcionar. Ler antes de 
 ## Regras fixas
 
 1. **Tudo gratuito.** Nada de Looker Studio com conector pago, Supermetrics, Windsor, Porter etc.
-2. **Entrega em PDF.** O gestor baixa o PDF e coloca na pasta do cliente no Google Drive. O PDF tem que sair completo, com todas as páginas, sem cortar nada.
+2. **Entrega só em HTML, aberto em localhost (regra do gestor, 14/11/2026).** Não entregar nem listar arquivo PDF. O gestor baixa o PDF pelo botão "Baixar PDF" da página local (o `servir.py` gera na hora, a partir do HTML) e coloca na pasta do cliente no Google Drive. O PDF baixado tem que sair completo, com todas as páginas, sem cortar nada. Ao terminar, subir `python3 relatorio/servir.py <nome> --sem-abrir` e mandar no chat o link `http://localhost:8000` (um relatório por porta se forem vários).
 3. **Acesso às contas:** as Business Managers são dos clientes, não estão ligadas à BM do gestor. O gestor tem acesso pelo **usuário pessoal dele** do Facebook. Opção escolhida pelo gestor: **conector oficial da Meta no claude.ai** (`https://mcp.facebook.com/ads`, login pessoal, escolhe as contas). Não usar usuário do sistema de BM própria.
 4. **Estrutura flexível.** O modelo abaixo é o padrão, mas cada cliente pode ter seções a mais ou a menos. Exemplo: cliente sem campanha de vídeo não tem a página de vídeo; cliente sem WhatsApp pode ter formulário ou site. A seção só aparece se houver campanha daquele tipo no período.
 5. Não confundir com a skill "gestor-de-trafego" do claude.ai: ela não faz parte deste projeto.
@@ -148,14 +148,14 @@ Leitura de teste (Dr. Rodrigo, 01/11 a 13/11/2026, só leitura): `🔥[MEIO] CP2
 2. Midas puxa os dados de cada conta de anúncio pelo acesso pessoal do gestor.
 3. Classifica as campanhas em topo, meio e fundo.
 4. Monta só as seções que existem para aquele cliente.
-5. Gera o PDF com o visual acima e entrega para download.
-6. Gestor sobe o PDF no Drive do cliente.
+5. Gera o HTML com o visual acima, sobe em localhost e manda o link no chat.
+6. Gestor baixa o PDF pelo botão da página e sobe no Drive do cliente.
 
 ## Skill e agente (criados em 14/11/2026)
 
 - **Skill `relatorio-cliente`** (`.claude/skills/relatorio-cliente/SKILL.md`): dispara quando o gestor pede relatório de alguém. Identifica clientes e período (padrão: mês anterior completo), checa o ambiente e despacha um agente por cliente, todos na mesma mensagem (paralelo).
 - **Agente `montador-relatorio`** (`.claude/agents/montador-relatorio.md`): um por cliente. Busca dados no conector Meta Ads, classifica campanhas, monta `saida/dados/<slug>-<AAAA-MM>.json`, roda `gerar.py` e devolve resumo com pendências. Ferramentas de escrita do Meta Ads bloqueadas no próprio agente.
-- **Entrega no chat (regra do gestor, 14/11/2026):** ao terminar cada relatório, sempre mostrar no chat o link do HTML (`file:///...`) para o gestor abrir no navegador, além do caminho do PDF.
+- **Entrega no chat (regra do gestor, 14/11/2026, substitui a anterior):** só HTML, sem PDF. Ao terminar, subir o relatório em localhost com `relatorio/servir.py` e mandar no chat o link `http://localhost:<porta>`. Vários clientes: uma porta para cada (8000, 8001...), uma linha por cliente com o link. Não mandar caminho de PDF.
 - **Cadastro de clientes:** `clientes/<slug>.json` (fora do git, são dados de cliente). Formato em `relatorio/exemplos/cliente-config-exemplo.json`: nome, apelidos, ID da conta, Instagram, foto, tema do vídeo e classificação de cada campanha.
 
 ## Mapa de métricas (conector Meta Ads, conferido em 14/11/2026)
@@ -237,15 +237,18 @@ Passo a passo para renovar:
 - `.claude/skills/find-skills` (vercel-labs/skills): busca de skills.
 - `.claude/skills/meta-ads-cli` (tristanmanchester/agent-skills): guia para ler dados pela ferramenta oficial da Meta (`pip install meta-ads`, comando `meta`). Só leitura neste projeto. A ferramenta precisa de `ACCESS_TOKEN` no `.env`; o conector do claude.ai (opção escolhida) não precisa de token. Testado em 13/11/2026: instala e responde, testes da skill passam (16/16). Ainda sem teste com conta real.
 
-## Como gerar o PDF
+## Como gerar o relatório (HTML) e abrir em localhost
 
 Ambiente: `jinja2` está no `python3`; Playwright + Chromium foram instalados em 14/11/2026 na pasta do projeto (`node_modules/`, `package.json`, fora do git). Usar `python3` (o `python` do Git Bash não tem o jinja2). Testado: PDF gerado sem aviso de página estourada.
 
 ```bash
 python3 relatorio/gerar.py relatorio/exemplos/cliente-exemplo.json
-# saída em saida/ (fora do git): .html e .pdf
+# saída em saida/ (fora do git): só o .html (use --com-pdf apenas se o gestor pedir o arquivo)
+python3 relatorio/servir.py relatorio-<cliente>-<AAAA-MM> --sem-abrir
+# link: http://localhost:8000 (--porta N para outra porta). Botão "Baixar PDF" gera o PDF na hora
 ```
 
 - O JSON de entrada segue `relatorio/exemplos/cliente-exemplo.json`. Seção ausente = página não aparece. Sem `periodo_anterior` = sem variações e sem tabela de comparação.
 - Custos (por seguidor, por conversa, por visualização) são calculados pelo script, nunca digitados.
+- O `gerar.py` ainda renderiza um PDF temporário (apagado em seguida) só para o `pdf.js` avisar se uma página estourou. O PDF não fica em `saida/`.
 - `relatorio/pdf.js` avisa "ATENÇÃO: página X estourou" se algum conteúdo passar do tamanho da página. Se aparecer, encurtar textos.

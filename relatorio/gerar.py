@@ -3,7 +3,7 @@
 
 Uso:
     python3 relatorio/gerar.py relatorio/exemplos/cliente-exemplo.json
-    python3 relatorio/gerar.py dados.json --saida saida/ --sem-pdf
+    python3 relatorio/gerar.py dados.json --saida saida/ --com-pdf
 
 O JSON segue o formato de relatorio/exemplos/cliente-exemplo.json.
 Seções ausentes no JSON simplesmente não aparecem no relatório.
@@ -17,6 +17,7 @@ import mimetypes
 import re
 import subprocess
 import sys
+import tempfile
 import unicodedata
 from datetime import date
 from pathlib import Path
@@ -329,7 +330,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("dados", help="arquivo JSON com os dados do cliente")
     ap.add_argument("--saida", default=str(RAIZ / "saida"), help="pasta de saída (padrão: saida/)")
-    ap.add_argument("--sem-pdf", action="store_true", help="gera só o HTML")
+    ap.add_argument("--com-pdf", action="store_true",
+                    help="grava também o PDF em saida/ (padrão: só o HTML; o PDF sai pelo botão do servir.py)")
     ap.add_argument("--modelo", default="relatorio.html.j2",
                     help="template em relatorio/modelo/ (padrão: o modelo dashboard aprovado)")
     args = ap.parse_args()
@@ -351,11 +353,15 @@ def main():
     html_path.write_text(html, encoding="utf-8")
     print(f"HTML: {html_path}")
 
-    if not args.sem_pdf:
+    # O PDF não é entregue (regra do gestor, 14/11/2026): ele baixa pelo botão da página do servir.py.
+    # Mesmo assim renderiza num arquivo temporário para o pdf.js avisar se alguma página estourou.
+    if args.com_pdf:
         pdf_path = saida / f"{nome}.pdf"
         subprocess.run(["node", str(AQUI / "pdf.js"), str(html_path), str(pdf_path)], check=True)
         print(f"PDF:  {pdf_path}")
-
+    else:
+        with tempfile.TemporaryDirectory() as tmp:
+            subprocess.run(["node", str(AQUI / "pdf.js"), str(html_path), str(Path(tmp) / "checagem.pdf")], check=True)
 
 if __name__ == "__main__":
     sys.exit(main())
