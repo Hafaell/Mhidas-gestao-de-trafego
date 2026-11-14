@@ -1,0 +1,67 @@
+{
+  "_comentario": "Dados FICTÍCIOS só para aprovar o visual. A estrutura é a mesma que o Midas vai preencher com os dados reais do Meta Ads.",
+  "agencia": "Agência Lupa",
+  "cliente": {
+    "nome": "Dra. Ana Exemplo",
+    "descricao": "Dermatologia · Brasília",
+    "instagram": "@clinica.exemplo",
+    "foto": null
+  },
+  "periodo": {
+    "inicio": "2026-10-01",
+    "fim": "2026-10-31"
+  },
+  "periodo_anterior": {
+    "inicio": "2026-09-01",
+    "fim": "2026-09-30"
+  },
+  "observacoes": "Outubro teve o menor custo por conversa do ano. O vídeo de bastidores segurou bem a audiência até os 75%, e por isso ele vai seguir rodando em novembro junto com um novo criativo de depoimento.",
+  "secoes": {
+    "instagram": {
+      "investido": 912.4,
+      "alcance": 143870,
+      "visitas_perfil": 5102,
+      "cliques_bio": 88,
+      "novos_seguidores": 561,
+      "anterior": {
+        "investido": 860.0,
+        "alcance": 128400,
+        "visitas_perfil": 4410,
+        "cliques_bio": 71,
+        "novos_seguidores": 472
+      },
+      "comentario": "O perfil ganhou 561 seguidores, 19% a mais que em setembro, e cada seguidor ficou 11% mais barato. A taxa de visitas que viram seguidor (11%) mostra que o perfil está convencendo quem chega até ele."
+    },
+    "video": {
+      "tema": "Bastidores da clínica",
+      "investido": 790.15,
+      "views_15s": 8240,
+      "video_50": 6912,
+      "video_75": 2688,
+      "video_95": 1847,
+      "anterior": {
+        "investido": 800.0,
+        "views_15s": 7420,
+        "video_50": 6120,
+        "video_75": 2105,
+        "video_95": 1490
+      },
+      "comentario": "O vídeo de bastidores segurou a audiência: 1 em cada 3 pessoas que passaram dos 15 segundos chegou aos 75%. Essas pessoas viram público quente para as campanhas de WhatsApp."
+    },
+    "whatsapp": {
+      "investido": 1684.9,
+      "impressoes": 39410,
+      "alcance": 17260,
+      "cliques": 334,
+      "conversas": 141,
+      "anterior": {
+        "investido": 1700.0,
+        "impressoes": 36950,
+        "alcance": 16100,
+        "cliques": 301,
+        "conversas": 118
+      },
+      "comentario": "Foram 141 conversas iniciadas no WhatsApp, 23 a mais que no mês anterior, com custo por conversa 17% menor. Quase metade de quem clicou no anúncio começou uma conversa."
+    }
+  }
+}
