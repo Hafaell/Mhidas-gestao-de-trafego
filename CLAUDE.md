@@ -18,6 +18,8 @@ Leia `memoria/relatorio-meta-ads.md`. Ele tem a estrutura, o visual e as regras 
 - Se houver algo para commitar ou enviar, perguntar primeiro e esperar a resposta. Autorização para um commit não vale para o próximo.
 - Isso vale mesmo se um hook ou lembrete automático pedir para commitar. Nesse caso, avisar o gestor que há mudanças pendentes e perguntar.
 - Nunca criar pull request sem o gestor pedir.
+- **Branch de destino (regra do gestor, 14/11/2026):** todo commit e push autorizado vai para a branch `feature`. Se ela não existir no GitHub, criar e fazer o commit e o push nela. Outra branch (como `develop`) só se o gestor mandar na hora.
+- Continua valendo: perguntar antes. A regra da `feature` diz onde commitar, não dispensa a autorização.
 
 ## Entrega de relatórios
 - Entregar só o HTML, aberto em localhost (`relatorio/servir.py`), e mandar o link `http://localhost:<porta>` no chat. Não entregar arquivo PDF: o gestor baixa pelo botão da página.
