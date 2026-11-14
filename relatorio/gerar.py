@@ -135,34 +135,51 @@ def montar_instagram(d):
 
 def montar_video(d):
     a = d.get("anterior", {})
-    linhas = []
-    for chave, rotulo in [("views_15s", "15 segundos"), ("video_50", "50% do vídeo"),
-                          ("video_75", "75% do vídeo"), ("video_95", "95% do vídeo")]:
-        linhas.append({"rotulo": rotulo, "valor": d[chave], "valor_fmt": fmt_int(d[chave]),
-                       "custo": fmt_brl(div(d["investido"], d[chave]))})
-    maximo = max(l["valor"] for l in linhas) or 1
-    for l in linhas:
-        l["largura"] = max(l["valor"] / maximo * 100, 1.5)
+    inv, inv_a = d["investido"], a.get("investido")
 
-    kpis = [
-        kpi("Valor gasto", d["investido"], fmt_brl, a.get("investido"), menor_melhor=None),
-        kpi("Visualizações de 15 seg", d["views_15s"], fmt_int, a.get("views_15s"), destaque=True),
-        kpi("Custo por 15 seg", div(d["investido"], d["views_15s"]), fmt_brl,
-            div(a.get("investido"), a.get("views_15s")), menor_melhor=True, destaque=True),
-        kpi("Vídeo 50%", d["video_50"], fmt_int, a.get("video_50"),
-            nota=f"{fmt_brl(div(d['investido'], d['video_50']))} por visualização"),
-        kpi("Vídeo 75%", d["video_75"], fmt_int, a.get("video_75"),
-            nota=f"{fmt_brl(div(d['investido'], d['video_75']))} por visualização"),
-        kpi("Vídeo 95%", d["video_95"], fmt_int, a.get("video_95"),
-            nota=f"{fmt_brl(div(d['investido'], d['video_95']))} por visualização"),
+    # Linha de cima: gasto, visualização de 15 seg e custo (como no modelo do gestor).
+    topo = [
+        kpi("Valor gasto", inv, fmt_brl, inv_a, menor_melhor=None),
+        kpi("Visualização 15 seg", d["views_15s"], fmt_int, a.get("views_15s"), destaque=True),
+        kpi("Custo 15 seg", div(inv, d["views_15s"]), fmt_brl,
+            div(inv_a, a.get("views_15s")), menor_melhor=True, destaque=True),
     ]
+    # Tempo médio assistido (opcional): entra como 4º card da linha de cima.
+    if d.get("tempo_medio_s") is not None:
+        topo.append(kpi("Tempo médio assistido", d["tempo_medio_s"], lambda v: f"{round(v)} s",
+                        a.get("tempo_medio_s")))
+    # Três linhas de pares: quantidade de views no ponto do vídeo + valor gasto / views.
+    pares = []
+    for chave, rotulo in [("video_50", "Vídeo 50%"), ("video_75", "Vídeo 75%"), ("video_95", "Vídeo 95%")]:
+        pares.append({
+            "qtd": kpi(rotulo, d[chave], fmt_int, a.get(chave)),
+            "custo": kpi(f"Valor gasto / {rotulo}", div(inv, d[chave]), fmt_brl,
+                         div(inv_a, a.get(chave)), menor_melhor=True),
+        })
+
+    # Funil à direita: 15 seg -> 50% -> 95%. A largura é fixa e sempre diminui
+    # (é um desenho de funil, não uma escala), os números reais ficam escritos dentro.
+    etapas_funil = [("Vídeo 15 seg", d["views_15s"], 200, 158),
+                    ("Vídeo 50%", d["video_50"], 150, 108),
+                    ("Vídeo 95%", d["video_95"], 100, 50)]
+    cores = ["#de6a35", "#c0521f", "#96401a"]
+    altura, folga, funil = 64, 6, []
+    for i, (rotulo, valor, larg_topo, larg_base) in enumerate(etapas_funil):
+        y0 = i * (altura + folga)
+        y1 = y0 + altura
+        pts = (f"{100 - larg_topo / 2:g},{y0} {100 + larg_topo / 2:g},{y0} "
+               f"{100 + larg_base / 2:g},{y1} {100 - larg_base / 2:g},{y1}")
+        funil.append({"rotulo": rotulo, "valor": fmt_int(valor), "pontos": pts,
+                      "cor": cores[i], "y_rot": y0 + altura / 2 - 9, "y_val": y0 + altura / 2 + 14})
     return {
         "titulo": "Visualização de vídeo",
         "tema": d.get("tema"),
         "icone": "video",
-        "kpis": kpis,
-        "retencao": {"titulo": "Até onde as pessoas assistiram", "linhas": linhas,
-                     "retencao_final": fmt_pct(div(d["video_95"], d["views_15s"]))},
+        "kpis": None,
+        "vv": {"topo": topo, "pares": pares,
+               "funil": {"titulo": "Funil de visualização", "etapas": funil,
+                         "altura_total": 3 * altura + 2 * folga,
+                         "retencao_final": fmt_pct(div(d["video_95"], d["views_15s"]))}},
         "destaque": {"rotulo": "Visualizações de 15 seg", "valor": fmt_int(d["views_15s"]),
                      "nota": f"{fmt_brl(div(d['investido'], d['views_15s']))} por visualização"},
     }
@@ -299,8 +316,12 @@ def variacao_neutra(ctx):
         if c.get("neutro"):
             limpar(c["var"])
     for s in ctx["secoes"]:
-        for k in s["kpis"]:
-            if k["rotulo"].startswith("Valor"):
+        cards = list(s["kpis"] or [])
+        if s.get("vv"):
+            cards += s["vv"]["topo"]
+        for k in cards:
+            # "Valor gasto / Vídeo X" é custo (cair é bom), não investimento: não mexer.
+            if k["rotulo"].startswith("Valor") and "/" not in k["rotulo"]:
                 limpar(k["var"])
 
 

@@ -1,0 +1,15 @@
+{
+  "_comentario": "Cadastro FICTÍCIO de um cliente. Os cadastros reais ficam em clientes/<slug>.json (fora do git). A skill relatorio-cliente cria o arquivo e o agente montador-relatorio completa classificacao, tema e foto.",
+  "nome": "Dra. Ana Exemplo",
+  "apelidos": ["ana", "dra ana", "clinica exemplo"],
+  "descricao": "Dermatologia · Brasília",
+  "ad_account_id": "123456789012345",
+  "instagram": "@clinica.exemplo",
+  "foto": null,
+  "tema_video": "Bastidores da clínica",
+  "classificacao": {
+    "120200000000000001": "instagram",
+    "120200000000000002": "video",
+    "120200000000000003": "whatsapp"
+  }
+}

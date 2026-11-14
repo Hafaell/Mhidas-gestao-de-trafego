@@ -2,3 +2,5 @@
 .env.*
 saida/
 __pycache__/
+clientes/
+node_modules/

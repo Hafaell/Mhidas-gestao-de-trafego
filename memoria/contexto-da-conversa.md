@@ -54,13 +54,19 @@ Custos são sempre calculados pelo script, nunca digitados.
 - `claude/affectionate-gates-j4rctl`: branch original da sessão, ainda é o branch padrão no GitHub. Para apagá-la é preciso antes trocar o padrão para `main` em Settings → Branches.
 - Este arquivo de contexto foi criado depois e ainda **não foi commitado**.
 
+## Situação em 14/11/2026 (fim da sessão)
+- Nenhum dado real de cliente conectado ainda. O conector da Meta não estava carregado nesta sessão (só Gmail, Notion, Windsor.ai e n8n, pendentes de autorização).
+- O gestor colou `https://mcp.facebook.com/ads` na **busca** do diretório de conectores e apareceram só produtos de terceiros (Adspirer, Windsor.ai, circle-skills, Ory, Ryze AI). **Nenhum é o conector oficial da Meta; não usar** [Certa].
+- Caminho certo: botão **"Adicionar conector personalizado"** em https://claude.ai/customize/connectors, com nome "Meta Ads" e a URL no campo de servidor, depois Conectar e login pessoal do Facebook. Se o botão não existir no plano do gestor, partir para o plano B (token + CLI `meta`).
+- O gestor vai abrir uma sessão nova para continuar.
+
 ## Pendências e próximos passos
-1. Adicionar o conector em https://claude.ai/customize/connectors (`https://mcp.facebook.com/ads`), somente leitura, marcando as contas dos clientes.
+1. Adicionar o conector **personalizado** em https://claude.ai/customize/connectors (`https://mcp.facebook.com/ads`), somente leitura, marcando as contas dos clientes. Não pela barra de busca.
 2. Abrir uma **sessão nova** no projeto (o conector só carrega no início da sessão; nesta sessão ele não estava disponível).
 3. Testar com uma conta real e confirmar de onde vêm visitas ao perfil, cliques na bio e seguidores (talvez exijam a API do Instagram, e não a de anúncios) [Provável].
 4. Plano B se o conector não funcionar na nuvem: CLI `meta` com token (`ACCESS_TOKEN` no `.env`, nunca no git).
 5. Definir como classificar cada campanha em topo, meio e fundo e guardar isso por cliente.
-6. Criar a lista de clientes (nome, ID da conta, tipos de campanha) e um fluxo para gerar os relatórios em lote, com confirmação antes de criar muitos arquivos.
+6. ~~Fluxo de relatórios em lote~~ feito em 14/11/2026: skill `relatorio-cliente` + agente `montador-relatorio` (ver `memoria/relatorio-meta-ads.md`). Os cadastros em `clientes/` são criados conforme os clientes forem pedidos. O conector Meta Ads já aparece carregado na sessão de 14/11/2026.
 7. Trocar o branch padrão para `main` no GitHub e decidir se apaga a `claude/...`.
 8. Fase seguinte: relatório de Google Ads (estrutura já descrita na memória).
 

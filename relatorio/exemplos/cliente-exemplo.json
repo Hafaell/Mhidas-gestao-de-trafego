@@ -39,7 +39,9 @@
       "video_50": 6912,
       "video_75": 2688,
       "video_95": 1847,
+      "tempo_medio_s": 7,
       "anterior": {
+        "tempo_medio_s": 6,
         "investido": 800.0,
         "views_15s": 7420,
         "video_50": 6120,
