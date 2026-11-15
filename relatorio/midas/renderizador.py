@@ -9,7 +9,8 @@ from .relatorio import Relatorio
 
 class RenderizadorHtml:
     """Um modelo tem esta forma:
-        <modelo>/html/relatorio.html.j2   página principal (usa componentes/ e paginas/)
+        <modelo>/html/relatorio.html.j2   documento inteiro (head, body e páginas)
+        <modelo>/html/componentes.html.j2 peças que se repetem nas páginas
         <modelo>/css/relatorio.css        estilo, ligado ao HTML por <link>
     """
 

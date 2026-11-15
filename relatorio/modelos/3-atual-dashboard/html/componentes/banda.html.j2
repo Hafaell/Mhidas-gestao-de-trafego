@@ -1,8 +1,0 @@
-{#- Faixa escura de largura total que abre cada seção: ícone, título e etapa do funil. -#}
-{%- from "componentes/icones.html.j2" import icone -%}
-{%- macro banda(s) -%}
-<div class="banda" style="--cor: var(--{{ s.etapa }})">
-  <div class="banda-t"><span class="ic" style="--cor: var(--{{ s.etapa }})">{{ icone(s.icone) }}</span><h1>{{ s.titulo }}{% if s.tema %} · {{ s.tema }}{% endif %}</h1></div>
-  <div class="banda-s"><i></i>{{ s.nome_etapa }} de funil · {{ s.rotulo_etapa }} · {{ s.participacao_fmt }} do investimento total</div>
-</div>
-{%- endmacro -%}

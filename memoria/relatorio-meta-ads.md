@@ -83,7 +83,7 @@ Renovar:
 
 - **Conferência antes de gerar** (`midas/conferencia.py`): ERRO impede o relatório (estimativa de cliques na bio impossível, valor negativo, investido diferente do `conferencia.investido_api` lido da API), AVISO vira pendência (campo sem dado, funil estranho como mais conversas que cliques, sem período anterior, foto não achada). Campo obrigatório ou desejável de cada seção: atributos `campos_obrigatorios` e `campos_desejaveis` na classe dela.
 - **Python** em `relatorio/midas/` (mapa em `midas/__init__.py`). Seção nova = classe nova em `midas/secoes/` + uma linha em `secoes/__init__.py`. `gerar.py` e `servir.py` são só a porta de entrada. Caminhos todos em `midas/config.py`.
-- **HTML** em peças (`html/componentes/`, `html/paginas/`); **CSS** em um arquivo só.
+- **HTML (regra do gestor, 15/11/2026):** um arquivo com o documento inteiro (`html/relatorio.html.j2`: head, body e as páginas escritas por extenso). Só vai para outro arquivo o que se repete em várias páginas (`html/componentes.html.j2`) ou o que for muito grande. Não quebrar em um arquivo por componente ou por página. **CSS** em um arquivo só.
 - Modelo novo = pasta nova em `relatorio/modelos/` (ver o `LEIAME.md` de lá).
 - Antes de dar uma refatoração por boa, comparar o exemplo antes e depois, página a página (`node relatorio/pdf.js <html> <pdf> --png <pasta>`).
 - Ambiente: `python3` com `jinja2`; Playwright + Chromium em `node_modules/` (`npm install`). No Windows, usar `python3` (o `python` do Git Bash não tem jinja2).

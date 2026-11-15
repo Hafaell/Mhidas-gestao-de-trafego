@@ -11,10 +11,9 @@ Cada versão do visual tem sua pasta. As antigas ficam só como imagem (PNG) par
 Estrutura de um modelo executável (`3-atual-dashboard/`):
 
 ```
-html/relatorio.html.j2   esqueleto que monta as páginas
-html/componentes/        peças reaproveitáveis (cabeçalho, kpi_card, funil_video, rodapé...)
-html/paginas/            uma página A4 cada
-css/relatorio.css        todo o estilo
+html/relatorio.html.j2      documento inteiro: head, body e as páginas A4 em ordem
+html/componentes.html.j2    peças que se repetem nas páginas (cabeçalho, investimento, kpi_card, rodapé...)
+css/relatorio.css           todo o estilo
 referencia/              PNG de cada página (gerado de relatorio/exemplos/cliente-exemplo.json)
 ```
 

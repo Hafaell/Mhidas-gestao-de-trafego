@@ -1,8 +1,0 @@
-{#- Rodapé de cada página: agência, data de geração e número da página. -#}
-{%- macro rodape(n, total) -%}
-<footer class="rod">
-  <span class="ag">{{ relatorio.agencia }}</span>
-  <span>Relatório gerado em {{ relatorio.gerado_em }}</span>
-  <span>Página {{ n }} de {{ total }}</span>
-</footer>
-{%- endmacro -%}

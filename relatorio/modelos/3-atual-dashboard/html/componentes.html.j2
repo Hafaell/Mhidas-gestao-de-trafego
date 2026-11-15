@@ -1,0 +1,114 @@
+{#-
+  Peças que se repetem em mais de uma página do relatorio.html.j2.
+  O que aparece uma vez só (funil, fluxos, comparação, evolução) fica direto na página, no relatorio.html.j2.
+-#}
+
+{#- ===== Em todas as páginas ===== -#}
+
+{#- Cabeçalho azul-marinho: foto, logo da Meta, título e caixas de período. -#}
+{%- macro cabecalho() -%}
+{%- set cliente = relatorio.cliente -%}
+<header class="cab">
+  <div class="avatar">{% if cliente.foto %}<img src="{{ cliente.foto }}" alt="">{% else %}{{ cliente.iniciais }}{% endif %}</div>
+  <div class="logo-meta"><svg viewBox="0 0 64 34" fill="none" stroke="#2b8cff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 25C11 8 19 5 32 17s21 16 24 0c-2-15-12-18-24-6S11 38 8 25z"/></svg></div>
+  <div class="cab-centro">
+    <div class="l1">{{ cliente.nome }}</div>
+    <div class="l2">Relatório de leads · Meta Ads</div>
+    <div class="l3">{{ cliente.descricao }}{% if cliente.instagram %} · {{ cliente.instagram }}{% endif %}</div>
+  </div>
+  <div class="filtros">
+    <div class="filtro"><small>Período</small><b>{{ relatorio.periodo_txt }}</b></div>
+    {% if relatorio.anterior_txt %}<div class="filtro"><small>Comparado a</small><b>{{ relatorio.anterior_txt }}</b></div>{% endif %}
+  </div>
+</header>
+{%- endmacro -%}
+
+{#- Bloco "Investimento do período": total, barra dividida por etapa e legenda Topo/Meio/Fundo. -#}
+{%- macro investimento() -%}
+<div>
+  <h2>Investimento do período</h2>
+  <div class="card invest">
+    <div class="invest-topo">
+      <div>
+        <div class="rot">Valor total investido</div>
+        <div class="invest-valor">{{ relatorio.total_fmt }}</div>
+      </div>
+      <div>{{ selo_variacao(relatorio.total_variacao) }}</div>
+    </div>
+    <div class="barra" role="img" aria-label="Divisão do investimento por etapa do funil">
+      {% for s in relatorio.secoes %}<span style="width: {{ (s.participacao * 100)|round(2) }}%; background: var(--{{ s.etapa }})"></span>{% endfor %}
+    </div>
+    <div class="legenda" style="--n: {{ relatorio.secoes|length }}">
+      {% for s in relatorio.secoes %}
+      <div class="leg">
+        <div class="leg-nome"><i style="background: var(--{{ s.etapa }})"></i>{{ s.nome_etapa }} <small>· {{ s.rotulo_etapa }}</small></div>
+        <div class="leg-valor">{{ s.investido_fmt }}</div>
+        <div class="leg-share">{{ s.participacao_fmt }} do investimento</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{%- endmacro -%}
+
+{#- Rodapé: agência, data de geração e número da página. -#}
+{%- macro rodape(n, total) -%}
+<footer class="rod">
+  <span class="ag">{{ relatorio.agencia }}</span>
+  <span>Relatório gerado em {{ relatorio.gerado_em }}</span>
+  <span>Página {{ n }} de {{ total }}</span>
+</footer>
+{%- endmacro -%}
+
+{#- ===== Seções (Instagram, vídeo, WhatsApp) ===== -#}
+
+{#- Faixa escura de largura total que abre cada seção: ícone, título e etapa do funil. `s` é uma Secao. -#}
+{%- macro banda(s) -%}
+<div class="banda" style="--cor: var(--{{ s.etapa }})">
+  <div class="banda-t"><span class="ic" style="--cor: var(--{{ s.etapa }})">{{ icone(s.icone) }}</span><h1>{{ s.titulo }}{% if s.tema %} · {{ s.tema }}{% endif %}</h1></div>
+  <div class="banda-s"><i></i>{{ s.nome_etapa }} de funil · {{ s.rotulo_etapa }} · {{ s.participacao_fmt }} do investimento total</div>
+</div>
+{%- endmacro -%}
+
+{#- Ícone da seção (SVG branco, desenhado sobre o círculo colorido da etapa). -#}
+{%- macro icone(nome) -%}
+  {%- if nome == 'instagram' -%}
+  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".6" fill="#fff"/></svg>
+  {%- elif nome == 'video' -%}
+  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><rect x="2.5" y="5" width="14" height="14" rx="3"/><path d="M16.5 10l5-3v10l-5-3z"/></svg>
+  {%- elif nome == 'whatsapp' -%}
+  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M4 20l1.3-4A8 8 0 1 1 8.4 19z"/><path d="M9 9.5c.3 2.2 2.3 4.3 4.6 4.8l1-1.2 1.8.8" stroke-linecap="round"/></svg>
+  {%- endif -%}
+{%- endmacro -%}
+
+{#- Card de métrica: rótulo, valor grande e selo de variação. `k` é um objeto Kpi. -#}
+{%- macro kpi_card(k) -%}
+<div class="card kpi{{ ' destaque' if k.destaque }}">
+  <div class="kpi-rot">{{ k.rotulo }}</div>
+  <div class="kpi-valor">{{ k.valor }}</div>
+  {% if k.nota %}<div class="kpi-nota">{{ k.nota }}</div>{% endif %}
+  {% if k.variacao %}<div class="kpi-var">{{ selo_variacao(k.variacao) }}</div>{% endif %}
+</div>
+{%- endmacro -%}
+
+{#- Caixa "O que esse resultado mostra" (comentário do gestor, opcional). -#}
+{%- macro caixa_leitura(texto) -%}
+{% if texto %}<div class="card leitura"><h3>O que esse resultado mostra</h3><p>{{ texto }}</p></div>{% endif %}
+{%- endmacro -%}
+
+{#- "Leitura do mês" (texto do gestor, opcional): fim da página de evolução ou, sem ela, da página de resumo. -#}
+{%- macro leitura_do_mes() -%}
+{% if relatorio.observacoes %}
+<div>
+  <h2>Leitura do mês</h2>
+  <div class="card obs"><p>{{ relatorio.observacoes }}</p></div>
+</div>
+{% endif %}
+{%- endmacro -%}
+
+{#- ===== Miúdos ===== -#}
+
+{#- Selo de variação contra o período anterior. `v` é um objeto Variacao (texto + estado: bom, ruim ou neutro). -#}
+{%- macro selo_variacao(v) -%}
+  {%- if v -%}<span class="var {{ v.estado }}">{{ v.texto }}</span>{%- endif -%}
+{%- endmacro -%}
