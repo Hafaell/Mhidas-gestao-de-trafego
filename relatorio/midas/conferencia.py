@@ -17,6 +17,9 @@ TOLERANCIA_REAIS = 0.01
 # Vídeo fica de fora de propósito: 50% pode passar do ThruPlay (ver memória do relatório).
 FUNIS = {
     "instagram": [("alcance", "visitas_perfil", "visitas ao perfil maiores que o alcance"),
+                  ("visitas_perfil_total", "visitas_perfil",
+                   "visitas via anúncio maiores que as visitas totais do perfil (estimativa de cliques na bio "
+                   "limitada ao total)"),
                   ("visitas_perfil", "novos_seguidores", "mais seguidores novos do que visitas ao perfil")],
     "whatsapp": [("impressoes", "alcance", "alcance maior que as impressões"),
                  ("impressoes", "cliques", "cliques maiores que as impressões"),

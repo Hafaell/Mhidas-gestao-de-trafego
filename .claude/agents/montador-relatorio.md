@@ -42,8 +42,10 @@ Uma chamada `ads_get_ad_entities` por período (atual e anterior), `level: "camp
 |---|---|---|
 | `investido` | `amount_spent` | soma das campanhas da seção, 2 casas |
 | instagram `alcance` | `reach` | |
-| instagram `visitas_perfil` | `results` dos conjuntos com `VISIT_INSTAGRAM_PROFILE` | se não houver, `null` |
-| instagram `cliques_bio` | **OBRIGATÓRIO buscar.** API do Instagram (Graph v25.0), NÃO a de anúncios: `GET /{ig-user-id}/insights?metric=website_clicks&metric_type=total_value&period=day&since=<início>&until=<fim>&access_token=<ACCESS_TOKEN do .env>`, lendo `data[0].total_value.value`. O `ig-user-id` vem de `ads_get_ig_accounts` (perfil do `@` do cliente). Fazer para o período e para o anterior. Nunca imprimir o token. Nunca deixar "–" nem `null` no lugar. Se a consulta falhar (ex.: erro 190, token vencido), a falha é do processo: devolva Status FALHOU com o erro, em vez de gerar o relatório sem o dado | total do perfil (orgânico + anúncio) |
+| instagram `visitas_perfil` | `results` dos conjuntos com `VISIT_INSTAGRAM_PROFILE` (visitas vindas **só do anúncio**) | **obrigatório para a estimativa de cliques na bio.** Sem ele, `null` e o gerador para com ERRO: avise o gestor. Nunca preencher com o total do Instagram |
+| instagram `visitas_perfil_total` | **OBRIGATÓRIO.** API do Instagram (Graph v25.0): `GET /{ig-user-id}/insights?metric=profile_views&metric_type=total_value&period=day&since=<início>&until=<fim>&access_token=<ACCESS_TOKEN do .env>`, lendo `data[0].total_value.value`. Período atual e anterior | total do perfil (orgânico + anúncio); só entra no cálculo, não vira card |
+| instagram `cliques_bio_total` | **OBRIGATÓRIO.** Mesma chamada com `metric=website_clicks` (pode pedir as duas métricas juntas: `metric=website_clicks,profile_views`). O `ig-user-id` vem de `ads_get_ig_accounts` (perfil do `@` do cliente). Período atual e anterior. Nunca imprimir o token. Se a consulta falhar (ex.: erro 190, token vencido), devolva Status FALHOU com o erro | total do perfil (orgânico + anúncio); só entra no cálculo |
+| instagram `cliques_bio` | **não preencher.** O gerador calcula a estimativa via anúncio: `cliques_bio_total × visitas_perfil ÷ visitas_perfil_total` | regra do gestor de 15/11/2026 |
 | instagram `novos_seguidores` | `instagram_profile_follow_v2` | |
 | video `views_15s` | `video_thruplay_watched_actions` | ThruPlay = 15 s ou vídeo completo |
 | video `video_50/75/95` | `video_p50/p75/p95_watched_actions` | |
@@ -56,7 +58,7 @@ Uma chamada `ads_get_ad_entities` por período (atual e anterior), `level: "camp
 - Alcance de várias campanhas somado conta a mesma pessoa mais de uma vez. Se a seção tiver mais de uma campanha, use a soma e anote "alcance somado de N campanhas" nas pendências.
 - Período anterior sem gasto naquela seção: omita o bloco `anterior` dela.
 - Nunca calcule custos no JSON. O gerador calcula.
-- Nunca invente número. Campo sem dado = `null` + pendência. Exceção: `cliques_bio` nunca fica `null` (ver tabela, é obrigatório buscar).
+- Nunca invente número. Campo sem dado = `null` + pendência. Exceção: `cliques_bio_total` e `visitas_perfil_total` nunca ficam `null` (ver tabela, é obrigatório buscar).
 - Se o resultado trouxer `next_actions` com `read_only: true`, execute como o conector pede. Nunca execute ação com `requires_user_confirmation: true`.
 
 ## Passo 3: foto

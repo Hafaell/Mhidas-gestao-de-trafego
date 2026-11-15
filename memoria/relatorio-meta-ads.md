@@ -55,14 +55,14 @@ A4 em pé, fundo cinza-claro, cards brancos. Imagens de referência em `referenc
 
 | Seção | Campanha de origem (padrão de nome) | Cards |
 |---|---|---|
-| Instagram (Topo) | `[TOPO] [TRF] Novos Seguidores - <data>`; várias = somar | Valor Investido, Alcance, Visitas ao perfil, Clique na Bio, Novos Seguidores, Investido/Seguidor |
+| Instagram (Topo) | `[TOPO] [TRF] Novos Seguidores - <data>`; várias = somar | Valor Investido, Alcance, Visitas ao perfil, Clique na Bio (estimativa via anúncio), Novos Seguidores, Investido/Seguidor |
 | Vídeo (Meio) | `[MEIO]` e `[VV]` no nome; só as que gastaram, somadas | Linha de cima: Valor Gasto, Visualização 15 seg, Custo 15 seg, Tempo médio assistido (some sem dado). Abaixo à esquerda: 50%, 75%, 95% com custo de cada. À direita: funil em trapézios laranja (15 seg, 50%, 95%), largura fixa decrescente (forma, não escala) |
 | WhatsApp (Fundo) | `[FUNDO][MSG] ...` | Valor Investido, Impressões, Alcance, Cliques, Conversas iniciadas, Investido/Conversa |
 
 ### Decisões sobre os dados
 
-- **Clique na Bio:** vem da API do Instagram (`website_clicks`, total do perfil, orgânico + anúncio), não da de anúncios. **Obrigatório em todo relatório**; nunca "–" nem pendência. Se falhar (erro 190 = token vencido), parar e avisar o gestor.
-- **Visitas ao perfil:** `results` com indicador `profile_visit_view` na campanha de topo (só existe se o conjunto otimiza `VISIT_INSTAGRAM_PROFILE`). Sem isso, buscar nos insights do Instagram (`profile_views`).
+- **Clique na Bio = estimativa via anúncio (regra do gestor, 15/11/2026).** Nenhuma API separa o clique na bio por origem [Provável], então o card mostra `cliques na bio × visitas ao perfil via anúncio ÷ visitas totais ao perfil`, com o rótulo "Cliques na bio (est. anúncio)". O JSON traz os números crus (`cliques_bio_total` = `website_clicks` e `visitas_perfil_total` = `profile_views`, ambos da API do Instagram; `visitas_perfil` do Meta Ads) e o gerador calcula `cliques_bio` (`SecaoInstagram.estimar_cliques_bio`). Supõe que quem vem do anúncio clica na bio na mesma taxa do orgânico. Fração limitada a 100% (com aviso). **Obrigatório em todo relatório**: sem algum dos três números, ERRO. Se a API do Instagram falhar (erro 190 = token vencido), parar e avisar o gestor.
+- **Visitas ao perfil:** `results` com indicador `profile_visit_view` na campanha de topo (só existe se o conjunto otimiza `VISIT_INSTAGRAM_PROFILE`). É o número só do anúncio; nunca trocar pelo `profile_views` do Instagram (isso viraria 100% na estimativa).
 - **Cliques do WhatsApp:** `link_click` (cliques no link). Nunca `clicks`.
 - **15 seg = ThruPlay** (15 s ou vídeo completo). Em vídeo curto, o 50% pode passar do ThruPlay; é normal.
 - **Vídeo:** das métricas extras da API, só o tempo médio entra. Não incluir reproduções totais, 2 s, 3 s, 25% nem 100%. Para trocar o funil para azul: `CORES_FUNIL` em `relatorio/midas/secoes/video.py`.
@@ -81,7 +81,7 @@ Renovar:
 
 ## Código (regra do gestor: orientado a objetos, HTML, CSS e Python separados)
 
-- **Conferência antes de gerar** (`midas/conferencia.py`): ERRO impede o relatório (cliques na bio vazio, valor negativo, investido diferente do `conferencia.investido_api` lido da API), AVISO vira pendência (campo sem dado, funil estranho como mais conversas que cliques, sem período anterior, foto não achada). Campo obrigatório ou desejável de cada seção: atributos `campos_obrigatorios` e `campos_desejaveis` na classe dela.
+- **Conferência antes de gerar** (`midas/conferencia.py`): ERRO impede o relatório (estimativa de cliques na bio impossível, valor negativo, investido diferente do `conferencia.investido_api` lido da API), AVISO vira pendência (campo sem dado, funil estranho como mais conversas que cliques, sem período anterior, foto não achada). Campo obrigatório ou desejável de cada seção: atributos `campos_obrigatorios` e `campos_desejaveis` na classe dela.
 - **Python** em `relatorio/midas/` (mapa em `midas/__init__.py`). Seção nova = classe nova em `midas/secoes/` + uma linha em `secoes/__init__.py`. `gerar.py` e `servir.py` são só a porta de entrada. Caminhos todos em `midas/config.py`.
 - **HTML** em peças (`html/componentes/`, `html/paginas/`); **CSS** em um arquivo só.
 - Modelo novo = pasta nova em `relatorio/modelos/` (ver o `LEIAME.md` de lá).
