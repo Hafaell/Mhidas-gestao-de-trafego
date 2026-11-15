@@ -33,7 +33,7 @@ Total R$ 1.013,57 (Topo 559,98 = seguidores 377,44 + vídeo 182,54 · Meio 151,2
 
 ## Configuração do relatório (layout no Midas, 15/11/2026)
 
-Copiar para `clientes/instituto-domingues.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/montador-relatorio.md`, Passo 1b.
+Copiar para `clientes/instituto-domingues.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
 
 ```json
 {

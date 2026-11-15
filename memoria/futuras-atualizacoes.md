@@ -11,7 +11,8 @@ Ideias aprovadas pelo gestor em 14/11/2026 para uma fase posterior. Nada daqui e
 
 ## 2. Google Ads
 
-- **O que faz:** relatório de Google Ads, no mesmo fluxo do Meta. A estrutura da página está no fim de `memoria/relatorio-meta-ads.md` (seção "Google Ads").
+- **O que faz:** relatório de Google Ads, no mesmo fluxo do Meta.
+- **Como era a página no dashboard antigo:** página própria, fundo cinza-chumbo, logo Google Ads, título "Relatório de Vendas · Google Ads". Faixa com Valor Investido, Impressões, Cliques, Conversões, Custo/conv.; funil Impressões → Cliques → Conversões → Custo/conv.; tabela de termos de pesquisa (termo, impressões, cliques, custo); tabela por campanha (impressões, CPM, CPV, cliques, CPC, conversões, custo/conv., custo).
 - **Caminho possível:** `google/skills@google-ads-api-mcp-setup` (do próprio Google, 8,8 mil instalações em 14/11/2026). Orienta a instalar o servidor oficial do Google Ads no Claude, o equivalente ao conector da Meta. Exige Python 3.12+ e pipx.
 - **Atenção:** na página dessa skill no skills.sh, uma das verificações de segurança (Snyk) aparece como reprovada em 14/11/2026. Olhar o conteúdo antes de instalar.
 - **A decidir antes:** como o gestor acessa as contas do Google Ads dos clientes (conta de gerente/MCC ou acesso individual), e se o Google Ads entra na mesma página ou em uma página própria com fundo cinza-chumbo, como no dashboard antigo.

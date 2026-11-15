@@ -4,3 +4,5 @@ saida/
 __pycache__/
 clientes/
 node_modules/
+# PDFs dos relatórios feitos à mão (dados de cliente, só no computador do gestor)
+memoria/relatorios-feitos-a-mão-dos-clientes/

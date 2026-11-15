@@ -27,7 +27,7 @@ Total R$ 910,41. Instagram (perfil): alcance 72.267, visitas 4.027, 273 novos se
 
 ## Configuração do relatório (layout no Midas, 15/11/2026)
 
-Copiar para `clientes/dr-gustavo-samico.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/montador-relatorio.md`, Passo 1b.
+Copiar para `clientes/dr-gustavo-samico.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
 
 ```json
 {

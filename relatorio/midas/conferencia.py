@@ -57,7 +57,7 @@ class Conferencia:
         self._investimento_contra_api()
         for secao in self.relatorio.secoes:
             self._secao(secao)
-        self._textos_e_foto()
+        self._foto()
 
     def _periodos(self) -> None:
         r = self.relatorio
@@ -106,7 +106,7 @@ class Conferencia:
         if self.relatorio.periodo_anterior and not secao.anterior:
             self.avisos.append(f"{nome}: sem dados do período anterior (sem variação nesta seção)")
 
-    def _textos_e_foto(self) -> None:
+    def _foto(self) -> None:
         foto: Optional[str] = (self.dados.get("cliente") or {}).get("foto")
         if foto and not self.relatorio.cliente.foto:
             self.avisos.append(f"foto '{foto}' não encontrada; o relatório vai usar as iniciais")

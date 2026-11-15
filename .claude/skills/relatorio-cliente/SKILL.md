@@ -5,9 +5,17 @@ description: Use quando o gestor pedir o relatório de um ou mais clientes da Ag
 
 # Relatório de cliente (Meta Ads)
 
-Esta skill organiza o pedido e despacha **um agente `montador-relatorio` por cliente, em paralelo**. Quem busca os dados e gera o HTML é o agente. A sessão principal só prepara, despacha e junta os resultados.
+Esta skill organiza o pedido e usa **três agentes**, cada um com um papel só:
 
-Antes de tudo, leia `memoria/relatorio-meta-ads.md` (regras do relatório).
+| Agente | Faz | Não faz |
+|---|---|---|
+| `coletor-dados` | busca os números de um cliente, classifica campanhas, grava e confere o JSON de dados | HTML, visual |
+| `montador-relatorio` | junta o JSON com o modelo aprovado (`gerar.py`), confere as páginas | buscar dado, mudar visual |
+| `editor-layout` | muda o visual do modelo (pedido do gestor), testa com os exemplos | buscar dado de cliente |
+
+Os três combinam pelo `relatorio/CONTRATO-DADOS.md` (campos do JSON e pedidos de campo novo do layout). O modelo está descrito em `relatorio/modelos/<atual>/MAPA.md`. A sessão principal só prepara, despacha e junta os resultados.
+
+Antes de tudo, leia `memoria/relatorio-meta-ads.md` (regras gerais) e `memoria/STATUS-RELATORIOS.md` (quem dá para gerar). As regras de dados e de visual ficam com os agentes: não precisa ler o contrato nem o mapa.
 
 ## Passo 1: entender o pedido
 
@@ -25,7 +33,7 @@ Para cada nome, procure em `clientes/*.json` (campos `nome` e `apelidos`, sem di
 
 - **Achou um:** use o arquivo. Se ele não tiver `layout` e a memória do cliente tiver o bloco "Configuração do relatório", copie `layout` (e as `classificacao` que faltarem) para o arquivo antes de despachar.
 - **Achou mais de um:** pergunte qual.
-- **Não achou:** veja antes se o cliente está em `memoria/por-cliente/LEIAME.md` (tem a conta de anúncio de cada um); se estiver, crie o `clientes/<slug>.json` com essa conta, o mesmo slug do arquivo de memória e o bloco "Configuração do relatório" da memória (`classificacao` e `layout`, para o relatório sair igual ao feito à mão), sem perguntar (a regra de conta com conector desligado, abaixo, continua valendo). Senão, é cliente novo. Chame `ads_get_ad_accounts` (conector Meta Ads, todas as páginas), mostre as contas com nome parecido e pergunte qual é a do cliente. Com a resposta, crie `clientes/<slug>.json` no formato de `relatorio/exemplos/cliente-config-exemplo.json` (só `nome`, `apelidos`, `ad_account_id`, `descricao` se souber; o agente completa o resto).
+- **Não achou:** veja antes se o cliente está em `memoria/por-cliente/LEIAME.md` (tem a conta de anúncio de cada um); se estiver, crie o `clientes/<slug>.json` com essa conta, o mesmo slug do arquivo de memória e o bloco "Configuração do relatório" da memória (`classificacao` e `layout`, para o relatório sair igual ao feito à mão), sem perguntar (a regra de conta com conector desligado, abaixo, continua valendo). Senão, é cliente novo. Chame `ads_get_ad_accounts` (conector Meta Ads, todas as páginas), mostre as contas com nome parecido e pergunte qual é a do cliente. Com a resposta, crie `clientes/<slug>.json` no formato de `relatorio/exemplos/cliente-config-exemplo.json` (só `nome`, `apelidos`, `ad_account_id`, `descricao` se souber; o coletor completa o resto).
 - Conta com `is_queryable: false` ou `is_ads_mcp_enabled: false`: avise o gestor com o motivo e não despache esse cliente.
 
 Mais de 5 clientes de uma vez: confirme a lista com o gestor antes de despachar (regra do CLAUDE.md sobre criar arquivos em massa).
@@ -41,17 +49,24 @@ Se a primeira falhar, pare e avise o gestor do que falta (`pip install jinja2`, 
 
 O `verificar_token.py` confere o `ACCESS_TOKEN` do Instagram (os cliques na bio dependem dele) e nunca mostra o token. Saída 0: siga. Saída 1 (vence em menos de 7 dias): avise o gestor, mas pode seguir se ele mandar. Saída 2 (vencido ou inválido): **pare e avise**, sem despachar agentes. Saída 3 (não deu para verificar, sem token ou sem rede): avise e pergunte se segue.
 
-## Passo 4: despachar os agentes em paralelo
+## Passo 4: despachar coletores e montadores
 
-Faça **todas** as chamadas `Agent` na **mesma mensagem**, uma por cliente, com `subagent_type: "montador-relatorio"`. Nunca um cliente de cada vez.
-
-Prompt de cada agente (preencha os campos, nada além disso):
+**Onda 1, coletores:** faça **todas** as chamadas `Agent` na **mesma mensagem**, uma por cliente, com `subagent_type: "coletor-dados"`. Prompt (só isto):
 
 ```
 Cliente: <arquivo clientes/<slug>.json>
 Período: <AAAA-MM-DD> a <AAAA-MM-DD>
 Período anterior: <AAAA-MM-DD> a <AAAA-MM-DD>
 ```
+
+**Onda 2, montadores:** quando os coletores voltarem, para cada cliente com Status OK ou OK com pendências, uma chamada `Agent` com `subagent_type: "montador-relatorio"`, todas na **mesma mensagem**. Prompt:
+
+```
+Dados: <caminho do JSON que o coletor devolveu>
+Real: sim
+```
+
+Cliente cujo coletor voltou FALHOU não vai para o montador: entra na tabela final com o motivo.
 
 ## Passo 5: juntar e entregar
 
@@ -64,13 +79,17 @@ Quando todos voltarem, responda ao gestor com uma tabela curta:
 - **Ver relatório** é obrigatório: para cada cliente, suba o servidor local em segundo plano e mande o link `http://localhost:<porta>`:
   `python3 relatorio/servir.py <nome-sem-extensão> --porta <porta>` (rode com `run_in_background`; sem `--sem-abrir`, para abrir a página no navegador do gestor, regra de 15/11/2026). Uma porta por cliente, começando em 8000. Antes de subir, veja se a porta já tem servidor (`netstat -ano | grep ":<porta> .*LISTENING"`); se tiver, feche o processo (`Stop-Process -Id <pid>`, autorizado pelo gestor em 15/11/2026) e sirva o HTML novo nela. Deixe o servidor no ar por pelo menos 1 hora. Antes de mandar o link, confirme que respondeu 200 com `curl -s -o /dev/null -w "%{http_code}" http://localhost:<porta>` (não use `curl -I`: o servidor não aceita HEAD e responde 501).
 - Conferência do gerador: se o agente devolveu ERRO da conferência (exit 2 do `gerar.py`), o relatório daquele cliente não saiu. Diga qual foi o erro.
-- Pendências que o agente devolveu (dado que faltou, campanha fora do modelo, texto em rascunho, página estourada).
+- Pendências que os agentes devolveram (dado que faltou, campanha fora do modelo, página estourada), dizendo de qual agente veio cada uma.
 - Se algum agente falhou, diga qual e por quê. Não esconda falha atrás de "concluído".
 
-Pedido de ajuste depois ("muda o texto do vídeo", "o tema é Joelho"): edite o JSON que o agente devolveu (na pasta temporária, `python3 relatorio/gerar.py --pasta-saida`) e rode `python3 relatorio/gerar.py <json>` de novo. Não precisa buscar os dados outra vez. Se o JSON já sumiu da pasta temporária, rode o agente de novo.
+Pedido de ajuste depois:
+- **De dado do cliente** ("o tema é Joelho", "essa campanha é de WhatsApp"): edite o JSON que o coletor devolveu (pasta temporária, `python3 relatorio/gerar.py --pasta-saida`) e rode o `montador-relatorio` de novo com ele. Não precisa buscar os dados outra vez. Se o JSON sumiu, rode o coletor de novo.
+- **De visual** ("muda a cor do card", "tira esse gráfico", "coloca o custo por clique"): despache o `editor-layout` com o pedido do gestor nas palavras dele. Ele devolve uma prévia: sirva cada exemplo da prévia com `python3 relatorio/servir.py <nome> --pasta <pasta que o editor devolveu> --porta <porta>` (uma porta por exemplo; sem `--sem-abrir`, para abrir no navegador do gestor, e com as mesmas regras de porta do Passo 5) e mande o link. Com o "aprovado" do gestor, continue o mesmo editor (`SendMessage`) com "aprovado" para ele aplicar no modelo. Depois, se havia relatórios de clientes abertos, rode o montador de novo para cada um (os dados não mudam).
+- Se o editor devolver PRECISA DE DADO NOVO, avise o gestor: o campo entra no próximo relatório, quando o coletor atender o pedido no contrato.
+- Pendência de layout que o montador devolver (página estourou, card vazio por falta de espaço) também vai para o `editor-layout`.
 
 ## Regras que não mudam
 
 - Só leitura. Nenhuma ferramenta do Meta Ads que crie, altere, ative ou apague algo.
-- Regra nova do gestor sobre relatórios vai para `memoria/relatorio-meta-ads.md`.
+- Regra nova do gestor vai para o arquivo do assunto: dados em `relatorio/CONTRATO-DADOS.md`, visual no `MAPA.md` do modelo, entrega aqui, regra geral em `memoria/relatorio-meta-ads.md`.
 - Decisão nova sobre um cliente (classificação de campanha, tema do vídeo, foto) vai para o `clientes/<slug>.json` dele.

@@ -1,8 +1,8 @@
 # Memória por cliente
 
-Um arquivo por cliente dizendo **o que o relatório dele tem**: tipos de campanha, seções, títulos, divisões e particularidades. Não muda o jeito de montar o relatório (isso está em `memoria/relatorio-meta-ads.md` e no agente `montador-relatorio`); só descreve o cliente.
+Um arquivo por cliente dizendo **o que o relatório dele tem**: tipos de campanha, seções, títulos, divisões e particularidades. Não muda o jeito de montar o relatório (isso está em `memoria/relatorio-meta-ads.md` e no agente `coletor-dados`); só descreve o cliente.
 
-Fontes (15/11/2026): os relatórios feitos à mão de out/2026 (`memoria/relatorios-feitos-a-mão-dos-clientes/`) e as campanhas com gasto em out/2026 lidas no conector Meta Ads. Decisão nova do gestor sobre um cliente vai para o arquivo dele, com data.
+Fontes (15/11/2026): os relatórios feitos à mão de out/2026 (`memoria/relatorios-feitos-a-mão-dos-clientes/`, só no computador do gestor, fora do git) e as campanhas com gasto em out/2026 lidas no conector Meta Ads. Decisão nova do gestor sobre um cliente vai para o arquivo dele, com data.
 
 **Quem dá e quem não dá para gerar hoje: `memoria/STATUS-RELATORIOS.md`.**
 

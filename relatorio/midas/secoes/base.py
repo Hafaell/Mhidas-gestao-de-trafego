@@ -65,7 +65,6 @@ class Secao(ABC):
         self.anterior = dados.get("anterior", {})
         self.investido = 0.0 if self.sem_investimento else dados["investido"]
         self.investido_anterior = None if self.sem_investimento else self.anterior.get("investido")
-        self.comentario = dados.get("comentario")
         self.participacao = 0.0                 # fatia do investimento total (0 a 1)
         self.bloco: Optional[str] = dados.get("bloco")   # nome do bloco quando a seção se repete (cidade, tema)
         self.tema: Optional[str] = dados.get("tema") or self.bloco   # vai no título: "WhatsApp · São Paulo"

@@ -26,7 +26,7 @@ Seguidores R$ 468,19 · vídeo topo R$ 270,61 · vídeo meio R$ 184,35 · WhatsA
 
 ## Configuração do relatório (layout no Midas, 15/11/2026)
 
-Copiar para `clientes/dr-gustavo-mesquita.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/montador-relatorio.md`, Passo 1b.
+Copiar para `clientes/dr-gustavo-mesquita.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
 
 ```json
 {

@@ -5,12 +5,14 @@ Uso:
     python3 relatorio/servir.py                      # usa o relatório mais recente da pasta de saída
     python3 relatorio/servir.py nome-do-relatorio    # sem extensão
     python3 relatorio/servir.py --porta 8080 --sem-abrir
+    python3 relatorio/servir.py nome --pasta <pasta>  # outra pasta (ex.: prévia do editor-layout)
 
 Abre em http://localhost:8000 (só acessível neste computador).
 """
 import argparse
+from pathlib import Path
 
-from midas.config import PDF_JS
+from midas.config import PDF_JS, SAIDA
 from midas.exportador_pdf import ExportadorPdf
 from midas.servidor import ServidorLocal
 
@@ -20,10 +22,12 @@ def main() -> None:
     ap.add_argument("nome", nargs="?", help="nome do relatório na pasta de saída (gerar.py --pasta-saida), sem extensão (padrão: o mais recente)")
     ap.add_argument("--porta", type=int, default=8000)
     ap.add_argument("--sem-abrir", action="store_true", help="não abre o navegador")
+    ap.add_argument("--pasta", default=str(SAIDA), help=f"pasta onde está o HTML (padrão: {SAIDA})")
     args = ap.parse_args()
 
-    nome = args.nome or ServidorLocal.relatorio_mais_recente()
-    ServidorLocal(nome, ExportadorPdf(PDF_JS), args.porta).iniciar(abrir_navegador=not args.sem_abrir)
+    pasta = Path(args.pasta)
+    nome = args.nome or ServidorLocal.relatorio_mais_recente(pasta)
+    ServidorLocal(nome, ExportadorPdf(PDF_JS), args.porta, pasta).iniciar(abrir_navegador=not args.sem_abrir)
 
 
 if __name__ == "__main__":

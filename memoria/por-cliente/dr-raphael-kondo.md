@@ -36,7 +36,7 @@ Total R$ 4.034,96 (Topo 1.087,30 = seguidores 621,02 + vídeo 466,28 · Meio 309
 
 ## Configuração do relatório (layout no Midas, 15/11/2026)
 
-Copiar para `clientes/dr-raphael-kondo.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/montador-relatorio.md`, Passo 1b.
+Copiar para `clientes/dr-raphael-kondo.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
 
 ```json
 {

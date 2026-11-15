@@ -11,6 +11,7 @@ Só o **modelo atual** tem código (HTML e CSS) e imagens de referência, direto
 Estrutura:
 
 ```
+MAPA.md                     como o modelo é montado, peça por peça (leitura do agente editor-layout)
 html/relatorio.html.j2      documento inteiro: head, body e as páginas A4 em ordem
 html/componentes.html.j2    peças que se repetem nas páginas (cabeçalho, investimento, kpi_card, rodapé...)
 css/relatorio.css           todo o estilo
@@ -32,6 +33,8 @@ As páginas não estão fixas no HTML: o `relatorio.html.j2` percorre `relatorio
 
 ## Modelo novo
 
+Quem faz isso é o agente `editor-layout`.
+
 1. Copiar `4-cabecalho-leve/` para `5-<nome>/`, mexer em `html/` e `css/`, gerar com `--modelo 5-<nome>`. Para só testar um visual sem criar pasta no projeto, `--modelo` aceita o caminho absoluto de uma cópia na pasta temporária.
-2. Depois de o gestor aprovar: trocar `MODELO_ATUAL` em `midas/config.py`, gerar as imagens em `5-<nome>/referencia/`.
+2. Depois de o gestor aprovar: trocar `MODELO_ATUAL` em `midas/config.py`, gerar as imagens em `5-<nome>/referencia/` e atualizar o `MAPA.md` da pasta nova.
 3. Mover o modelo antigo para `legado/<pasta>/`, deixando **só as imagens** (tirar `html/` e `css/`).

@@ -231,10 +231,6 @@ class Relatorio:
         return Formatador.moeda(self.total)
 
     @property
-    def total_variacao(self) -> Optional[Variacao]:
-        return Variacao.calcular(self.total, self.total_anterior, neutra=True)
-
-    @property
     def periodo_txt(self) -> str:
         return self.periodo.texto()
 

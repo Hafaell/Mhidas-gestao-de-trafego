@@ -11,8 +11,10 @@
      6. Cards de métrica (KPI) e selo de variação
      7. Fluxo (do alcance ao seguidor, do anúncio à conversa)
      8. Seção de vídeo (cards + funil)
-     9. Caixas de texto (leitura) e tabela de comparação
+     9. Tabela de comparação
     10. Rodapé
+    11. Evolução nos últimos meses
+    12. Página com 3 blocos (cards menores)
    ========================================================================== */
 
 
@@ -160,7 +162,6 @@ h2 {
 .kpi-rot { font-size: 11.5px; font-weight: 600; color: var(--ink-2); }
 .kpi-valor { font-size: 26px; font-weight: 800; letter-spacing: -.6px; margin-top: 1.5mm; line-height: 1.1; }
 .kpi-nota { font-size: 10.5px; color: var(--ink-2); margin-top: 1.5mm; }
-.kpi-var { margin-top: 2.5mm; display: flex; align-items: center; }
 
 /* linha com 4 cards (vídeo com tempo médio assistido): cards mais largos */
 .kpis-4 .kpi { padding: 5mm 4mm 4.5mm; }
@@ -231,7 +232,7 @@ h2 {
 .rod .ag { font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; color: var(--ink); font-size: 11px; }
 
 
-/* ---------- Evolução nos últimos meses ---------- */
+/* ---------- 11. Evolução nos últimos meses ---------- */
 
 .evol { display: grid; grid-template-columns: repeat(var(--n), 1fr); grid-auto-rows: 1fr; gap: 3.5mm; }
 .evol-card { padding: 4mm 4mm 2.5mm; border-top: 3px solid var(--cor); display: flex; flex-direction: column; min-height: 0; }
@@ -249,7 +250,7 @@ h2 {
 .evol-nota { font-size: 9.5px; color: var(--muted); margin-top: 1.5mm; }
 
 
-/* ---------- Página com 3 blocos (ex.: Instagram + landing page + WhatsApp): cards menores ---------- */
+/* ---------- 12. Página com 3 blocos (ex.: Instagram + landing page + WhatsApp): cards menores ---------- */
 
 .compacta .corpo { gap: 3.5mm; }
 .compacta .invest { padding: 3mm 6mm 2.5mm; }
@@ -261,4 +262,3 @@ h2 {
 .compacta .kpis { gap: 2.5mm; }
 .compacta .kpi { padding: 2.6mm 4mm; }
 .compacta .kpi-valor { font-size: 21px; margin-top: 1mm; }
-.compacta .kpi-var { margin-top: 1.5mm; }

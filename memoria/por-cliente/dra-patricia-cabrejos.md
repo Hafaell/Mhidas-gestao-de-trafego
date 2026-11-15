@@ -27,7 +27,7 @@ Total R$ 1.522,30. Instagram (perfil): alcance 27.222, visitas 2.863, 213 seguid
 
 ## Configuração do relatório (layout no Midas, 15/11/2026)
 
-Copiar para `clientes/dra-patricia-cabrejos.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/montador-relatorio.md`, Passo 1b.
+Copiar para `clientes/dra-patricia-cabrejos.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
 
 ```json
 {

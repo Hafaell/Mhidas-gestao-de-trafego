@@ -27,7 +27,7 @@ Meta R$ 1.233,67 (Topo vídeo 436,61 · Meio vídeo 187,06 · WhatsApp 610,00). 
 
 ## Configuração do relatório (layout no Midas, 15/11/2026)
 
-Copiar para `clientes/dr-carlos-alexandre.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/montador-relatorio.md`, Passo 1b.
+Copiar para `clientes/dr-carlos-alexandre.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
 
 ```json
 {

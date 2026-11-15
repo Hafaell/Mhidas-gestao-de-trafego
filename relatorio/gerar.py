@@ -6,6 +6,7 @@ Uso:
     python3 relatorio/gerar.py dados.json --com-pdf
     python3 relatorio/gerar.py dados.json --modelo 4-cabecalho-leve
     python3 relatorio/gerar.py dados.json --registrar-historico   # relatório real: guarda os números do mês
+    python3 relatorio/gerar.py dados.json --so-conferir   # só a conferência, sem gerar HTML (coletor-dados)
     python3 relatorio/gerar.py --periodo-anterior 2026-11-09 2026-11-20   # mostra o período de comparação
     python3 relatorio/gerar.py --pasta-saida     # mostra onde ficam os relatórios gerados
 
@@ -43,6 +44,8 @@ def main() -> None:
     ap.add_argument("--registrar-historico", action="store_true",
                     help="guarda os números do mês em clientes/historico/ (use só em relatório real, não no exemplo)")
     ap.add_argument("--pasta-historico", default=str(PASTA_HISTORICO), help=argparse.SUPPRESS)
+    ap.add_argument("--so-conferir", action="store_true",
+                    help="só confere os dados (ERRO = exit 2) e sai, sem gerar HTML")
     ap.add_argument("--forcar", action="store_true",
                     help="gera mesmo com ERRO na conferência (só com autorização do gestor)")
     args = ap.parse_args()
@@ -65,6 +68,9 @@ def main() -> None:
     conferencia.imprimir()
     if not conferencia.passou and not args.forcar:
         sys.exit(2)
+    if args.so_conferir:
+        print("Conferência OK" + (" (com avisos)" if conferencia.avisos else ""))
+        return
 
     html = RenderizadorHtml(PASTA_MODELOS / args.modelo).gravar(relatorio, Path(args.saida))
     print(f"HTML: {html}")
