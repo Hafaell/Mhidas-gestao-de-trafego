@@ -4,7 +4,7 @@
 Uso:
     python3 relatorio/gerar.py relatorio/exemplos/cliente-exemplo.json
     python3 relatorio/gerar.py dados.json --com-pdf
-    python3 relatorio/gerar.py dados.json --modelo 3-atual-dashboard
+    python3 relatorio/gerar.py dados.json --modelo 4-cabecalho-leve
     python3 relatorio/gerar.py dados.json --registrar-historico   # relatório real: guarda os números do mês
     python3 relatorio/gerar.py --periodo-anterior 2026-11-09 2026-11-20   # mostra o período de comparação
     python3 relatorio/gerar.py --pasta-saida     # mostra onde ficam os relatórios gerados

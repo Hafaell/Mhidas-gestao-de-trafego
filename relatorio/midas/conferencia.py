@@ -98,11 +98,6 @@ class Conferencia:
             self.avisos.append(f"{nome}: sem dados do período anterior (sem variação nesta seção)")
 
     def _textos_e_foto(self) -> None:
-        if not self.relatorio.observacoes:
-            self.avisos.append("sem texto em 'Leitura do mês'")
-        for secao in self.relatorio.secoes:
-            if not secao.comentario:
-                self.avisos.append(f"{secao.titulo}: sem comentário")
         foto: Optional[str] = (self.dados.get("cliente") or {}).get("foto")
         if foto and not self.relatorio.cliente.foto:
             self.avisos.append(f"foto '{foto}' não encontrada; o relatório vai usar as iniciais")

@@ -4,13 +4,13 @@
   As peças que se repetem em várias páginas (cabeçalho, investimento, cards, rodapé...) estão em componentes.html.j2.
   O estilo está em ../css/relatorio.css. O objeto `relatorio` vem de midas/relatorio.py.
 -#}
-{%- from "componentes.html.j2" import cabecalho, investimento, rodape, banda, kpi_card, caixa_leitura, leitura_do_mes, selo_variacao with context -%}
+{%- from "componentes.html.j2" import cabecalho, investimento, rodape, banda, kpi_card, selo_variacao with context -%}
 
 {#- Quais páginas existem: página 1 = topo + fundo, página de vídeo = meio, depois fluxos + comparação,
-    e por último evolução + leitura do mês (a leitura fica na página de fluxos se não houver evolução). -#}
+    e por último a evolução mensal. -#}
 {%- set topo_e_fundo = relatorio.secoes|selectattr('chave','in',['instagram','whatsapp'])|list -%}
 {%- set videos = relatorio.secoes|selectattr('chave','equalto','video')|list -%}
-{%- set tem_resumo = (topo_e_fundo or relatorio.comparacao or (relatorio.observacoes and not relatorio.evolucao.cards)) -%}
+{%- set tem_resumo = (topo_e_fundo or relatorio.comparacao) -%}
 {%- set total_paginas = (1 if topo_e_fundo else 0) + (1 if videos else 0) + (1 if tem_resumo else 0) + (1 if relatorio.evolucao.cards else 0) -%}
 {%- set contador = namespace(n=0) -%}
 
@@ -30,10 +30,9 @@
   <main class="corpo">
     {{ investimento() }}
     {% for s in topo_e_fundo %}
-    <div class="bloco" style="--cor: var(--{{ s.etapa }}); --tint: var(--{{ s.etapa }}-tint)">
+    <div class="bloco estica" style="--cor: var(--{{ s.etapa }}); --tint: var(--{{ s.etapa }}-tint)">
       {{ banda(s) }}
       <div class="kpis">{% for k in s.kpis %}{{ kpi_card(k) }}{% endfor %}</div>
-      {{ caixa_leitura(s.comentario) }}
     </div>
     {% endfor %}
   </main>
@@ -53,7 +52,7 @@
     <div class="kpis{{ ' kpis-4' if quatro }}"{% if quatro %} style="grid-template-columns: repeat({{ s.painel.topo|length }}, 1fr)"{% endif %}>
       {% for k in s.painel.topo %}{{ kpi_card(k) }}{% endfor %}
     </div>
-    <div class="vv-corpo">
+    <div class="vv-corpo estica">
       <div class="vv-pares">
         {% for p in s.painel.pares %}{{ kpi_card(p.quantidade) }}{{ kpi_card(p.custo) }}{% endfor %}
       </div>
@@ -71,20 +70,19 @@
         <div class="ret-nota"><b>{{ f.retencao_final }}</b> de quem passou dos 15 segundos assistiu até 95% do vídeo.</div>
       </div>
     </div>
-    {{ caixa_leitura(s.comentario) }}
   </main>
   {{ rodape(contador.n, total_paginas) }}
 </section>
 {% endfor %}
 
-{#- ===== Página: "Do anúncio ao resultado" (fluxos), comparação com o período anterior e leitura do mês ===== -#}
+{#- ===== Página: "Do anúncio ao resultado" (fluxos), comparação com o período anterior ===== -#}
 {% if tem_resumo %}{% set contador.n = contador.n + 1 %}
 <section class="pagina">
   {{ cabecalho() }}
   <main class="corpo">
     {{ investimento() }}
     {% if topo_e_fundo %}
-    <div class="bloco">
+    <div class="bloco estica">
       <h2>Do anúncio ao resultado</h2>
       {#- Um fluxo por seção, com a taxa de passagem entre as etapas (ex.: alcance, visitas, seguidores). -#}
       {% for s in topo_e_fundo if s.fluxo %}
@@ -105,7 +103,7 @@
     </div>
     {% endif %}
     {% if relatorio.comparacao %}
-    <div>
+    <div class="estica coluna">
       <h2>Comparação com o período anterior ({{ relatorio.anterior_txt }})</h2>
       <div class="card comp">
         <table>
@@ -120,21 +118,19 @@
       </div>
     </div>
     {% endif %}
-    {#- Com a página de evolução, a leitura do mês vai para o fim dela. -#}
-    {% if not relatorio.evolucao.cards %}{{ leitura_do_mes() }}{% endif %}
   </main>
   {{ rodape(contador.n, total_paginas) }}
 </section>
 {% endif %}
 
-{#- ===== Página: evolução mensal (só com 2 meses ou mais de dados) e leitura do mês ===== -#}
+{#- ===== Página: evolução mensal (só com 2 meses ou mais de dados) ===== -#}
 {% if relatorio.evolucao.cards %}{% set contador.n = contador.n + 1 %}
 {%- set cards = relatorio.evolucao.cards -%}
 <section class="pagina">
   {{ cabecalho() }}
   <main class="corpo">
     {{ investimento() }}
-    <div>
+    <div class="estica coluna">
       <h2>Evolução nos últimos meses</h2>
       {#- Um card por indicador, com a linha dos últimos meses. `cards` são objetos CardEvolucao. -#}
       <div class="evol" style="--n: {{ [cards|length, 2]|min }}">
@@ -142,11 +138,14 @@
         <div class="card evol-card" style="--cor: {{ c.cor }}">
           <div class="evol-rot">{{ c.rotulo }}</div>
           <div class="evol-valor">{{ c.valor }} {{ selo_variacao(c.variacao) }}</div>
-          <svg viewBox="0 0 120 46" role="img" aria-label="Evolução de {{ c.rotulo }}">
+          {%- set ev = relatorio.evolucao -%}
+          <svg viewBox="0 0 {{ ev.LARGURA }} {{ ev.ALTURA }}" role="img" aria-label="Evolução de {{ c.rotulo }}">
             <polyline class="evol-linha" points="{{ c.linha }}"/>
             {% for p in c.pontos %}
             <circle class="evol-ponto{{ ' ultimo' if p.ultimo }}" cx="{{ p.x }}" cy="{{ p.y }}" r="{{ 2.6 if p.ultimo else 1.8 }}"/>
-            <text class="evol-mes{{ ' ultimo' if p.ultimo }}" x="{{ p.x }}" y="43.5" text-anchor="middle">{{ p.rotulo }}</text>
+            {#- Valor do mês (acima do ponto, ou abaixo se for um vale). Nas pontas, alinhado para dentro para não cortar. -#}
+            <text class="evol-num{{ ' ultimo' if p.ultimo }}" x="{{ p.x }}" y="{{ p.y_valor }}" text-anchor="{{ 'start' if loop.first else ('end' if loop.last else 'middle') }}">{{ p.valor }}</text>
+            <text class="evol-mes{{ ' ultimo' if p.ultimo }}" x="{{ p.x }}" y="{{ ev.Y_MES }}" text-anchor="middle">{{ p.rotulo }}</text>
             {% endfor %}
           </svg>
         </div>
@@ -154,7 +153,6 @@
       </div>
       {% if relatorio.evolucao.tem_parcial %}<p class="evol-nota">* mês parcial (período incompleto)</p>{% endif %}
     </div>
-    {{ leitura_do_mes() }}
   </main>
   {{ rodape(contador.n, total_paginas) }}
 </section>

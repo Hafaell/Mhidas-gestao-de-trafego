@@ -14,7 +14,7 @@ PASTA_HISTORICO = PASTA_CLIENTES / "historico"             # números de cada m�
 
 # Cada versão do visual do relatório mora em uma pasta de relatorio/modelos/.
 PASTA_MODELOS = PASTA_RELATORIO / "modelos"
-MODELO_ATUAL = "3-atual-dashboard"
+MODELO_ATUAL = "4-cabecalho-leve"
 
 PDF_JS = PASTA_RELATORIO / "pdf.js"
 PASTA_VISUALIZADOR = PASTA_RELATORIO / "visualizador"      # página do localhost (botão Baixar PDF)

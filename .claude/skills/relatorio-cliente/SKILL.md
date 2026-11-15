@@ -18,7 +18,6 @@ Extraia da mensagem do gestor:
 | Clientes | Um ou vários nomes. "Todos" = todos os arquivos em `clientes/`. |
 | Período | Mês citado ("relatório de outubro"). Sem mês: **mês anterior completo** (dia 1 ao último dia). |
 | Período anterior | **Os mesmos dias do mês anterior**, com a mesma quantidade de dias (pediu 09 a 20/11, compara com 09 a 20/10; nunca os dias imediatamente antes). Calcule com `python3 relatorio/gerar.py --periodo-anterior <início> <fim>`, sem fazer a conta de cabeça. Regra completa em `memoria/relatorio-meta-ads.md`. |
-| Leitura do mês | Se o gestor escreveu um texto para o cliente, ele vai literal em `observacoes`. |
 
 ## Passo 2: localizar cada cliente
 
@@ -52,7 +51,6 @@ Prompt de cada agente (preencha os campos, nada além disso):
 Cliente: <arquivo clientes/<slug>.json>
 Período: <AAAA-MM-DD> a <AAAA-MM-DD>
 Período anterior: <AAAA-MM-DD> a <AAAA-MM-DD>
-Leitura do mês do gestor: <texto literal, ou "nenhuma, escreva um rascunho">
 ```
 
 ## Passo 5: juntar e entregar
@@ -64,7 +62,7 @@ Quando todos voltarem, responda ao gestor com uma tabela curta:
 
 - **Entrega só em HTML, sem PDF** (regra do gestor, 14/11/2026). Não liste nem mande arquivo PDF: o gestor baixa pelo botão "Baixar PDF" da própria página.
 - **Ver relatório** é obrigatório: para cada cliente, suba o servidor local em segundo plano e mande o link `http://localhost:<porta>`:
-  `python3 relatorio/servir.py <nome-sem-extensão> --porta <porta> --sem-abrir` (rode com `run_in_background`). Uma porta por cliente, começando em 8000. Antes de mandar o link, confirme que respondeu 200 com `curl -s -o /dev/null -w "%{http_code}" http://localhost:<porta>` (não use `curl -I`: o servidor não aceita HEAD e responde 501).
+  `python3 relatorio/servir.py <nome-sem-extensão> --porta <porta>` (rode com `run_in_background`; sem `--sem-abrir`, para abrir a página no navegador do gestor, regra de 15/11/2026). Uma porta por cliente, começando em 8000. Antes de subir, veja se a porta já tem servidor (`netstat -ano | grep ":<porta> .*LISTENING"`); se tiver, feche o processo (`Stop-Process -Id <pid>`, autorizado pelo gestor em 15/11/2026) e sirva o HTML novo nela. Deixe o servidor no ar por pelo menos 1 hora. Antes de mandar o link, confirme que respondeu 200 com `curl -s -o /dev/null -w "%{http_code}" http://localhost:<porta>` (não use `curl -I`: o servidor não aceita HEAD e responde 501).
 - Conferência do gerador: se o agente devolveu ERRO da conferência (exit 2 do `gerar.py`), o relatório daquele cliente não saiu. Diga qual foi o erro.
 - Pendências que o agente devolveu (dado que faltou, campanha fora do modelo, texto em rascunho, página estourada).
 - Se algum agente falhou, diga qual e por quê. Não esconda falha atrás de "concluído".

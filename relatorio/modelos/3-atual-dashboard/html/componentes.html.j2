@@ -91,21 +91,6 @@
 </div>
 {%- endmacro -%}
 
-{#- Caixa "O que esse resultado mostra" (comentário do gestor, opcional). -#}
-{%- macro caixa_leitura(texto) -%}
-{% if texto %}<div class="card leitura"><h3>O que esse resultado mostra</h3><p>{{ texto }}</p></div>{% endif %}
-{%- endmacro -%}
-
-{#- "Leitura do mês" (texto do gestor, opcional): fim da página de evolução ou, sem ela, da página de resumo. -#}
-{%- macro leitura_do_mes() -%}
-{% if relatorio.observacoes %}
-<div>
-  <h2>Leitura do mês</h2>
-  <div class="card obs"><p>{{ relatorio.observacoes }}</p></div>
-</div>
-{% endif %}
-{%- endmacro -%}
-
 {#- ===== Miúdos ===== -#}
 
 {#- Selo de variação contra o período anterior. `v` é um objeto Variacao (texto + estado: bom, ruim ou neutro). -#}

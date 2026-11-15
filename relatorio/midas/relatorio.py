@@ -92,7 +92,6 @@ class Relatorio:
         self.periodo = Periodo(**dados["periodo"])
         anterior = dados.get("periodo_anterior")
         self.periodo_anterior: Optional[Periodo] = Periodo(**anterior) if anterior else None
-        self.observacoes: Optional[str] = dados.get("observacoes")
         self.gerado_em: str = date.today().strftime("%d/%m/%Y")
 
         self.secoes: List[Secao] = self._montar_secoes(dados.get("secoes", {}))

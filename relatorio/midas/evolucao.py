@@ -30,6 +30,7 @@ class Ponto:
     rotulo: str       # "out", ou "nov*" quando o mês é parcial
     valor: str
     ultimo: bool
+    y_valor: float = 0.0  # onde escrever o valor: acima do ponto, ou abaixo se ele for um vale da linha
 
 
 @dataclass
@@ -49,8 +50,11 @@ class Evolucao:
     no primeiro relatório); os meses mais antigos vêm do histórico gravado em clientes/historico/.
     """
 
-    LARGURA, MARGEM = 120, 8
-    TOPO_LINHA, BASE_LINHA = 7, 31
+    # Medidas do desenho (viewBox 0 0 120 ALTURA no relatorio.html.j2). Acima da linha fica o valor
+    # de cada mês; abaixo, o nome do mês (Y_MES).
+    LARGURA, MARGEM = 120, 10
+    ALTURA, TOPO_LINHA, BASE_LINHA, Y_MES = 80, 15, 54, 76
+    ACIMA, ABAIXO = -5, 9  # distância do valor até o ponto
 
     def __init__(self, relatorio, historico: Optional[Historico]):
         self.r = relatorio
@@ -110,6 +114,11 @@ class Evolucao:
             y = self.BASE_LINHA - falta * (self.BASE_LINHA - self.TOPO_LINHA)
             nome_mes = MESES[int(mes[5:7]) - 1] + ("*" if parcial else "")
             pontos.append(Ponto(round(x, 1), round(y, 1), nome_mes, formatar(v), i == n - 1))
+        # Valor abaixo do ponto quando ele é um vale (mais baixo que os vizinhos), para não cruzar a linha.
+        for i, p in enumerate(pontos):
+            vizinhos = [q.y for q in pontos[max(i - 1, 0):i + 2] if q is not p]
+            vale = all(p.y > y for y in vizinhos)
+            p.y_valor = round(p.y + (self.ABAIXO if vale else self.ACIMA), 1)
         linha = " ".join(f"{p.x},{p.y}" for p in pontos)
         variacao = Variacao.calcular(valores[-1], valores[-2], neutra=neutra, menor_melhor=False)
         return CardEvolucao(rotulo, cor, formatar(valores[-1]), variacao, pontos, linha)

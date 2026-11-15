@@ -94,8 +94,15 @@ body {
 
 /* ---------- 3. Corpo, títulos e cards ---------- */
 
-.corpo { flex: 1 1 auto; min-height: 0; padding: 5mm 13mm 0; display: flex; flex-direction: column; gap: 3.5mm; }
-.bloco { display: flex; flex-direction: column; gap: 2.5mm; }
+.corpo { flex: 1 1 auto; min-height: 0; padding: 6mm 13mm 6mm; display: flex; flex-direction: column; gap: 5mm; }
+.bloco { display: flex; flex-direction: column; gap: 3.5mm; }
+
+/* Ocupar a página: o bloco principal de cada página cresce até o rodapé (a sobra é dividida
+   entre os blocos com .estica), e o que está dentro dele estica junto. Sem isso, os cards
+   ficavam presos no topo e sobrava meia página vazia. */
+.estica { flex: 1 1 auto; min-height: 0; }
+.coluna { display: flex; flex-direction: column; }
+.estica > .kpis, .estica > .evol, .estica > .comp, .estica > .grafico { flex: 1 1 auto; min-height: 0; }
 
 h2 {
   font-size: 11px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase;
@@ -142,17 +149,17 @@ h2 {
 
 /* ---------- 6. Cards de métrica (KPI) e selo de variação ---------- */
 
-.kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
-.kpi { padding: 3mm 4mm 2.5mm; display: flex; flex-direction: column; }
+.kpis { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 1fr; gap: 3.5mm; }
+.kpi { padding: 4mm 5mm; display: flex; flex-direction: column; justify-content: center; }
 .kpi.destaque { background: var(--tint); border-color: transparent; }
-.kpi-rot { font-size: 10.5px; font-weight: 600; color: var(--ink-2); }
-.kpi-valor { font-size: 21px; font-weight: 800; letter-spacing: -.6px; margin-top: 1mm; line-height: 1.1; }
+.kpi-rot { font-size: 11.5px; font-weight: 600; color: var(--ink-2); }
+.kpi-valor { font-size: 26px; font-weight: 800; letter-spacing: -.6px; margin-top: 1.5mm; line-height: 1.1; }
 .kpi-nota { font-size: 10.5px; color: var(--ink-2); margin-top: 1.5mm; }
-.kpi-var { margin-top: auto; padding-top: 1.5mm; display: flex; align-items: center; }
+.kpi-var { margin-top: 2.5mm; display: flex; align-items: center; }
 
 /* linha com 4 cards (vídeo com tempo médio assistido): cards mais largos */
 .kpis-4 .kpi { padding: 5mm 4mm 4.5mm; }
-.kpis-4 .kpi-valor { font-size: 22px; white-space: nowrap; }
+.kpis-4 .kpi-valor { font-size: 24px; white-space: nowrap; }
 .kpis-4 .kpi-rot { min-height: 2.6em; }
 
 .var {
@@ -166,15 +173,16 @@ h2 {
 
 /* ---------- 7. Fluxo ---------- */
 
-.grafico { padding: 4mm 5mm; }
-.grafico h3 { font-size: 12px; font-weight: 700; margin-bottom: 3mm; }
+.grafico { padding: 4.5mm 5mm; display: flex; flex-direction: column; }
+.grafico h3 { font-size: 12.5px; font-weight: 700; margin-bottom: 3mm; }
 
-.fluxo { display: flex; align-items: stretch; }
-.passo { flex: 1; border-radius: 12px; padding: 3mm 4mm; background: var(--tint); position: relative; }
+.fluxo { flex: 1 1 auto; display: flex; align-items: stretch; }
+.passo { flex: 1; border-radius: 12px; padding: 4mm; background: var(--tint); position: relative;
+         display: flex; flex-direction: column; justify-content: center; }
 .passo:nth-child(1) { background: var(--cor); color: #fff; }
 .passo:nth-child(1) .passo-rot { color: rgba(255,255,255,.85); }
-.passo-rot { font-size: 10.5px; font-weight: 600; color: var(--ink-2); }
-.passo-valor { font-size: 20px; font-weight: 800; letter-spacing: -.5px; margin-top: 1mm; }
+.passo-rot { font-size: 11px; font-weight: 600; color: var(--ink-2); }
+.passo-valor { font-size: 23px; font-weight: 800; letter-spacing: -.5px; margin-top: 1mm; }
 
 .seta { width: 28mm; flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 2mm; }
 .seta b { font-size: 13px; font-weight: 800; }
@@ -185,7 +193,7 @@ h2 {
 /* ---------- 8. Seção de vídeo: cards à esquerda, funil à direita ---------- */
 
 .vv-corpo { display: grid; grid-template-columns: 1fr 74mm; gap: 4mm; align-items: stretch; }
-.vv-pares { display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-rows: 1fr; gap: 3mm; }
+.vv-pares { display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-rows: 1fr; gap: 3.5mm; }
 
 .vv-funil { display: flex; flex-direction: column; padding: 4mm 5mm; }
 .vv-funil .sub { font-size: 11px; color: var(--ink-2); margin-bottom: 3mm; }
@@ -196,17 +204,11 @@ h2 {
 .ret-nota b { color: var(--ink); }
 
 
-/* ---------- 9. Caixas de texto e tabela de comparação ---------- */
-
-.leitura { padding: 3mm 5mm; border-left: 4px solid var(--cor); }
-.leitura h3 { font-size: 10px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--ink-2); margin-bottom: 1mm; }
-.leitura p { font-size: 11px; line-height: 1.5; }
-
-.obs { padding: 4.5mm 6mm; border-left: 4px solid var(--navy-2); }
-.obs p { font-size: 12.5px; line-height: 1.6; color: var(--ink); }
+/* ---------- 9. Tabela de comparação ---------- */
 
 .comp { padding: 2mm 6mm 3mm; }
-.comp table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.comp table { width: 100%; height: 100%; border-collapse: collapse; font-size: 12.5px; }
+.comp td { vertical-align: middle; }
 .comp th { font-size: 10px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--muted); text-align: right; padding: 3mm 0 2mm; }
 .comp th:first-child, .comp td:first-child { text-align: left; }
 .comp td { padding: 1.7mm 0; border-top: 1px solid var(--line); text-align: right; }
@@ -224,12 +226,14 @@ h2 {
 
 /* ---------- Evolução nos últimos meses ---------- */
 
-.evol { display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: 3mm; }
-.evol-card { padding: 2.5mm 3mm 1.5mm; border-top: 3px solid var(--cor); }
-.evol-rot { font-size: 10px; font-weight: 600; color: var(--ink-2); }
-.evol-valor { font-size: 15px; font-weight: 800; letter-spacing: -.3px; margin: 1px 0 1mm; }
-.evol-valor .var { font-size: 9px; vertical-align: 2px; margin-left: 2px; }
-.evol svg { display: block; width: 100%; height: auto; }
+.evol { display: grid; grid-template-columns: repeat(var(--n), 1fr); grid-auto-rows: 1fr; gap: 3.5mm; }
+.evol-card { padding: 4mm 4mm 2.5mm; border-top: 3px solid var(--cor); display: flex; flex-direction: column; min-height: 0; }
+.evol-rot { font-size: 11px; font-weight: 600; color: var(--ink-2); }
+.evol-valor { font-size: 19px; font-weight: 800; letter-spacing: -.3px; margin: 1mm 0 2mm; }
+.evol-valor .var { font-size: 10px; vertical-align: 3px; margin-left: 3px; }
+.evol svg { display: block; width: 100%; flex: 1 1 auto; min-height: 0; }
+.evol-num { font-size: 5.4px; font-weight: 600; fill: var(--ink-2); }
+.evol-num.ultimo { fill: var(--ink); font-weight: 800; }
 .evol-linha { fill: none; stroke: var(--cor); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
 .evol-ponto { fill: var(--card); stroke: var(--cor); stroke-width: 1.2; }
 .evol-ponto.ultimo { fill: var(--cor); }

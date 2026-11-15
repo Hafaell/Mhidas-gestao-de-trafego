@@ -9,7 +9,8 @@ Ler antes de gerar ou alterar qualquer relatório. Decisões do gestor de 13 e 1
 - **Tudo gratuito**: nada de Looker Studio pago, Supermetrics, Windsor, Porter etc.
 - **Acesso:** as BMs são dos clientes; o gestor entra pelo usuário pessoal do Facebook, via **conector oficial da Meta no claude.ai** (`mcp.facebook.com/ads`). Só leitura.
 - **Não usar o Composio** (o Instagram dele é o pessoal do gestor). Ignorar a skill "gestor-de-trafego" do claude.ai.
-- **Entrega:** só o HTML, aberto em localhost com `servir.py`, link `http://localhost:<porta>` no chat (uma porta por cliente, a partir de 8000). Não gerar nem listar arquivo PDF: o gestor baixa pelo botão "Baixar PDF" (sai completo, todas as páginas) e sobe no Drive do cliente.
+- **Entrega:** só o HTML, aberto em localhost com `servir.py`, link `http://localhost:<porta>` no chat (uma porta por cliente, a partir de 8000). **Sempre abrir a página no navegador do gestor (regra de 15/11/2026):** rodar `servir.py` SEM `--sem-abrir`, porque só o link no chat não mostra nada a ele. Vale também ao mostrar o template ou uma alteração de visual.
+- **Servidores locais (regra do gestor, 15/11/2026):** deixar o servidor no ar por pelo menos 1 hora depois de mandar o link; depois disso pode fechar. Ao subir um servidor novo, antes verificar se o antigo daquela porta ainda está no ar (`netstat -ano | grep ":<porta> .*LISTENING"`); se estiver, fechar (`Stop-Process -Id <pid>`, autorizado pelo gestor) e servir o HTML novo nessa porta. Nunca deixar dois servidores na mesma porta (já aconteceu: 4 presos na 8000 mostrando o HTML velho). Não gerar nem listar arquivo PDF: o gestor baixa pelo botão "Baixar PDF" (sai completo, todas as páginas) e sobe no Drive do cliente.
 - **Estrutura flexível:** a seção só aparece se houver campanha daquele tipo **com gasto no período**. Campanha pausada hoje mas que gastou entra; ativa sem gasto fica fora. Citar no resumo as descartadas.
 - **Visual livre, dados fixos:** pode melhorar o visual, mas todos os dados do dashboard antigo continuam (seguidores, cliques na bio, retenção do vídeo, conversas).
 - **Foto:** a de perfil do Instagram do cliente. Sem foto, iniciais.
@@ -35,22 +36,23 @@ O mapa completo de métricas (campo da API para cada card) está em `.claude/age
 | Histórico mensal (números do mês, para o gráfico de evolução) | `clientes/historico/<slug>.json` (fora do git, gravado por `gerar.py --registrar-historico`) | sempre |
 | Token do Instagram | `.env` (`ACCESS_TOKEN`, fora do git) | ~60 dias |
 
-## Modelo atual (`relatorio/modelos/3-atual-dashboard/`, aprovado em 14/11/2026)
+## Modelo atual (`relatorio/modelos/4-cabecalho-leve/`, aprovado em 15/11/2026; veio do `3-atual-dashboard/`, de 14/11)
 
 A4 em pé, fundo cinza-claro, cards brancos. Imagens de referência em `referencia/`.
+
+- **Cabeçalho de seção leve (regra do gestor, 15/11/2026):** cada seção (Instagram, vídeo, WhatsApp) abre com ícone redondo + título à esquerda, etapa do funil e % do investimento à direita (cinza pequeno) e uma linha fina com um trecho na cor da etapa. **Nunca** a faixa azul-marinho de ponta a ponta: o gestor achou agressiva. O cabeçalho da página (azul-marinho, com foto) continua. Ao testar visual novo, fazer numa cópia na pasta temporária (`gerar.py --modelo <caminho absoluto>`) e só virar modelo depois de o gestor aprovar.
 
 - **Cabeçalho (todas as páginas):** azul-marinho, foto, logo Meta, nome do cliente / "Relatório de leads · Meta Ads", caixas "Período" e "Comparado a".
 - **Bloco "Investimento do período" (todas as páginas):** total, barra por etapa e legenda Topo/Meio/Fundo com valor e %. Manter assim, não trocar por cards pequenos.
 - **Cores por etapa:** Topo `#2a78d6` azul, Meio `#eb6834` laranja, Fundo `#1baf7a` verde.
 - **Selos de variação:** verde melhorou, vermelho piorou, cinza investimento (neutro). Em custo, cair é bom.
-- Cada seção tem a caixa "O que esse resultado mostra" (comentário curto).
+- **Página cheia, com respiro (regra do gestor, 15/11/2026):** o conteúdo ocupa a página até o rodapé (classe `estica` no CSS: os blocos principais crescem e os cards, a tabela e os gráficos esticam junto), sem meia página vazia e sem ficar apertado. Folga de ~6 mm antes do rodapé. Ao mudar o layout, conferir as 4 páginas em PNG.
+- **Sem notas de interpretação (regra do gestor, 15/11/2026):** o relatório não tem a caixa "O que esse resultado mostra" (`comentario`) nem a "Leitura do mês" (`observacoes`). Só os dados. Não reintroduzir sem o gestor pedir.
 
 **Páginas:**
-1. Investimento + **Crescimento do Instagram** (Topo) + **Captação de Leads no WhatsApp** (Fundo). Página apertada: se aparecer "página 1 estourou", encurtar os comentários.
-2. Investimento + **Meio de Funil Video View <tema>**.
+1. Investimento + **Crescimento do Instagram** (Topo) + **Captação de Leads no WhatsApp** (Fundo).2. Investimento + **Meio de Funil Video View <tema>**.
 3. Investimento + "Do anúncio ao resultado" (fluxos com taxas) + comparação com o período anterior.
-4. Investimento + **Evolução nos últimos meses** (4 gráficos de linha: investimento total e um indicador por seção: novos seguidores, visualizações 15 seg, conversas) + "Leitura do mês" (texto do gestor). Só existe com 2 meses ou mais de dados (o primeiro relatório já tem 2 pontos, pelo período anterior). Mês parcial aparece com `*`. Sem a página 4, a Leitura do mês fica no fim da página 3.
-
+4. Investimento + **Evolução nos últimos meses** (4 gráficos de linha: investimento total e um indicador por seção: novos seguidores, visualizações 15 seg, conversas). Só existe com 2 meses ou mais de dados (o primeiro relatório já tem 2 pontos, pelo período anterior). Mês parcial aparece com `*`.
 ### Cards por seção
 
 | Seção | Campanha de origem (padrão de nome) | Cards |
@@ -90,7 +92,7 @@ Renovar:
 
 ```bash
 python3 relatorio/gerar.py relatorio/exemplos/cliente-exemplo.json   # HTML na pasta temporária
-python3 relatorio/servir.py <nome-do-html-sem-extensão> --porta 8000 --sem-abrir
+python3 relatorio/servir.py <nome-do-html-sem-extensão> --porta 8000   # abre o navegador; --sem-abrir só se o gestor pedir
 ```
 
 ## Google Ads (fase futura)

@@ -1,0 +1,162 @@
+{#-
+  Modelo atual do relatório Meta Ads (dashboard com cabeçalho de seção leve, aprovado em 15/11/2026).
+  Este arquivo é o documento inteiro: head, body e as páginas A4 na ordem em que saem.
+  As peças que se repetem em várias páginas (cabeçalho, investimento, cards, rodapé...) estão em componentes.html.j2.
+  O estilo está em ../css/relatorio.css. O objeto `relatorio` vem de midas/relatorio.py.
+-#}
+{%- from "componentes.html.j2" import cabecalho, investimento, rodape, banda, kpi_card, selo_variacao with context -%}
+
+{#- Quais páginas existem: página 1 = topo + fundo, página de vídeo = meio, depois fluxos + comparação,
+    e por último a evolução mensal. -#}
+{%- set topo_e_fundo = relatorio.secoes|selectattr('chave','in',['instagram','whatsapp'])|list -%}
+{%- set videos = relatorio.secoes|selectattr('chave','equalto','video')|list -%}
+{%- set tem_resumo = (topo_e_fundo or relatorio.comparacao) -%}
+{%- set total_paginas = (1 if topo_e_fundo else 0) + (1 if videos else 0) + (1 if tem_resumo else 0) + (1 if relatorio.evolucao.cards else 0) -%}
+{%- set contador = namespace(n=0) -%}
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Relatório Meta Ads · {{ relatorio.cliente.nome }}</title>
+<link rel="stylesheet" href="relatorio.css">
+</head>
+<body>
+
+{#- ===== Página: topo (Instagram) e fundo (WhatsApp) ===== -#}
+{% if topo_e_fundo %}{% set contador.n = contador.n + 1 %}
+<section class="pagina">
+  {{ cabecalho() }}
+  <main class="corpo">
+    {{ investimento() }}
+    {% for s in topo_e_fundo %}
+    <div class="bloco estica" style="--cor: var(--{{ s.etapa }}); --tint: var(--{{ s.etapa }}-tint)">
+      {{ banda(s) }}
+      <div class="kpis">{% for k in s.kpis %}{{ kpi_card(k) }}{% endfor %}</div>
+    </div>
+    {% endfor %}
+  </main>
+  {{ rodape(contador.n, total_paginas) }}
+</section>
+{% endif %}
+
+{#- ===== Página: meio de funil (vídeo). Cards de topo, pares de métricas à esquerda e funil à direita ===== -#}
+{% for s in videos %}{% set contador.n = contador.n + 1 %}
+{%- set quatro = s.painel.topo|length > 3 -%}
+{%- set f = s.painel.funil -%}
+<section class="pagina" style="--cor: var(--{{ s.etapa }}); --tint: var(--{{ s.etapa }}-tint)">
+  {{ cabecalho() }}
+  <main class="corpo">
+    {{ investimento() }}
+    {{ banda(s) }}
+    <div class="kpis{{ ' kpis-4' if quatro }}"{% if quatro %} style="grid-template-columns: repeat({{ s.painel.topo|length }}, 1fr)"{% endif %}>
+      {% for k in s.painel.topo %}{{ kpi_card(k) }}{% endfor %}
+    </div>
+    <div class="vv-corpo estica">
+      <div class="vv-pares">
+        {% for p in s.painel.pares %}{{ kpi_card(p.quantidade) }}{{ kpi_card(p.custo) }}{% endfor %}
+      </div>
+      {#- Funil de verdade (trapézios empilhados) com as visualizações do vídeo. `f` é um objeto FunilVideo. -#}
+      <div class="card grafico vv-funil">
+        <h3>{{ f.titulo }}</h3>
+        <div class="sub">Visualizações em cada ponto do vídeo</div>
+        <svg viewBox="0 0 200 {{ f.altura_total }}" role="img" aria-label="Funil de visualização de vídeo">
+          {% for e in f.etapas %}
+          <polygon points="{{ e.pontos }}" fill="{{ e.cor }}" stroke-linejoin="round"/>
+          <text x="100" y="{{ e.y_rotulo }}" text-anchor="middle" class="f-rot">{{ e.rotulo }}</text>
+          <text x="100" y="{{ e.y_valor }}" text-anchor="middle" class="f-val">{{ e.valor }}</text>
+          {% endfor %}
+        </svg>
+        <div class="ret-nota"><b>{{ f.retencao_final }}</b> de quem passou dos 15 segundos assistiu até 95% do vídeo.</div>
+      </div>
+    </div>
+  </main>
+  {{ rodape(contador.n, total_paginas) }}
+</section>
+{% endfor %}
+
+{#- ===== Página: "Do anúncio ao resultado" (fluxos), comparação com o período anterior ===== -#}
+{% if tem_resumo %}{% set contador.n = contador.n + 1 %}
+<section class="pagina">
+  {{ cabecalho() }}
+  <main class="corpo">
+    {{ investimento() }}
+    {% if topo_e_fundo %}
+    <div class="bloco estica">
+      <h2>Do anúncio ao resultado</h2>
+      {#- Um fluxo por seção, com a taxa de passagem entre as etapas (ex.: alcance, visitas, seguidores). -#}
+      {% for s in topo_e_fundo if s.fluxo %}
+      <div class="card grafico" style="--cor: var(--{{ s.etapa }}); --tint: var(--{{ s.etapa }}-tint)">
+        <h3>{{ s.fluxo.titulo }}</h3>
+        <div class="fluxo">
+          {% for p in s.fluxo.passos %}
+            {% if not loop.first %}
+            <div class="seta"><b>{{ p.taxa }}</b>
+              <svg viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M2 5H94M88 1l6 4-6 4" fill="none" stroke="var(--cor)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
+              <span>{{ p.taxa_txt }}</span></div>
+            {% endif %}
+            <div class="passo"><div class="passo-rot">{{ p.rotulo }}</div><div class="passo-valor">{{ p.valor }}</div></div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% if relatorio.comparacao %}
+    <div class="estica coluna">
+      <h2>Comparação com o período anterior ({{ relatorio.anterior_txt }})</h2>
+      <div class="card comp">
+        <table>
+          <thead><tr><th>Indicador</th><th>Período anterior</th><th>Este período</th><th>Variação</th></tr></thead>
+          <tbody>
+          {% for c in relatorio.comparacao %}
+            <tr><td><i style="background: {{ 'var(--' ~ c.etapa ~ ')' if c.etapa else 'var(--navy-2)' }}"></i>{{ c.rotulo }}</td>
+                <td class="ant">{{ c.anterior }}</td><td class="atual">{{ c.atual }}</td><td>{{ selo_variacao(c.variacao) }}</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+  </main>
+  {{ rodape(contador.n, total_paginas) }}
+</section>
+{% endif %}
+
+{#- ===== Página: evolução mensal (só com 2 meses ou mais de dados) ===== -#}
+{% if relatorio.evolucao.cards %}{% set contador.n = contador.n + 1 %}
+{%- set cards = relatorio.evolucao.cards -%}
+<section class="pagina">
+  {{ cabecalho() }}
+  <main class="corpo">
+    {{ investimento() }}
+    <div class="estica coluna">
+      <h2>Evolução nos últimos meses</h2>
+      {#- Um card por indicador, com a linha dos últimos meses. `cards` são objetos CardEvolucao. -#}
+      <div class="evol" style="--n: {{ [cards|length, 2]|min }}">
+        {% for c in cards %}
+        <div class="card evol-card" style="--cor: {{ c.cor }}">
+          <div class="evol-rot">{{ c.rotulo }}</div>
+          <div class="evol-valor">{{ c.valor }} {{ selo_variacao(c.variacao) }}</div>
+          {%- set ev = relatorio.evolucao -%}
+          <svg viewBox="0 0 {{ ev.LARGURA }} {{ ev.ALTURA }}" role="img" aria-label="Evolução de {{ c.rotulo }}">
+            <polyline class="evol-linha" points="{{ c.linha }}"/>
+            {% for p in c.pontos %}
+            <circle class="evol-ponto{{ ' ultimo' if p.ultimo }}" cx="{{ p.x }}" cy="{{ p.y }}" r="{{ 2.6 if p.ultimo else 1.8 }}"/>
+            {#- Valor do mês (acima do ponto, ou abaixo se for um vale). Nas pontas, alinhado para dentro para não cortar. -#}
+            <text class="evol-num{{ ' ultimo' if p.ultimo }}" x="{{ p.x }}" y="{{ p.y_valor }}" text-anchor="{{ 'start' if loop.first else ('end' if loop.last else 'middle') }}">{{ p.valor }}</text>
+            <text class="evol-mes{{ ' ultimo' if p.ultimo }}" x="{{ p.x }}" y="{{ ev.Y_MES }}" text-anchor="middle">{{ p.rotulo }}</text>
+            {% endfor %}
+          </svg>
+        </div>
+        {% endfor %}
+      </div>
+      {% if relatorio.evolucao.tem_parcial %}<p class="evol-nota">* mês parcial (período incompleto)</p>{% endif %}
+    </div>
+  </main>
+  {{ rodape(contador.n, total_paginas) }}
+</section>
+{% endif %}
+
+</body>
+</html>
