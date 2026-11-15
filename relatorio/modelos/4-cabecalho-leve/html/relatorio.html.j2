@@ -4,15 +4,12 @@
   As peças que se repetem em várias páginas (cabeçalho, investimento, cards, rodapé...) estão em componentes.html.j2.
   O estilo está em ../css/relatorio.css. O objeto `relatorio` vem de midas/relatorio.py.
 -#}
-{%- from "componentes.html.j2" import cabecalho, investimento, rodape, banda, kpi_card, selo_variacao with context -%}
+{%- from "componentes.html.j2" import cabecalho, investimento, rodape, banda, kpi_card, grade_kpis, selo_variacao with context -%}
 
-{#- Quais páginas existem: página 1 = topo + fundo, página de vídeo = meio, depois fluxos + comparação,
-    e por último a evolução mensal. -#}
-{%- set topo_e_fundo = relatorio.secoes|selectattr('chave','in',['instagram','whatsapp'])|list -%}
-{%- set videos = relatorio.secoes|selectattr('chave','equalto','video')|list -%}
-{%- set tem_resumo = (topo_e_fundo or relatorio.comparacao) -%}
-{%- set total_paginas = (1 if topo_e_fundo else 0) + (1 if videos else 0) + (1 if tem_resumo else 0) + (1 if relatorio.evolucao.cards else 0) -%}
-{%- set contador = namespace(n=0) -%}
+{#- Quais páginas existem e em que ordem: decidido em Python (Relatorio._montar_paginas). Tipos:
+    blocos (Instagram, landing page, WhatsApp; até 3 por página), video (uma página por vídeo: topo, meio),
+    resumo (fluxos e/ou comparação) e evolucao. -#}
+{%- set total_paginas = relatorio.paginas|length -%}
 
 <!doctype html>
 <html lang="pt-BR">
@@ -23,25 +20,28 @@
 </head>
 <body>
 
-{#- ===== Página: topo (Instagram) e fundo (WhatsApp) ===== -#}
-{% if topo_e_fundo %}{% set contador.n = contador.n + 1 %}
-<section class="pagina">
+{% for pag in relatorio.paginas %}
+{%- set n = loop.index -%}
+
+{#- ===== Página de blocos: Instagram, landing page e WhatsApp (cards) ===== -#}
+{% if pag.tipo == 'blocos' %}
+<section class="pagina{{ ' compacta' if pag.compacta }}">
   {{ cabecalho() }}
   <main class="corpo">
     {{ investimento() }}
-    {% for s in topo_e_fundo %}
+    {% for s in pag.secoes %}
     <div class="bloco estica" style="--cor: var(--{{ s.etapa }}); --tint: var(--{{ s.etapa }}-tint)">
       {{ banda(s) }}
-      <div class="kpis">{% for k in s.kpis %}{{ kpi_card(k) }}{% endfor %}</div>
+      {{ grade_kpis(s.kpis) }}
     </div>
     {% endfor %}
   </main>
-  {{ rodape(contador.n, total_paginas) }}
+  {{ rodape(n, total_paginas) }}
 </section>
 {% endif %}
 
-{#- ===== Página: meio de funil (vídeo). Cards de topo, pares de métricas à esquerda e funil à direita ===== -#}
-{% for s in videos %}{% set contador.n = contador.n + 1 %}
+{#- ===== Página de vídeo (topo ou meio de funil). Cards de cima, pares de métricas à esquerda e funil à direita ===== -#}
+{% if pag.tipo == 'video' %}{% set s = pag.secoes[0] %}
 {%- set quatro = s.painel.topo|length > 3 -%}
 {%- set f = s.painel.funil -%}
 <section class="pagina" style="--cor: var(--{{ s.etapa }}); --tint: var(--{{ s.etapa }}-tint)">
@@ -71,23 +71,23 @@
       </div>
     </div>
   </main>
-  {{ rodape(contador.n, total_paginas) }}
+  {{ rodape(n, total_paginas) }}
 </section>
-{% endfor %}
+{% endif %}
 
 {#- ===== Página: "Do anúncio ao resultado" (fluxos), comparação com o período anterior ===== -#}
-{% if tem_resumo %}{% set contador.n = contador.n + 1 %}
+{% if pag.tipo == 'resumo' %}
 <section class="pagina">
   {{ cabecalho() }}
   <main class="corpo">
     {{ investimento() }}
-    {% if topo_e_fundo %}
+    {% if pag.fluxos %}
     <div class="bloco estica">
       <h2>Do anúncio ao resultado</h2>
       {#- Um fluxo por seção, com a taxa de passagem entre as etapas (ex.: alcance, visitas, seguidores). -#}
-      {% for s in topo_e_fundo if s.fluxo %}
+      {% for s in pag.fluxos %}
       <div class="card grafico" style="--cor: var(--{{ s.etapa }}); --tint: var(--{{ s.etapa }}-tint)">
-        <h3>{{ s.fluxo.titulo }}</h3>
+        <h3>{{ s.fluxo.titulo }}{% if s.bloco %} · {{ s.bloco }}{% endif %}</h3>
         <div class="fluxo">
           {% for p in s.fluxo.passos %}
             {% if not loop.first %}
@@ -102,7 +102,7 @@
       {% endfor %}
     </div>
     {% endif %}
-    {% if relatorio.comparacao %}
+    {% if pag.comparacao %}
     <div class="estica coluna">
       <h2>Comparação com o período anterior ({{ relatorio.anterior_txt }})</h2>
       <div class="card comp">
@@ -119,12 +119,12 @@
     </div>
     {% endif %}
   </main>
-  {{ rodape(contador.n, total_paginas) }}
+  {{ rodape(n, total_paginas) }}
 </section>
 {% endif %}
 
 {#- ===== Página: evolução mensal (só com 2 meses ou mais de dados) ===== -#}
-{% if relatorio.evolucao.cards %}{% set contador.n = contador.n + 1 %}
+{% if pag.tipo == 'evolucao' %}
 {%- set cards = relatorio.evolucao.cards -%}
 <section class="pagina">
   {{ cabecalho() }}
@@ -133,11 +133,11 @@
     <div class="estica coluna">
       <h2>Evolução nos últimos meses</h2>
       {#- Um card por indicador, com a linha dos últimos meses. `cards` são objetos CardEvolucao. -#}
-      <div class="evol" style="--n: {{ [cards|length, 2]|min }}">
+      <div class="evol" style="--n: {{ 3 if cards|length > 4 else [cards|length, 2]|min }}">
         {% for c in cards %}
         <div class="card evol-card" style="--cor: {{ c.cor }}">
           <div class="evol-rot">{{ c.rotulo }}</div>
-          <div class="evol-valor">{{ c.valor }} {{ selo_variacao(c.variacao) }}</div>
+          <div class="evol-valor">{{ c.valor }}</div>
           {%- set ev = relatorio.evolucao -%}
           <svg viewBox="0 0 {{ ev.LARGURA }} {{ ev.ALTURA }}" role="img" aria-label="Evolução de {{ c.rotulo }}">
             <polyline class="evol-linha" points="{{ c.linha }}"/>
@@ -154,9 +154,10 @@
       {% if relatorio.evolucao.tem_parcial %}<p class="evol-nota">* mês parcial (período incompleto)</p>{% endif %}
     </div>
   </main>
-  {{ rodape(contador.n, total_paginas) }}
+  {{ rodape(n, total_paginas) }}
 </section>
 {% endif %}
+{% endfor %}
 
 </body>
 </html>

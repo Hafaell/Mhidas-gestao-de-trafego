@@ -23,9 +23,9 @@ Extraia da mensagem do gestor:
 
 Para cada nome, procure em `clientes/*.json` (campos `nome` e `apelidos`, sem diferenciar maiúscula nem acento).
 
-- **Achou um:** use o arquivo.
+- **Achou um:** use o arquivo. Se ele não tiver `layout` e a memória do cliente tiver o bloco "Configuração do relatório", copie `layout` (e as `classificacao` que faltarem) para o arquivo antes de despachar.
 - **Achou mais de um:** pergunte qual.
-- **Não achou:** é cliente novo. Chame `ads_get_ad_accounts` (conector Meta Ads, todas as páginas), mostre as contas com nome parecido e pergunte qual é a do cliente. Com a resposta, crie `clientes/<slug>.json` no formato de `relatorio/exemplos/cliente-config-exemplo.json` (só `nome`, `apelidos`, `ad_account_id`, `descricao` se souber; o agente completa o resto).
+- **Não achou:** veja antes se o cliente está em `memoria/por-cliente/LEIAME.md` (tem a conta de anúncio de cada um); se estiver, crie o `clientes/<slug>.json` com essa conta, o mesmo slug do arquivo de memória e o bloco "Configuração do relatório" da memória (`classificacao` e `layout`, para o relatório sair igual ao feito à mão), sem perguntar (a regra de conta com conector desligado, abaixo, continua valendo). Senão, é cliente novo. Chame `ads_get_ad_accounts` (conector Meta Ads, todas as páginas), mostre as contas com nome parecido e pergunte qual é a do cliente. Com a resposta, crie `clientes/<slug>.json` no formato de `relatorio/exemplos/cliente-config-exemplo.json` (só `nome`, `apelidos`, `ad_account_id`, `descricao` se souber; o agente completa o resto).
 - Conta com `is_queryable: false` ou `is_ads_mcp_enabled: false`: avise o gestor com o motivo e não despache esse cliente.
 
 Mais de 5 clientes de uma vez: confirme a lista com o gestor antes de despachar (regra do CLAUDE.md sobre criar arquivos em massa).

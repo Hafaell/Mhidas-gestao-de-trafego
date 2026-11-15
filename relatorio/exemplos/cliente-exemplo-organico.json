@@ -1,0 +1,46 @@
+{
+  "_comentario": "Dados FICTÍCIOS. Cliente sem campanha de seguidores: o Instagram sai com os números do perfil (instagram_organico), sem valor investido e fora do total.",
+  "agencia": "Agência Lupa",
+  "cliente": {
+    "nome": "Dra. Ana Exemplo",
+    "descricao": "Dermatologia · Brasília",
+    "instagram": "@clinica.exemplo",
+    "foto": null
+  },
+  "periodo": {
+    "inicio": "2026-10-01",
+    "fim": "2026-10-31"
+  },
+  "periodo_anterior": {
+    "inicio": "2026-09-01",
+    "fim": "2026-09-30"
+  },
+  "secoes": {
+    "instagram_organico": {
+      "alcance": 68400,
+      "visitas_perfil": 3950,
+      "cliques_bio": 72,
+      "novos_seguidores": 261,
+      "anterior": {
+        "alcance": 61200,
+        "visitas_perfil": 3610,
+        "cliques_bio": 65,
+        "novos_seguidores": 240
+      }
+    },
+    "whatsapp": {
+      "investido": 1684.9,
+      "impressoes": 39410,
+      "alcance": 17260,
+      "cliques": 334,
+      "conversas": 141,
+      "anterior": {
+        "investido": 1700.0,
+        "impressoes": 36950,
+        "alcance": 16100,
+        "cliques": 301,
+        "conversas": 118
+      }
+    }
+  }
+}

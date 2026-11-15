@@ -68,11 +68,26 @@ class Evolucao:
         r = self.r
         itens = [Indicador("investido", "Investimento total", "var(--navy-2)", F.moeda, True,
                            r.total, r.total_anterior)]
+        # Seção repetida (ex.: WhatsApp por cidade) vira um indicador só, com a soma dos blocos.
+        vistos: Dict[str, int] = {}
         for s in r.secoes:
-            if s.campo_evolucao:
-                itens.append(Indicador(s.campo_evolucao, s.rotulo_evolucao, f"var(--{s.etapa})", F.inteiro, False,
-                                       s.dados.get(s.campo_evolucao), s.anterior.get(s.campo_evolucao)))
+            if not s.campo_evolucao:
+                continue
+            dado = s.dado_evolucao or s.campo_evolucao
+            atual, anterior = s.dados.get(dado), s.anterior.get(dado)
+            if s.campo_evolucao in vistos:
+                i = vistos[s.campo_evolucao]
+                ant = itens[i]
+                itens[i] = ant._replace(atual=self._somar(ant.atual, atual), anterior=self._somar(ant.anterior, anterior))
+                continue
+            vistos[s.campo_evolucao] = len(itens)
+            itens.append(Indicador(s.campo_evolucao, s.rotulo_evolucao, f"var(--{s.etapa})", F.inteiro, False,
+                                   atual, anterior))
         return itens
+
+    @staticmethod
+    def _somar(a, b):
+        return None if a is None or b is None else a + b
 
     @staticmethod
     def _parcial(inicio: str, fim: str) -> bool:

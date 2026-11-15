@@ -1,4 +1,5 @@
-"""Seção Crescimento do Instagram (topo de funil)."""
+"""Seção Crescimento do Instagram (topo de funil): com campanha de seguidores (SecaoInstagram) ou só com
+os números do perfil, para cliente sem campanha de topo (SecaoInstagramOrganico)."""
 from ..formatacao import Formatador as F
 from ..metricas import Calculo, Kpi
 from .base import Fluxo, LinhaComparacao, PassoFluxo, Secao
@@ -11,6 +12,7 @@ class SecaoInstagram(Secao):
     rotulo_etapa = "Pessoas novas"
     titulo = "Crescimento do Instagram"
     icone = "instagram"
+    cor_icone = "linear-gradient(135deg, #fdb94e 0%, #f7761e 50%, #e1306c 100%)"   # laranja do Instagram (pedido do gestor, 15/11/2026)
     campo_evolucao, rotulo_evolucao = "novos_seguidores", "Novos seguidores"
     # Regra do gestor (15/11/2026): o card "Cliques na bio" mostra a ESTIMATIVA dos cliques vindos de anúncio.
     # O JSON traz os números crus (cliques_bio_total e visitas_perfil_total da API do Instagram, visitas_perfil
@@ -44,19 +46,33 @@ class SecaoInstagram(Secao):
             Kpi.criar("Alcance", v("alcance"), F.inteiro, a("alcance")),
             Kpi.criar("Visitas ao perfil", v("visitas_perfil"), F.inteiro, a("visitas_perfil")),
             Kpi.criar("Cliques na bio (est. anúncio)", v("cliques_bio"), F.inteiro, a("cliques_bio")),
-            Kpi.criar("Novos seguidores", v("novos_seguidores"), F.inteiro, a("novos_seguidores"), destaque=True),
+            # Regra do gestor (15/11/2026): seguidores vindos de TODAS as campanhas (instagram_profile_follow_v2
+            # no nível da conta); o custo divide só o investido na campanha de Instagram.
+            Kpi.criar("Novos seguidores", v("novos_seguidores"), F.inteiro, a("novos_seguidores"), destaque=True,
+                      nota="vindos de todas as campanhas"),
             Kpi.criar("Custo por seguidor", self.custo("novos_seguidores"), F.moeda,
                       self.custo_anterior("novos_seguidores"), menor_melhor=True, destaque=True),
-        ]
+        ] + self._kpis_extras()
+
+    # Cards a mais que só alguns clientes têm. No JSON: "extras": ["custo_visita_perfil"].
+    EXTRAS = {"custo_visita_perfil": "Custo por visita ao perfil"}   # Dra. Patrícia Canelas
+
+    def _kpis_extras(self):
+        cards = []
+        if "custo_visita_perfil" in self.extras:
+            cards.append(Kpi.criar(self.EXTRAS["custo_visita_perfil"], self.custo("visitas_perfil"), F.moeda,
+                                   self.custo_anterior("visitas_perfil"), menor_melhor=True))
+        return cards
 
     def montar_fluxo(self):
-        v = self.valor
+        # Alcance e visitas são do perfil inteiro; seguidores, de todas as campanhas (regras de 15/11/2026).
+        v = self.dados.get
         return Fluxo("Do alcance ao seguidor", [
-            PassoFluxo("Alcance", F.inteiro(v("alcance"))),
-            PassoFluxo("Visitas ao perfil", F.inteiro(v("visitas_perfil")),
-                       F.percentual(Calculo.dividir(v("visitas_perfil"), v("alcance"))), "visitaram o perfil"),
+            PassoFluxo("Alcance do perfil", F.inteiro(v("alcance"))),
+            PassoFluxo("Visitas ao perfil", F.inteiro(v("visitas_perfil_total")),
+                       F.percentual(Calculo.dividir(v("visitas_perfil_total"), v("alcance"))), "visitaram o perfil"),
             PassoFluxo("Novos seguidores", F.inteiro(v("novos_seguidores")),
-                       F.percentual(Calculo.dividir(v("novos_seguidores"), v("visitas_perfil"))),
+                       F.percentual(Calculo.dividir(v("novos_seguidores"), v("visitas_perfil_total"))),
                        "das visitas viraram seguidores"),
         ])
 
@@ -66,4 +82,51 @@ class SecaoInstagram(Secao):
                         self.valor("novos_seguidores"), self.valor_anterior("novos_seguidores")),
             self._linha("Custo por seguidor", F.moeda,
                         self.custo("novos_seguidores"), self.custo_anterior("novos_seguidores"), menor_melhor=True),
+        ]
+
+
+class SecaoInstagramOrganico(Secao):
+    """Crescimento do Instagram SEM campanha de seguidores: números do perfil inteiro (API do Instagram),
+    sem valor investido. Fica fora do total e da barra de investimento.
+    Clientes: Dr. Gustavo Samico e Dra. Patrícia Cabrejos (decisão do gestor, 15/11/2026)."""
+    chave = "instagram_organico"
+    etapa = "topo"
+    nome_etapa = "Topo"
+    rotulo_etapa = "Orgânico"
+    titulo = "Crescimento do Instagram"
+    icone = "instagram"
+    cor_icone = "linear-gradient(135deg, #fdb94e 0%, #f7761e 50%, #e1306c 100%)"   # laranja do Instagram (pedido do gestor, 15/11/2026)
+    sem_investimento = True
+    campo_evolucao, rotulo_evolucao = "novos_seguidores_organico", "Novos seguidores (perfil)"
+    dado_evolucao = "novos_seguidores"
+    campos_desejaveis = ("alcance", "visitas_perfil", "cliques_bio", "novos_seguidores")
+
+    def montar_kpis(self):
+        v, a = self.valor_ou_nada, self.anterior.get
+        return [
+            Kpi.criar("Alcance do perfil", v("alcance"), F.inteiro, a("alcance")),
+            Kpi.criar("Visitas ao perfil", v("visitas_perfil"), F.inteiro, a("visitas_perfil")),
+            Kpi.criar("Cliques na bio", v("cliques_bio"), F.inteiro, a("cliques_bio")),
+            Kpi.criar("Novos seguidores", v("novos_seguidores"), F.inteiro, a("novos_seguidores"), destaque=True),
+        ]
+
+    def valor_ou_nada(self, campo):
+        return self.dados.get(campo)
+
+    def montar_fluxo(self):
+        v = self.valor_ou_nada
+        return Fluxo("Do alcance ao seguidor (perfil, sem anúncio)", [
+            PassoFluxo("Alcance do perfil", F.inteiro(v("alcance"))),
+            PassoFluxo("Visitas ao perfil", F.inteiro(v("visitas_perfil")),
+                       F.percentual(Calculo.dividir(v("visitas_perfil"), v("alcance"))), "visitaram o perfil"),
+            PassoFluxo("Novos seguidores", F.inteiro(v("novos_seguidores")),
+                       F.percentual(Calculo.dividir(v("novos_seguidores"), v("visitas_perfil"))),
+                       "das visitas viraram seguidores"),
+        ])
+
+    def linhas_comparacao(self):
+        v, a = self.valor_ou_nada, self.anterior.get
+        return [
+            self._linha("Novos seguidores (perfil)", F.inteiro, v("novos_seguidores"), a("novos_seguidores")),
+            self._linha("Visitas ao perfil (perfil)", F.inteiro, v("visitas_perfil"), a("visitas_perfil")),
         ]

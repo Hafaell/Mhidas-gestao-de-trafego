@@ -10,6 +10,7 @@ class SecaoWhatsapp(Secao):
     nome_etapa = "Fundo"
     rotulo_etapa = "Foco em consulta"
     titulo = "Captação de leads no WhatsApp"
+    titulo_curto = "Leads no WhatsApp"
     icone = "whatsapp"
     campo_evolucao, rotulo_evolucao = "conversas", "Conversas iniciadas"
     campos_desejaveis = ("impressoes", "alcance", "cliques", "conversas")

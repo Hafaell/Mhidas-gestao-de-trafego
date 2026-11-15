@@ -166,6 +166,8 @@ h2 {
 .kpis-4 .kpi { padding: 5mm 4mm 4.5mm; }
 .kpis-4 .kpi-valor { font-size: 24px; white-space: nowrap; }
 .kpis-4 .kpi-rot { min-height: 2.6em; }
+/* 7 cards (Instagram com card extra): o último ocupa o espaço que sobraria na 2ª linha */
+.kpis-7 > .kpi:last-child { grid-column: span 2; }
 
 .var {
   display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 700;
@@ -245,3 +247,18 @@ h2 {
 .evol-mes { font-size: 5.4px; fill: var(--muted); }
 .evol-mes.ultimo { fill: var(--ink); font-weight: 700; }
 .evol-nota { font-size: 9.5px; color: var(--muted); margin-top: 1.5mm; }
+
+
+/* ---------- Página com 3 blocos (ex.: Instagram + landing page + WhatsApp): cards menores ---------- */
+
+.compacta .corpo { gap: 3.5mm; }
+.compacta .invest { padding: 3mm 6mm 2.5mm; }
+.compacta .invest-valor { font-size: 28px; }
+.compacta .barra { margin: 2mm 0; }
+.compacta .leg-valor { font-size: 16px; }
+.compacta .bloco { gap: 2.5mm; }
+.compacta .banda { padding-bottom: 2.4mm; }
+.compacta .kpis { gap: 2.5mm; }
+.compacta .kpi { padding: 2.6mm 4mm; }
+.compacta .kpi-valor { font-size: 21px; margin-top: 1mm; }
+.compacta .kpi-var { margin-top: 1.5mm; }

@@ -1,7 +1,11 @@
 {
-  "_comentario": "Cadastro FICTÍCIO de um cliente. Os cadastros reais ficam em clientes/<slug>.json (fora do git). A skill relatorio-cliente cria o arquivo e o agente montador-relatorio completa classificacao, tema e foto.",
+  "_comentario": "Cadastro FICTÍCIO de um cliente. Os cadastros reais ficam em clientes/<slug>.json (fora do git). A skill relatorio-cliente cria o arquivo (copiando o bloco 'Configuração do relatório' da memória do cliente) e o agente montador-relatorio completa classificacao, tema e foto. Seções da classificação: instagram, video_topo, video, landing_page, whatsapp, whatsapp:<bloco>, fora_do_modelo. 'layout' é opcional: só o que o relatório feito à mão do cliente tinha de diferente.",
   "nome": "Dra. Ana Exemplo",
-  "apelidos": ["ana", "dra ana", "clinica exemplo"],
+  "apelidos": [
+    "ana",
+    "dra ana",
+    "clinica exemplo"
+  ],
   "descricao": "Dermatologia · Brasília",
   "ad_account_id": "123456789012345",
   "instagram": "@clinica.exemplo",
@@ -9,7 +13,27 @@
   "tema_video": "Bastidores da clínica",
   "classificacao": {
     "120200000000000001": "instagram",
+    "120200000000000004": "video_topo",
     "120200000000000002": "video",
-    "120200000000000003": "whatsapp"
+    "120200000000000005": "landing_page",
+    "120200000000000003": "whatsapp:Brasília",
+    "120200000000000006": "whatsapp:Campinas"
+  },
+  "layout": {
+    "rotulos_etapa": {
+      "meio": "Remarketing"
+    },
+    "temas": {
+      "video_topo": "Bastidores da clínica"
+    },
+    "blocos_whatsapp": {
+      "[BSB]": "Brasília",
+      "[CAMPINAS]": "Campinas"
+    },
+    "instagram_extras": [
+      "custo_visita_perfil"
+    ],
+    "instagram_organico": false,
+    "nome_resultado_lp": "Leads"
   }
 }

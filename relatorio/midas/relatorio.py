@@ -3,12 +3,13 @@ from __future__ import annotations
 
 import base64
 import calendar
+import math
 import mimetypes
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date, timedelta
 from pathlib import Path
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from .config import PASTA_FOTOS
 from .evolucao import Evolucao
@@ -16,6 +17,46 @@ from .formatacao import Formatador
 from .historico import Historico
 from .metricas import Calculo, Variacao
 from .secoes import SECOES_NA_ORDEM, LinhaComparacao, Secao
+
+
+# Etapas do funil, na ordem. O rótulo aparece ao lado do nome ("Topo · Pessoas novas") e pode ser trocado
+# por cliente com "rotulos_etapa" no JSON (ex.: Villalva usa "Meio · Remarketing").
+ETAPAS = ("topo", "meio", "fundo")
+NOMES_ETAPA = {"topo": "Topo", "meio": "Meio", "fundo": "Fundo"}
+ROTULOS_ETAPA = {"topo": "Pessoas novas", "meio": "Vídeo", "fundo": "Foco em consulta"}
+
+# Páginas de blocos (Instagram, landing page, WhatsApp): até 3 por página. Com 3, os cards ficam compactos.
+MAX_BLOCOS_POR_PAGINA = 3
+# Página de resumo: fluxos e comparação juntos só se couberem; senão, cada um na sua página.
+MAX_FLUXOS_COM_COMPARACAO, MAX_LINHAS_COM_FLUXOS, MAX_FLUXOS_POR_PAGINA = 2, 9, 3
+
+
+@dataclass
+class Etapa:
+    """Uma etapa do funil no bloco "Investimento do período" (soma das seções daquela etapa)."""
+    chave: str
+    nome: str
+    rotulo: str
+    investido: float
+    participacao: float
+
+    @property
+    def investido_fmt(self) -> str:
+        return Formatador.moeda(self.investido)
+
+    @property
+    def participacao_fmt(self) -> str:
+        return Formatador.percentual(self.participacao, 0)
+
+
+@dataclass
+class Pagina:
+    """Uma página A4 do relatório. `tipo`: blocos, video, resumo, evolucao."""
+    tipo: str
+    secoes: list = field(default_factory=list)
+    fluxos: list = field(default_factory=list)      # seções cujo fluxo aparece (página de resumo)
+    comparacao: bool = False                        # a tabela de comparação aparece (página de resumo)
+    compacta: bool = False                          # 3 blocos na página: cards menores
 
 
 @dataclass
@@ -94,25 +135,79 @@ class Relatorio:
         self.periodo_anterior: Optional[Periodo] = Periodo(**anterior) if anterior else None
         self.gerado_em: str = date.today().strftime("%d/%m/%Y")
 
+        self.rotulos_etapa: Dict[str, str] = {**ROTULOS_ETAPA, **(dados.get("rotulos_etapa") or {})}
         self.secoes: List[Secao] = self._montar_secoes(dados.get("secoes", {}))
-        self.total: float = sum(s.investido for s in self.secoes)
-        self.total_anterior: Optional[float] = self._somar_anterior()
         for s in self.secoes:
+            if not s.sem_investimento:
+                s.rotulo_etapa = self.rotulos_etapa[s.etapa]
+        self.pagas: List[Secao] = [s for s in self.secoes if not s.sem_investimento]   # entram no total
+        self.total: float = sum(s.investido for s in self.pagas)
+        self.total_anterior: Optional[float] = self._somar_anterior()
+        for s in self.pagas:
             s.definir_participacao(self.total)
+        self.etapas: List[Etapa] = self._montar_etapas()
         self.comparacao: List[LinhaComparacao] = self._montar_comparacao() if self.periodo_anterior else []
         self.evolucao = Evolucao(self, historico)
+        self.paginas: List[Pagina] = self._montar_paginas()
 
     # ---- montagem ----
 
     @staticmethod
     def _montar_secoes(dados_secoes: dict) -> List[Secao]:
-        """Só entram as seções que existem no JSON, sempre na ordem topo, meio, fundo."""
-        return [classe(dados_secoes[classe.chave])
-                for classe in SECOES_NA_ORDEM if dados_secoes.get(classe.chave)]
+        """Só entram as seções que existem no JSON, sempre na ordem topo, meio, fundo.
+        Uma chave pode trazer uma lista (seção repetida, ex.: WhatsApp por cidade): um bloco por item."""
+        secoes = []
+        for classe in SECOES_NA_ORDEM:
+            valor = dados_secoes.get(classe.chave)
+            if not valor:
+                continue
+            for item in (valor if isinstance(valor, list) else [valor]):
+                secoes.append(classe(item))
+        return secoes
 
     def _somar_anterior(self) -> Optional[float]:
-        partes = [s.investido_anterior for s in self.secoes]
-        return sum(partes) if all(p is not None for p in partes) else None
+        partes = [s.investido_anterior for s in self.pagas]
+        return sum(partes) if partes and all(p is not None for p in partes) else None
+
+    def _montar_etapas(self) -> List[Etapa]:
+        etapas = []
+        for chave in ETAPAS:
+            valor = sum(s.investido for s in self.pagas if s.etapa == chave)
+            if any(s.etapa == chave for s in self.pagas):
+                etapas.append(Etapa(chave, NOMES_ETAPA[chave], self.rotulos_etapa[chave], valor,
+                                    Calculo.dividir(valor, self.total) or 0))
+        return etapas
+
+    @staticmethod
+    def _dividir(itens: list, maximo: int) -> List[list]:
+        """Divide em grupos de até `maximo`, do tamanho mais parecido possível (4 itens com máximo 3 = 2 + 2)."""
+        if not itens:
+            return []
+        tamanho = math.ceil(len(itens) / math.ceil(len(itens) / maximo))
+        return [itens[i:i + tamanho] for i in range(0, len(itens), tamanho)]
+
+    def _montar_paginas(self) -> List[Pagina]:
+        """Plano das páginas, na ordem: blocos (Instagram, landing page, WhatsApp), um vídeo por página,
+        resumo (fluxos + comparação) e evolução mensal."""
+        paginas: List[Pagina] = []
+        blocos = [s for s in self.secoes if s.tipo_pagina == "bloco"]
+        for grupo in self._dividir(blocos, MAX_BLOCOS_POR_PAGINA):
+            paginas.append(Pagina("blocos", grupo, compacta=len(grupo) >= 3))
+        paginas += [Pagina("video", [s]) for s in self.secoes if s.tipo_pagina == "video"]
+
+        fluxos = [s for s in blocos if s.fluxo]
+        if fluxos or self.comparacao:
+            juntos = (len(fluxos) <= MAX_FLUXOS_COM_COMPARACAO and len(self.comparacao) <= MAX_LINHAS_COM_FLUXOS)
+            if juntos:
+                paginas.append(Pagina("resumo", fluxos=fluxos, comparacao=bool(self.comparacao)))
+            else:
+                for grupo in self._dividir(fluxos, MAX_FLUXOS_POR_PAGINA):
+                    paginas.append(Pagina("resumo", fluxos=grupo))
+                if self.comparacao:
+                    paginas.append(Pagina("resumo", comparacao=True))
+        if self.evolucao.cards:
+            paginas.append(Pagina("evolucao"))
+        return paginas
 
     def _montar_comparacao(self) -> List[LinhaComparacao]:
         total = LinhaComparacao(

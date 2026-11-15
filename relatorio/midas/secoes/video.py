@@ -1,4 +1,5 @@
-"""Seção Visualização de vídeo (meio de funil): cards à esquerda e funil de verdade à direita."""
+"""Seções de vídeo: meio de funil (SecaoVideo) e topo de funil (SecaoVideoTopo).
+Cada uma tem página própria: cards à esquerda e funil de verdade à direita."""
 from dataclasses import dataclass
 from typing import List
 
@@ -45,10 +46,11 @@ class SecaoVideo(Secao):
     etapa = "meio"
     nome_etapa = "Meio"
     rotulo_etapa = "Vídeo"
-    titulo = "Visualização de vídeo"
+    titulo = "Vídeo de meio de funil"
     icone = "video"
-    campo_evolucao, rotulo_evolucao = "views_15s", "Visualizações 15 seg"
+    campo_evolucao, rotulo_evolucao = "views_15s", "Visualizações 15 seg (meio)"
     campos_desejaveis = ("views_15s", "video_50", "video_75", "video_95")
+    tipo_pagina = "video"
 
     # Desenho do funil: (rótulo, campo, largura do topo, largura da base) em um quadro de 200 de largura.
     # A largura sempre diminui: é forma de funil, não escala (50% pode ser maior que 15 seg).
@@ -56,6 +58,7 @@ class SecaoVideo(Secao):
              ("Vídeo 50%", "video_50", 150, 108),
              ("Vídeo 95%", "video_95", 100, 50)]
     CORES_FUNIL = ["#de6a35", "#c0521f", "#96401a"]   # tons de laranja (cor do Meio), claro para escuro
+    ROTULO_COMPARACAO = "vídeo de meio"
     ALTURA_ETAPA, FOLGA = 64, 6
     PARES = [("video_50", "Vídeo 50%"), ("video_75", "Vídeo 75%"), ("video_95", "Vídeo 95%")]
 
@@ -105,8 +108,23 @@ class SecaoVideo(Secao):
 
     def linhas_comparacao(self):
         return [
-            self._linha("Visualizações de 15 seg", F.inteiro,
+            self._linha(f"Visualizações de 15 seg ({self.ROTULO_COMPARACAO})", F.inteiro,
                         self.valor("views_15s"), self.valor_anterior("views_15s")),
-            self._linha("Custo por visualização de 15 seg", F.moeda,
+            self._linha(f"Custo por 15 seg ({self.ROTULO_COMPARACAO})", F.moeda,
                         self.custo("views_15s"), self.custo_anterior("views_15s"), menor_melhor=True),
         ]
+
+
+class SecaoVideoTopo(SecaoVideo):
+    """Vídeo de topo de funil (campanhas [TOPO][VV] / CP1 ... [VV]), para pessoas que ainda não conhecem o
+    cliente. Mesmos cards do vídeo de meio, em azul. Os relatórios feitos à mão de out/2026 tinham as duas
+    seções separadas (Topo de Funil Video View e Meio de Funil Video View)."""
+    chave = "video_topo"
+    etapa = "topo"
+    nome_etapa = "Topo"
+    rotulo_etapa = "Pessoas novas"
+    titulo = "Vídeo de topo de funil"
+    campo_evolucao, rotulo_evolucao = "views_15s_topo", "Visualizações 15 seg (topo)"
+    dado_evolucao = "views_15s"
+    CORES_FUNIL = ["#3d8be0", "#2266b8", "#18498a"]   # tons de azul (cor do Topo), claro para escuro
+    ROTULO_COMPARACAO = "vídeo de topo"

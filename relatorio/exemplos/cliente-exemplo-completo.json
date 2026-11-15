@@ -1,0 +1,129 @@
+{
+  "_comentario": "Dados FICTÍCIOS. Mostra as seções que vieram dos relatórios feitos à mão (15/11/2026): vídeo de topo, landing page, WhatsApp dividido em blocos, card extra no Instagram e rótulo próprio de etapa.",
+  "agencia": "Agência Lupa",
+  "cliente": {
+    "nome": "Dra. Ana Exemplo",
+    "descricao": "Dermatologia · Brasília",
+    "instagram": "@clinica.exemplo",
+    "foto": null
+  },
+  "periodo": {
+    "inicio": "2026-10-01",
+    "fim": "2026-10-31"
+  },
+  "periodo_anterior": {
+    "inicio": "2026-09-01",
+    "fim": "2026-09-30"
+  },
+  "rotulos_etapa": {
+    "meio": "Remarketing"
+  },
+  "conferencia": {
+    "investido_api": {
+      "total": 5003.45,
+      "whatsapp": 1684.9,
+      "whatsapp:Campinas": 590.4
+    }
+  },
+  "secoes": {
+    "instagram": {
+      "investido": 912.4,
+      "alcance": 143870,
+      "visitas_perfil": 5102,
+      "visitas_perfil_total": 7830,
+      "cliques_bio_total": 135,
+      "novos_seguidores": 561,
+      "anterior": {
+        "investido": 860.0,
+        "alcance": 128400,
+        "visitas_perfil": 4410,
+        "visitas_perfil_total": 6950,
+        "cliques_bio_total": 112,
+        "novos_seguidores": 472
+      },
+      "extras": [
+        "custo_visita_perfil"
+      ]
+    },
+    "video_topo": {
+      "tema": "Bastidores da clínica",
+      "investido": 640.0,
+      "views_15s": 12150,
+      "video_50": 8020,
+      "video_75": 4410,
+      "video_95": 2930,
+      "tempo_medio_s": 6,
+      "anterior": {
+        "investido": 600.0,
+        "views_15s": 10800,
+        "video_50": 7300,
+        "video_75": 3900,
+        "video_95": 2610,
+        "tempo_medio_s": 6
+      }
+    },
+    "video": {
+      "tema": "Bastidores da clínica",
+      "investido": 790.15,
+      "views_15s": 8240,
+      "video_50": 6912,
+      "video_75": 2688,
+      "video_95": 1847,
+      "tempo_medio_s": 7,
+      "anterior": {
+        "tempo_medio_s": 6,
+        "investido": 800.0,
+        "views_15s": 7420,
+        "video_50": 6120,
+        "video_75": 2105,
+        "video_95": 1490
+      }
+    },
+    "landing_page": {
+      "investido": 976.0,
+      "impressoes": 51200,
+      "cliques": 902,
+      "visualizacoes_pagina": 351,
+      "leads": 128,
+      "anterior": {
+        "investido": 950.0,
+        "impressoes": 48700,
+        "cliques": 860,
+        "visualizacoes_pagina": 330,
+        "leads": 117
+      }
+    },
+    "whatsapp": [
+      {
+        "investido": 1094.5,
+        "impressoes": 25600,
+        "alcance": 11210,
+        "cliques": 217,
+        "conversas": 92,
+        "anterior": {
+          "investido": 1100.0,
+          "impressoes": 24100,
+          "alcance": 10500,
+          "cliques": 196,
+          "conversas": 77
+        },
+        "bloco": "Brasília"
+      },
+      {
+        "bloco": "Campinas",
+        "investido": 590.4,
+        "impressoes": 13810,
+        "alcance": 6050,
+        "cliques": 117,
+        "conversas": 49,
+        "anterior": {
+          "investido": 600.0,
+          "impressoes": 12850,
+          "alcance": 5600,
+          "cliques": 105,
+          "conversas": 41
+        }
+      }
+    ]
+  }
+}

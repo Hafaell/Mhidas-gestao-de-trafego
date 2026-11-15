@@ -16,11 +16,16 @@ TOLERANCIA_REAIS = 0.01
 # (campo maior, campo menor, texto). Se o "menor" passar do "maior", algo está estranho.
 # Vídeo fica de fora de propósito: 50% pode passar do ThruPlay (ver memória do relatório).
 FUNIS = {
-    "instagram": [("alcance", "visitas_perfil", "visitas ao perfil maiores que o alcance"),
+    "instagram": [("alcance", "visitas_perfil_total", "visitas ao perfil maiores que o alcance"),
                   ("visitas_perfil_total", "visitas_perfil",
                    "visitas via anúncio maiores que as visitas totais do perfil (estimativa de cliques na bio "
                    "limitada ao total)"),
-                  ("visitas_perfil", "novos_seguidores", "mais seguidores novos do que visitas ao perfil")],
+                  ("visitas_perfil_total", "novos_seguidores", "mais seguidores novos do que visitas ao perfil")],
+    "instagram_organico": [("alcance", "visitas_perfil", "visitas ao perfil maiores que o alcance"),
+                           ("visitas_perfil", "novos_seguidores", "mais seguidores novos do que visitas ao perfil")],
+    "landing_page": [("impressoes", "cliques", "cliques maiores que as impressões"),
+                     ("cliques", "visualizacoes_pagina", "mais visualizações da página do que cliques no link"),
+                     ("visualizacoes_pagina", "leads", "mais leads do que visualizações da página")],
     "whatsapp": [("impressoes", "alcance", "alcance maior que as impressões"),
                  ("impressoes", "cliques", "cliques maiores que as impressões"),
                  ("cliques", "conversas", "mais conversas do que cliques no link")],
@@ -69,7 +74,11 @@ class Conferencia:
     def _investimento_contra_api(self) -> None:
         """Totais que o agente leu direto da API (campo opcional conferencia.investido_api)."""
         esperado = (self.dados.get("conferencia") or {}).get("investido_api") or {}
-        valores = {"total": self.relatorio.total, **{s.chave: s.investido for s in self.relatorio.secoes}}
+        # Por chave ("whatsapp" = soma dos blocos) e por bloco ("whatsapp:São Paulo").
+        valores = {"total": self.relatorio.total}
+        for s in self.relatorio.pagas:
+            valores[s.chave] = valores.get(s.chave, 0) + s.investido
+            valores[s.id] = s.investido
         for chave, da_api in esperado.items():
             if chave not in valores:
                 self.avisos.append(f"investido_api traz '{chave}', que não existe neste relatório")
@@ -78,8 +87,8 @@ class Conferencia:
                                   f"API {F.moeda(da_api)}")
 
     def _secao(self, secao) -> None:
-        nome = secao.titulo
-        if secao.investido <= 0:
+        nome = f"{secao.titulo} · {secao.tema}" if secao.tema else secao.titulo
+        if secao.investido <= 0 and not secao.sem_investimento:
             self.avisos.append(f"{nome}: investimento zerado; seção sem gasto não deveria entrar")
         for campo, valor in secao.dados.items():
             if isinstance(valor, (int, float)) and not isinstance(valor, bool) and valor < 0:
