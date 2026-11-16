@@ -38,7 +38,7 @@ Campos opcionais em qualquer seção: `tema` (vai no título), e em `instagram`:
 
 | Campo | Nível | Fonte |
 |---|---|---|
-| `alcance` | desejável | `alcance` do `relatorio/instagram_perfil.py` (soma do alcance diário do **perfil**; não o `reach` da campanha) |
+| `alcance` | desejável | `reach` da campanha de seguidores com `breakdowns: ["publisher_platform"]`, só a linha `instagram` (várias campanhas: soma + pendência "alcance somado de N campanhas") |
 | `visitas_perfil` | obrigatório | `results` dos conjuntos com `VISIT_INSTAGRAM_PROFILE` (só anúncio; nunca o total do Instagram) |
 | `visitas_perfil_total` | obrigatório | `visitas_perfil_total` do `instagram_perfil.py` |
 | `cliques_bio_total` | obrigatório | `cliques_bio_total` do `instagram_perfil.py` |
@@ -80,7 +80,7 @@ Campos opcionais em qualquer seção: `tema` (vai no título), e em `instagram`:
 - **Custos nunca vão no JSON** (por seguidor, por conversa, por view): o gerador calcula.
 - **Cliques na bio = estimativa via anúncio (15/11/2026).** Nenhuma API separa o clique na bio por origem [Provável], e a API de anúncios não tem métrica de cliques na bio nem campo dedicado de visitas ao perfil (testado com `ads_get_field_context`) [Certa]. O gerador calcula `cliques_bio_total × visitas_perfil ÷ visitas_perfil_total` (`SecaoInstagram.estimar_cliques_bio`), supondo que quem vem do anúncio clica na bio na mesma taxa do orgânico; fração limitada a 100% com aviso. Sem um dos três números: ERRO. API do Instagram falhou (erro 190 = token vencido): parar e avisar o gestor.
 - **Novos seguidores = vindos de TODAS as campanhas (15/11/2026).** Kondo 01 a 15/11/2026 = 72 na conta (seguidores 7 + vídeo topo 6 + vídeo meio 1 + landing page 41 + WhatsApp 17). Não é só a campanha de seguidores nem o perfil inteiro (2.858, com orgânico). Custo por seguidor = investido na campanha de Instagram ÷ esse total. O gestor aceitou que não bate com o relatório feito à mão, que usava o perfil inteiro (out/2026: 250 no Midas contra 12,8 mil no PDF).
-- **Alcance do Instagram = soma do alcance diário do perfil (15/11/2026)**, como no relatório feito à mão (Kondo out/2026: 1.139.568 contra 1.109.430 no PDF). O `reach` da campanha (34.757) não é usado.
+- **Instagram pago: alcance do anúncio no Instagram, não do perfil (15/11/2026, substitui a regra anterior do mesmo dia).** O gestor quer só as pessoas alcançadas pelo anúncio de seguidores, entregue no Instagram (alcance único, não impressões). Kondo out/2026: 28.546 no Instagram (Facebook 7.750, fora; impressões no Instagram 57.245, não usadas). A soma do alcance diário do perfil (1.139.568) foi abandonada: juntava orgânico e contava a mesma pessoa uma vez por dia. O `instagram_perfil.py` continua dando `alcance` só para o `instagram_organico`.
 - **Visitas ao perfil (`visitas_perfil`)** = `results` com indicador `profile_visit_view`, que só existe se o conjunto otimiza `VISIT_INSTAGRAM_PROFILE`. Nunca trocar pelo `profile_views` do Instagram (a estimativa viraria 100%).
 - **Instagram aceita no máximo 30 dias por consulta** (15/11/2026): o `instagram_perfil.py` divide e soma; alcance somado de 2 janelas é aproximado.
 - **15 seg = ThruPlay** (15 s ou vídeo completo). Em vídeo curto o 50% pode passar do ThruPlay: é normal (a conferência não reclama). Das métricas extras de vídeo só entra o tempo médio; nada de reproduções totais, 2 s, 3 s, 25% ou 100%.

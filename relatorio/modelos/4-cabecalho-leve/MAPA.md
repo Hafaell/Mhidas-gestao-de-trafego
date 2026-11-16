@@ -81,7 +81,7 @@ Card novo que precisa de **número novo** (ex.: "Custo por clique") não é só 
 
 | Seção | Cards |
 |---|---|
-| Instagram (Topo) | Valor investido, Alcance, Visitas ao perfil, Cliques na bio (est. anúncio), Novos seguidores ("vindos de todas as campanhas"), Custo por seguidor. Extra por cliente: Custo por visita ao perfil |
+| Instagram (Topo) | Valor investido, Alcance no Instagram (só anúncio de seguidores), Visitas ao perfil, Cliques na bio (est. anúncio), Novos seguidores ("vindos de todas as campanhas"), Custo por seguidor. Extra por cliente: Custo por visita ao perfil |
 | Instagram orgânico (Topo) | Alcance do perfil, Visitas ao perfil, Cliques na bio, Novos seguidores; sem valor investido (fora do total) |
 | Vídeo de topo (azul) e de meio (laranja) | Linha de cima: Valor gasto, Visualização 15 seg, Custo 15 seg, Tempo médio assistido (some sem dado). Abaixo à esquerda: 50%, 75%, 95% com o custo de cada. À direita: funil em trapézios (15 seg, 50%, 95%), largura fixa decrescente (forma, não escala) |
 | Landing page (Fundo) | Valor investido, Impressões, Cliques no link, Visualizações da página, Leads (ou "Conversões"), Custo por lead |

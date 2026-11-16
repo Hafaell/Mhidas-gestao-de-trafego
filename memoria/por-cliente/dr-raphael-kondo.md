@@ -75,7 +75,7 @@ Copiar para `clientes/dr-raphael-kondo.json` (`classificacao` e `layout`). Com i
 | Total investido | R$ 4.034,96 | R$ 4.034,96 | igual |
 | Instagram: investido | R$ 621,02 | R$ 621,02 | igual |
 | Instagram: novos seguidores | 12,8 mil | 250 | **diferente de propósito**: regra do gestor de 15/11/2026, seguidores vindos de todas as campanhas (o PDF usava o perfil inteiro, 12.772) |
-| Instagram: alcance | 1.109.430 | 1.139.568 | 2,7% acima (corrigido: soma diária do perfil; antes era o alcance da campanha, 34.757) |
+| Instagram: alcance | 1.109.430 | 28.546 | **diferente de propósito** (regra do gestor, 15/11/2026): card virou "Alcance no Instagram", só do anúncio de seguidores no Instagram. O PDF e a versão anterior do Midas (1.139.568) usavam a soma do alcance diário do perfil, com orgânico |
 | Instagram: custo por seguidor | R$ 0,04 | R$ 2,48 | 621,02 ÷ 250 (regra nova). Com o perfil inteiro daria R$ 0,05; origem do R$ 0,04 do PDF não identificada |
 | Instagram: visitas ao perfil | 39.248 | 1.355 (anúncio) | **não identificado**: o perfil inteiro teve 24.310 visitas no mês, menos que o PDF |
 | Instagram: cliques na bio | 2.007 | ~185 (estimativa via anúncio) | **não identificado**: o perfil inteiro teve 3.311; o Midas mostra a estimativa via anúncio (regra de 15/11) |

@@ -60,7 +60,8 @@ Campos e fontes: partes 2 e 3 do `relatorio/CONTRATO-DADOS.md`. Como buscar:
 
 - Meta Ads: uma `ads_get_ad_entities` por período (atual e anterior), `level: "campaign"`, `object_ids` com as campanhas de cada seção. Confirme campo novo com `ads_get_field_context` antes.
 - Seguidores (`novos_seguidores` do `instagram`): `ads_get_ad_entities` com `level: "ad_account"` e `instagram_profile_follow_v2`, período atual e anterior.
-- Perfil do Instagram (alcance, visitas totais, cliques na bio, seguidores do orgânico): `python3 relatorio/instagram_perfil.py <ig-user-id> <início> <fim>`, período atual e anterior. O `ig-user-id` vem de `ads_get_ig_accounts` (perfil do `@` do cliente; pode precisar de mais de uma página). O script lê o token do `.env` sem mostrar e divide em janelas de 30 dias. **Saída 2 = token vencido (erro 190): pare e devolva Status FALHOU.**
+- Alcance do `instagram` (pago): `ads_get_ad_entities` da campanha de seguidores com `reach` e `breakdowns: ["publisher_platform"]`, só a linha `instagram`, período atual e anterior.
+- Perfil do Instagram (visitas totais, cliques na bio; alcance e seguidores só do orgânico): `python3 relatorio/instagram_perfil.py <ig-user-id> <início> <fim>`, período atual e anterior. O `ig-user-id` vem de `ads_get_ig_accounts` (perfil do `@` do cliente; pode precisar de mais de uma página). O script lê o token do `.env` sem mostrar e divide em janelas de 30 dias. **Saída 2 = token vencido (erro 190): pare e devolva Status FALHOU.**
 - `cliques_bio_total` e `visitas_perfil_total` nunca ficam `null` no `instagram`.
 - Nunca calcule custo nem `cliques_bio` (pago). Nunca invente número: sem dado, `null` + pendência.
 - Se o resultado trouxer `next_actions` com `read_only: true`, execute como o conector pede. Nunca execute ação com `requires_user_confirmation: true`.

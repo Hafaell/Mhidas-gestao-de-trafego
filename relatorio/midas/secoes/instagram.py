@@ -43,7 +43,9 @@ class SecaoInstagram(Secao):
         v, a = self.valor, self.valor_anterior
         return [
             Kpi.criar("Valor investido", self.investido, F.moeda, self.investido_anterior, investimento=True),
-            Kpi.criar("Alcance", v("alcance"), F.inteiro, a("alcance")),
+            # Regra do gestor (15/11/2026): alcance da campanha de seguidores só no Instagram (pessoas únicas),
+            # no lugar da soma do alcance diário do perfil, que juntava orgânico e passava de 1 milhão.
+            Kpi.criar("Alcance no Instagram", v("alcance"), F.inteiro, a("alcance")),
             Kpi.criar("Visitas ao perfil", v("visitas_perfil"), F.inteiro, a("visitas_perfil")),
             Kpi.criar("Cliques na bio (est. anúncio)", v("cliques_bio"), F.inteiro, a("cliques_bio")),
             # Regra do gestor (15/11/2026): seguidores vindos de TODAS as campanhas (instagram_profile_follow_v2
@@ -65,14 +67,14 @@ class SecaoInstagram(Secao):
         return cards
 
     def montar_fluxo(self):
-        # Alcance e visitas são do perfil inteiro; seguidores, de todas as campanhas (regras de 15/11/2026).
+        # Alcance e visitas vêm do anúncio de seguidores; seguidores, de todas as campanhas (regras de 15/11/2026).
         v = self.dados.get
-        return Fluxo("Do alcance ao seguidor", [
-            PassoFluxo("Alcance do perfil", F.inteiro(v("alcance"))),
-            PassoFluxo("Visitas ao perfil", F.inteiro(v("visitas_perfil_total")),
-                       F.percentual(Calculo.dividir(v("visitas_perfil_total"), v("alcance"))), "visitaram o perfil"),
+        return Fluxo("Do anúncio ao seguidor", [
+            PassoFluxo("Alcance no Instagram", F.inteiro(v("alcance"))),
+            PassoFluxo("Visitas ao perfil", F.inteiro(v("visitas_perfil")),
+                       F.percentual(Calculo.dividir(v("visitas_perfil"), v("alcance"))), "visitaram o perfil"),
             PassoFluxo("Novos seguidores", F.inteiro(v("novos_seguidores")),
-                       F.percentual(Calculo.dividir(v("novos_seguidores"), v("visitas_perfil_total"))),
+                       F.percentual(Calculo.dividir(v("novos_seguidores"), v("visitas_perfil"))),
                        "das visitas viraram seguidores"),
         ])
 

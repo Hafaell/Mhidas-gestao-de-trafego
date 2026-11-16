@@ -16,7 +16,7 @@ TOLERANCIA_REAIS = 0.01
 # (campo maior, campo menor, texto). Se o "menor" passar do "maior", algo está estranho.
 # Vídeo fica de fora de propósito: 50% pode passar do ThruPlay (ver memória do relatório).
 FUNIS = {
-    "instagram": [("alcance", "visitas_perfil_total", "visitas ao perfil maiores que o alcance"),
+    "instagram": [("alcance", "visitas_perfil", "visitas ao perfil via anúncio maiores que o alcance"),
                   ("visitas_perfil_total", "visitas_perfil",
                    "visitas via anúncio maiores que as visitas totais do perfil (estimativa de cliques na bio "
                    "limitada ao total)"),
