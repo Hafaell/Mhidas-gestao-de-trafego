@@ -1,5 +1,7 @@
 # Renovare Clínica
 
+Este arquivo é a fonte do relatório deste cliente: como ele é montado e o JSON que o gerador usa. Instagram, Drive e demais dados do Notion: `memoria/CLIENTES-ATIVOS.md`.
+
 Fonte: `[Renovare]_Relatórios_FB_3.0.pdf` (out/2026) e campanhas lidas no Meta Ads em 15/11/2026.
 
 ## Identificação
@@ -22,5 +24,22 @@ Em 15/11/2026 as duas estavam **pausadas**, mas gastaram em out/2026.
 1. Investimento (Total = Fundo) + Captação de Leads (Valor Investido, Impressões, Cliques, Conversas Iniciadas, Custo/Lead).
 2. Google Ads (Search de leads; termos: urologista em Brasília, consulta urologista).
 
-## Números de referência (out/2026)
-Total R$ 1.347,98 (Novo N 1.291,46 + Agendamento 56,52). WhatsApp: 74.834 impressões, 657 cliques, 163 conversas, R$ 8,27/conversa.
+## JSON do relatório
+
+É o cadastro e a configuração do relatório. O `coletor-dados` lê este bloco direto daqui e grava nele a classificação nova e a foto; mudança de campanha, layout ou tema também se faz aqui. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
+
+```json
+{
+  "nome": "Renovare Clínica",
+  "apelidos": [],
+  "descricao": "",
+  "ad_account_id": "1754718338672052",
+  "instagram": "@renovareclinica",
+  "foto": null,
+  "tema_video": null,
+  "classificacao": {},
+  "layout": {}
+}
+```
+
+`classificacao` vazia: o `coletor-dados` classifica as campanhas na primeira geração (Passo 1b) e o resultado volta para este bloco.

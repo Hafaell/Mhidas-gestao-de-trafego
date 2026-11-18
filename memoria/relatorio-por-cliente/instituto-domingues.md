@@ -1,5 +1,7 @@
 # Instituto Domingues (estética do Dr. Rodrigo Domingues)
 
+Este arquivo é a fonte do relatório deste cliente: como ele é montado e o JSON que o gerador usa. Instagram, Drive e demais dados do Notion: `memoria/CLIENTES-ATIVOS.md`.
+
 Fonte: `[Estetica_Rodrigo_Domingues]_Relatórios_FB_3.0.pdf` (out/2026) e campanhas lidas no Meta Ads em 15/11/2026.
 
 ## Identificação
@@ -28,15 +30,19 @@ Em 15/11/2026 as quatro estavam **pausadas**, mas gastaram em out/2026.
 
 Sem página de Google Ads.
 
-## Números de referência (out/2026)
-Total R$ 1.013,57 (Topo 559,98 = seguidores 377,44 + vídeo 182,54 · Meio 151,23 · Fundo 302,36), cerca de 51% a menos que o mês anterior. Instagram: alcance 67.692, visitas 1.789, cliques na bio 50, 174 seguidores, R$ 2,16/seguidor. WhatsApp: 6.980 impressões, 3.668 alcance, 41 cliques, 10 conversas, R$ 30,24. Vídeo topo: 15 seg 2.568. Vídeo meio: 15 seg 1.601.
+## JSON do relatório
 
-## Configuração do relatório (layout no Midas, 15/11/2026)
-
-Copiar para `clientes/instituto-domingues.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
+É o cadastro e a configuração do relatório. O `coletor-dados` lê este bloco direto daqui e grava nele a classificação nova e a foto; mudança de campanha, layout ou tema também se faz aqui. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
 
 ```json
 {
+  "nome": "Instituto Domingues",
+  "apelidos": [],
+  "descricao": "",
+  "ad_account_id": "880566547457944",
+  "instagram": "@instituto.domingues",
+  "foto": null,
+  "tema_video": null,
   "classificacao": {
     "120217786722210553": "instagram",
     "120217792613920553": "video_topo",
@@ -55,16 +61,3 @@ Copiar para `clientes/instituto-domingues.json` (`classificacao` e `layout`). Co
   }
 }
 ```
-
-## Conferência: relatório feito à mão (out/2026) x layout novo
-
-| No PDF | No Midas |
-|---|---|
-| Investimento (Total, Topo, Meio, Fundo) | igual: bloco "Investimento do período" soma por etapa |
-| Rótulos "Topo (Pessoas novas)", "Meio (Pessoas engajadas)", "Fundo (Foco em consulta)" | igual (`rotulos_etapa`) |
-| Crescimento do Instagram (6 cards) | igual; o custo se chama "Custo por seguidor" e os cliques na bio são a estimativa via anúncio (regra de 15/11/2026) |
-| Campanhas de Captação de Leads MELA (com Alcance) | igual: "Captação de leads no WhatsApp · MELA" |
-| Topo e Meio de Funil Video View (Mela) | igual: "Vídeo de topo de funil · Mela" e "Vídeo de meio de funil · Mela" |
-
-- As campanhas estavam pausadas em 15/11/2026: mês sem gasto não gera seção.
-- O Midas acrescenta páginas que o PDF não tinha: fluxos ("Do anúncio ao resultado"), comparação com o período anterior e evolução mensal.

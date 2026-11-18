@@ -1,5 +1,7 @@
 # Clínica CEIOF
 
+Este arquivo é a fonte do relatório deste cliente: como ele é montado e o JSON que o gerador usa. Instagram, Drive e demais dados do Notion: `memoria/CLIENTES-ATIVOS.md`.
+
 Fonte: `[Clinica_CEIOF]_Relatórios_FB_3.0.pdf` (out/2026) e conector Meta Ads em 15/11/2026.
 
 ## Identificação
@@ -16,3 +18,23 @@ O relatório antigo de out/2026 tem **só a página de Google Ads** (Search de l
 
 ## Em aberto
 - Não se sabe se o cliente tem campanha no Meta. Com o conector desligado, não dá para conferir. Perguntar ao gestor antes de montar.
+
+## JSON do relatório
+
+É o cadastro e a configuração do relatório. O `coletor-dados` lê este bloco direto daqui e grava nele a classificação nova e a foto; mudança de campanha, layout ou tema também se faz aqui. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
+
+```json
+{
+  "nome": "Clínica CEIOF",
+  "apelidos": [],
+  "descricao": "",
+  "ad_account_id": "1231637101726635",
+  "instagram": "@ceiof",
+  "foto": null,
+  "tema_video": null,
+  "classificacao": {},
+  "layout": {}
+}
+```
+
+`classificacao` vazia: o `coletor-dados` classifica as campanhas na primeira geração (Passo 1b) e o resultado volta para este bloco.

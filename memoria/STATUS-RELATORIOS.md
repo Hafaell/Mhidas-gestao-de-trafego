@@ -1,6 +1,6 @@
 # STATUS DOS RELATÓRIOS: quem dá para gerar hoje
 
-**Conferido em 15/11/2026** (atualizado no mesmo dia: o modelo ganhou as seções que faltavam). Leia o resumo e a tabela. Detalhes de cada cliente: `memoria/por-cliente/<cliente>.md`.
+**Conferido em 15/11/2026** (atualizado no mesmo dia: o modelo ganhou as seções que faltavam). Leia o resumo e a tabela. Detalhes de cada cliente: `memoria/relatorio-por-cliente/<cliente>.md`.
 
 ## Resumo
 
@@ -11,7 +11,7 @@
 | ⛔ **Não dá para gerar**: a Meta não liberou a conta no conector | COG, CEIOF, Dr. Rodrigo Villalva, Defesa Plena | 4 |
 | ❓ Faltam dados | Doc Circle (conta de anúncio não achada) | 1 |
 
-**Relatório já gerado de verdade:** só o **Dr. Rodrigo Domingues** (tem cadastro e histórico em `clientes/`). Os outros ainda não foram rodados; "dá para gerar" quer dizer que a conta está acessível e a estrutura foi mapeada, não que o relatório saiu [Certa].
+**Relatório já gerado de verdade:** só o **Dr. Rodrigo Domingues** (tem foto e histórico em `clientes/`). Os outros ainda não foram rodados; "dá para gerar" quer dizer que a conta está acessível e a estrutura foi mapeada, não que o relatório saiu [Certa].
 
 ## ⛔ Os 4 que NÃO dá para gerar (fazer à mão por enquanto)
 

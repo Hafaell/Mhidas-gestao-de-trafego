@@ -1,5 +1,7 @@
 # Sanos Life
 
+Este arquivo é a fonte do relatório deste cliente: como ele é montado e o JSON que o gerador usa. Instagram, Drive e demais dados do Notion: `memoria/CLIENTES-ATIVOS.md`.
+
 Fonte: `[Sanos_Life]_Relatórios_FB_3.0.pdf` (out/2026) e campanhas lidas no Meta Ads em 15/11/2026.
 
 ## Identificação
@@ -21,5 +23,22 @@ Topo (Instagram) + Meio (vídeo). **Sem WhatsApp e sem landing page.**
 2. Investimento + Meio de Funil Video View (cards padrão).
 3. Google Ads (Search de leads + Display). É o maior investimento do cliente (R$ 6.219,88 em out/2026, contra R$ 425,20 no Meta).
 
-## Números de referência (out/2026)
-Meta R$ 425,20 (Topo 242,01 · Meio 183,19). Instagram: alcance 16.828, visitas 4.199, cliques na bio 273, seguidores 352, R$ 1,01/seguidor. Vídeo: 15 seg 9.057 (R$ 0,02), 50% 8.631, 75% 7.895, 95% 6.991.
+## JSON do relatório
+
+É o cadastro e a configuração do relatório. O `coletor-dados` lê este bloco direto daqui e grava nele a classificação nova e a foto; mudança de campanha, layout ou tema também se faz aqui. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
+
+```json
+{
+  "nome": "Sanos Life",
+  "apelidos": [],
+  "descricao": "",
+  "ad_account_id": "377748377317593",
+  "instagram": "@sanoslife",
+  "foto": null,
+  "tema_video": null,
+  "classificacao": {},
+  "layout": {}
+}
+```
+
+`classificacao` vazia: o `coletor-dados` classifica as campanhas na primeira geração (Passo 1b) e o resultado volta para este bloco.

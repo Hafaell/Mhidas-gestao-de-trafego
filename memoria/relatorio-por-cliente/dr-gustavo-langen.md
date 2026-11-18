@@ -1,5 +1,7 @@
 # Dr. Gustavo Langen
 
+Este arquivo é a fonte do relatório deste cliente: como ele é montado e o JSON que o gerador usa. Instagram, Drive e demais dados do Notion: `memoria/CLIENTES-ATIVOS.md`.
+
 Fonte: `[Dr_Gustavo_Langen]_Relatórios_FB_3.0.pdf` (out/2026) e campanhas lidas no Meta Ads em 15/11/2026.
 
 ## Identificação
@@ -29,19 +31,19 @@ A cidade está no nome da campanha (`[SP]`, `[CAMPINAS]`).
 
 Sem página de Google Ads.
 
-## Números de referência (out/2026)
-Total R$ 5.567,41 (Topo 2.640,69 = seguidores 1.397,83 + vídeo 1.242,86 · Meio 930,34 · Fundo 1.996,38).
-- Instagram: alcance 211.882, visitas 3.532, cliques na bio 122, 1 mil seguidores, R$ 1,39/seguidor.
-- WhatsApp São Paulo: R$ 1.391,32, 60.657 impressões, 417 cliques, 176 conversas, R$ 7,91.
-- WhatsApp Campinas: R$ 605,06, 38.030 impressões, 152 cliques, 50 conversas, R$ 12,10.
-- Vídeo topo: 15 seg 19.784 (R$ 0,06). Vídeo meio: 15 seg 11.870 (R$ 0,17 no PDF).
+## JSON do relatório
 
-## Configuração do relatório (layout no Midas, 15/11/2026)
-
-Copiar para `clientes/dr-gustavo-langen.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
+É o cadastro e a configuração do relatório. O `coletor-dados` lê este bloco direto daqui e grava nele a classificação nova e a foto; mudança de campanha, layout ou tema também se faz aqui. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
 
 ```json
 {
+  "nome": "Dr. Gustavo Langen",
+  "apelidos": [],
+  "descricao": "",
+  "ad_account_id": "507254411405150",
+  "instagram": "@drgustavolangen",
+  "foto": null,
+  "tema_video": null,
   "classificacao": {
     "120240476892160202": "instagram",
     "120232722534820202": "video_topo",
@@ -59,17 +61,3 @@ Copiar para `clientes/dr-gustavo-langen.json` (`classificacao` e `layout`). Com 
   }
 }
 ```
-
-## Conferência: relatório feito à mão (out/2026) x layout novo
-
-| No PDF | No Midas |
-|---|---|
-| Investimento (Total, Topo, Meio, Fundo) | igual: bloco "Investimento do período" soma por etapa |
-| Crescimento do Instagram (6 cards) | igual; o custo se chama "Custo por seguidor" e os cliques na bio são a estimativa via anúncio (regra de 15/11/2026) |
-| Captação de Leads em 2 blocos (São Paulo e Campinas) | igual: dois blocos "Leads no WhatsApp · São Paulo" e "· Campinas" (lista `whatsapp` com `bloco`) |
-| Topo de Funil Video View | igual: página "Vídeo de topo de funil" (azul), mesmos cards e funil |
-| Meio de Funil Video View (2 campanhas somadas) | igual (somadas) |
-
-- Instagram + 2 blocos de WhatsApp = 3 blocos: página 1 com cards compactos.
-- No PDF, vídeo de topo e de meio dividiam a mesma página; no Midas cada um tem a sua (cabe o funil de cada).
-- O Midas acrescenta páginas que o PDF não tinha: fluxos ("Do anúncio ao resultado"), comparação com o período anterior e evolução mensal.

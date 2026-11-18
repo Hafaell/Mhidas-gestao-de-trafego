@@ -1,5 +1,7 @@
 # Instituto Reluz (Reluz Materno Infantil)
 
+Este arquivo é a fonte do relatório deste cliente: como ele é montado e o JSON que o gerador usa. Instagram, Drive e demais dados do Notion: `memoria/CLIENTES-ATIVOS.md`.
+
 Fonte: `[Instituto_Reluz]_Relatórios_FB_3.0.pdf` (out/2026) e campanhas lidas no Meta Ads em 15/11/2026.
 
 ## Identificação
@@ -21,15 +23,19 @@ Vídeo de topo + WhatsApp. **Sem campanha de seguidores (não tem seção de Ins
 2. Investimento + Topo de Funil Video View (cards padrão).
 3. Google Ads (Search; termos: fono infantil, fono infantil Brasília, fonoaudiólogo infantil).
 
-## Números de referência (out/2026)
-Total R$ 908,94 (Topo vídeo 305,11 · Fundo 603,83). WhatsApp: 80.947 impressões, 231 cliques, 25 conversas, R$ 24,15. Vídeo topo: 15 seg 6.341, 50% 17.056, 75% 9.990, 95% 6.578. Nesse vídeo curto o 50% passa do 15 seg, o que é normal.
+## JSON do relatório
 
-## Configuração do relatório (layout no Midas, 15/11/2026)
-
-Copiar para `clientes/instituto-reluz.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
+É o cadastro e a configuração do relatório. O `coletor-dados` lê este bloco direto daqui e grava nele a classificação nova e a foto; mudança de campanha, layout ou tema também se faz aqui. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
 
 ```json
 {
+  "nome": "Instituto Reluz",
+  "apelidos": [],
+  "descricao": "",
+  "ad_account_id": "1003900615567848",
+  "instagram": "@reluz.maternoinfantil",
+  "foto": null,
+  "tema_video": null,
   "classificacao": {
     "120249925448730275": "video_topo",
     "120249924944830275": "whatsapp"
@@ -37,16 +43,3 @@ Copiar para `clientes/instituto-reluz.json` (`classificacao` e `layout`). Com is
   "layout": {}
 }
 ```
-
-## Conferência: relatório feito à mão (out/2026) x layout novo
-
-| No PDF | No Midas |
-|---|---|
-| Investimento (Total, Topo, Meio, Fundo) | igual: bloco "Investimento do período" soma por etapa |
-| Captação de Leads (WhatsApp) | igual, com o card Alcance a mais |
-| Topo de Funil Video View | igual: página "Vídeo de topo de funil" (azul), mesmos cards e funil |
-| Página de Google Ads | **fica de fora**: Google Ads é fase futura do Midas |
-
-- Sem Instagram e sem vídeo de meio: página 1 só com WhatsApp, página 2 com o vídeo de topo.
-- Vídeo curto: o 50% passa do 15 seg; o funil mantém a forma (é normal).
-- O Midas acrescenta páginas que o PDF não tinha: fluxos ("Do anúncio ao resultado"), comparação com o período anterior e evolução mensal.

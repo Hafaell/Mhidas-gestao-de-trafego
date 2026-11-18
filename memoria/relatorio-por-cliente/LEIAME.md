@@ -1,8 +1,8 @@
-# Memória por cliente
+# Memória por cliente (como o relatório de cada um é montado)
 
-Um arquivo por cliente dizendo **o que o relatório dele tem**: tipos de campanha, seções, títulos, divisões e particularidades. Não muda o jeito de montar o relatório (isso está em `memoria/relatorio-meta-ads.md` e no agente `coletor-dados`); só descreve o cliente.
+Um arquivo por cliente com **só o que o relatório dele precisa**: tipos de campanha, seções, títulos, divisões, decisões do gestor e o bloco **"JSON do relatório"** (cadastro e configuração que o gerador lê; a skill `relatorio-cliente` grava esse bloco em `clientes/<slug>.json`). Não muda o jeito geral de montar (isso está em `memoria/relatorio-meta-ads.md` e no agente `coletor-dados`).
 
-Fontes (15/11/2026): os relatórios feitos à mão de out/2026 (`memoria/relatorios-feitos-a-mão-dos-clientes/`, só no computador do gestor, fora do git) e as campanhas com gasto em out/2026 lidas no conector Meta Ads. Decisão nova do gestor sobre um cliente vai para o arquivo dele, com data.
+Dados gerais do cliente (Instagram, Drive, Planilha Div, tags do Notion, quem está ativo): `memoria/CLIENTES-ATIVOS.md`. Números de referência e conferências com os PDFs antigos de out/2026 foram tirados em 17/11/2026 (continuam no histórico do git). Decisão nova do gestor sobre um cliente vai para o arquivo dele, com data.
 
 **Quem dá e quem não dá para gerar hoje: `memoria/STATUS-RELATORIOS.md`.**
 
@@ -61,7 +61,7 @@ CP1, CP2 e CP3 = topo, meio e fundo.
 
 ## O que os relatórios antigos tinham e como o Midas faz hoje (15/11/2026)
 
-Cada arquivo de cliente tem o bloco **"Configuração do relatório"** (`classificacao` + `layout` para copiar no `clientes/<slug>.json`) e a **conferência** PDF x layout novo.
+Cada arquivo de cliente tem o bloco **"JSON do relatório"** (cadastro, `classificacao` e `layout`), que o `coletor-dados` lê direto.
 
 | Do relatório feito à mão | No Midas |
 |---|---|

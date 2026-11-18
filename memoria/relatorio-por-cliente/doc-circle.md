@@ -1,5 +1,7 @@
 # Doc Circle
 
+Este arquivo é a fonte do relatório deste cliente: como ele é montado e o JSON que o gerador usa. Instagram, Drive e demais dados do Notion: `memoria/CLIENTES-ATIVOS.md`.
+
 Fonte: `[Doc_Circle]_Relatórios_FB_3.0.pdf` (out/2026). Cliente ativo, mas **fora do Notion** (o gestor esqueceu de cadastrar, informado em 15/11/2026).
 
 ## Identificação
@@ -16,20 +18,29 @@ Só **landing page** (fundo de funil). Sem Instagram, sem vídeo e sem WhatsApp.
 
 Sem página de Google Ads.
 
-## Números de referência (out/2026)
-Total R$ 1.506,90 (+86,5% sobre o mês anterior). 120 cliques, 71 landing page views, 19 conversões, R$ 8,25/conversão. O custo por conversão do PDF não fecha com 1.506,90 ÷ 19 (daria R$ 79,31) [Certa]: um dos dois cards estava errado ou media outra coisa [Provável].
-
 ## Em aberto
 - Conta de anúncio, Instagram e nome das campanhas.
 
-## Configuração do relatório (layout no Midas, 15/11/2026)
+## JSON do relatório
+
+É o cadastro e a configuração do relatório. O `coletor-dados` lê este bloco direto daqui e grava nele a classificação nova e a foto; mudança de campanha, layout ou tema também se faz aqui. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
 
 ```json
 {
+  "nome": "Doc Circle",
+  "apelidos": [],
+  "descricao": "",
+  "ad_account_id": null,
+  "instagram": null,
+  "foto": null,
+  "tema_video": null,
+  "classificacao": {},
   "layout": {
     "nome_resultado_lp": "Conversões"
   }
 }
 ```
+
+`classificacao` vazia: o `coletor-dados` classifica as campanhas na primeira geração (Passo 1b) e o resultado volta para este bloco.
 
 Só a seção `landing_page`, com o resultado chamado "Conversões" (como no PDF). Falta a conta de anúncio.

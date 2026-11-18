@@ -23,17 +23,18 @@ Extraia da mensagem do gestor:
 
 | Item | Regra |
 |---|---|
-| Clientes | Um ou vários nomes. "Todos" = todos os arquivos em `clientes/`. |
+| Clientes | Um ou vários nomes. "Todos" = todos os clientes de `memoria/CLIENTES-ATIVOS.md`. |
 | Período | Mês citado ("relatório de outubro"). Sem mês: **mês anterior completo** (dia 1 ao último dia). |
 | Período anterior | **Os mesmos dias do mês anterior**, com a mesma quantidade de dias (pediu 09 a 20/11, compara com 09 a 20/10; nunca os dias imediatamente antes). Calcule com `python3 relatorio/gerar.py --periodo-anterior <início> <fim>`, sem fazer a conta de cabeça. Regra completa em `memoria/relatorio-meta-ads.md`. |
 
 ## Passo 2: localizar cada cliente
 
-Para cada nome, procure em `clientes/*.json` (campos `nome` e `apelidos`, sem diferenciar maiúscula nem acento).
+Para cada nome:
 
-- **Achou um:** use o arquivo. Se ele não tiver `layout` e a memória do cliente tiver o bloco "Configuração do relatório", copie `layout` (e as `classificacao` que faltarem) para o arquivo antes de despachar.
-- **Achou mais de um:** pergunte qual.
-- **Não achou:** veja antes se o cliente está em `memoria/por-cliente/LEIAME.md` (tem a conta de anúncio de cada um); se estiver, crie o `clientes/<slug>.json` com essa conta, o mesmo slug do arquivo de memória e o bloco "Configuração do relatório" da memória (`classificacao` e `layout`, para o relatório sair igual ao feito à mão), sem perguntar (a regra de conta com conector desligado, abaixo, continua valendo). Senão, é cliente novo. Chame `ads_get_ad_accounts` (conector Meta Ads, todas as páginas), mostre as contas com nome parecido e pergunte qual é a do cliente. Com a resposta, crie `clientes/<slug>.json` no formato de `relatorio/exemplos/cliente-config-exemplo.json` (só `nome`, `apelidos`, `ad_account_id`, `descricao` se souber; o coletor completa o resto).
+1. Confirme que é cliente ativo em `memoria/CLIENTES-ATIVOS.md` (lista geral, sem diferenciar maiúscula nem acento). Não está lá: avise o gestor e pare (pode ser desativado ou cliente novo).
+2. **Leia a memória do cliente: `memoria/relatorio-por-cliente/<slug>.md`** (o slug está na coluna "Arquivo" do `CLIENTES-ATIVOS.md`). Ela diz como o relatório dele é montado (seções, títulos, divisões, particularidades) e traz o bloco **"JSON do relatório"**, que é a fonte do cadastro e da configuração. Siga o que ela diz ao despachar os agentes.
+3. Não existe outro arquivo de cadastro: o coletor lê o bloco "JSON do relatório" direto da memória do cliente e grava nele a classificação nova e a foto.
+4. Sem `ad_account_id` no bloco ou conta nova: chame `ads_get_ad_accounts` (conector Meta Ads, todas as páginas), mostre as contas com nome parecido e pergunte qual é a do cliente. Com a resposta, grave no bloco do `.md`. Cliente sem memória em `memoria/relatorio-por-cliente/`: crie o arquivo a partir de outro cliente, com o formato de `relatorio/exemplos/cliente-config-exemplo.json` (só `nome`, `apelidos`, `ad_account_id`, `descricao` se souber; o coletor completa o resto).
 - Conta com `is_queryable: false` ou `is_ads_mcp_enabled: false`: avise o gestor com o motivo e não despache esse cliente.
 
 Mais de 5 clientes de uma vez: confirme a lista com o gestor antes de despachar (regra do CLAUDE.md sobre criar arquivos em massa).
@@ -54,7 +55,7 @@ O `verificar_token.py` confere o `ACCESS_TOKEN` do Instagram (os cliques na bio 
 **Onda 1, coletores:** faça **todas** as chamadas `Agent` na **mesma mensagem**, uma por cliente, com `subagent_type: "coletor-dados"`. Prompt (só isto):
 
 ```
-Cliente: <arquivo clientes/<slug>.json>
+Cliente: <memoria/relatorio-por-cliente/<slug>.md>
 Período: <AAAA-MM-DD> a <AAAA-MM-DD>
 Período anterior: <AAAA-MM-DD> a <AAAA-MM-DD>
 ```
@@ -92,4 +93,4 @@ Pedido de ajuste depois:
 
 - Só leitura. Nenhuma ferramenta do Meta Ads que crie, altere, ative ou apague algo.
 - Regra nova do gestor vai para o arquivo do assunto: dados em `relatorio/CONTRATO-DADOS.md`, visual no `MAPA.md` do modelo, entrega aqui, regra geral em `memoria/relatorio-meta-ads.md`.
-- Decisão nova sobre um cliente (classificação de campanha, tema do vídeo, foto) vai para o `clientes/<slug>.json` dele.
+- Decisão nova sobre um cliente (classificação de campanha, tema do vídeo, foto) vai para a memória dele (`memoria/relatorio-por-cliente/<slug>.md`: o bloco JSON se for configuração, o texto se for regra de montagem). O coletor grava a classificação nova e a foto no bloco JSON do `.md`.

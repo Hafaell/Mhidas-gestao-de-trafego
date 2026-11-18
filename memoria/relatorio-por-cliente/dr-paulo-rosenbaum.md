@@ -1,5 +1,7 @@
 # Dr. Paulo Cesar Rosenbaum
 
+Este arquivo é a fonte do relatório deste cliente: como ele é montado e o JSON que o gerador usa. Instagram, Drive e demais dados do Notion: `memoria/CLIENTES-ATIVOS.md`.
+
 Fonte: `[Dr._Paulo_Rosenbaum]_Relatórios_FB_3.0.pdf` (**período 01 a 22/10/2026**, não o mês inteiro) e campanhas lidas no Meta Ads em 15/11/2026 (out/2026 completo).
 
 ## Identificação
@@ -25,20 +27,19 @@ Instagram (duas campanhas de seguidores) + vídeo de topo + WhatsApp **dividido 
 2. Investimento + Topo de Funil Video View (cards padrão).
 3. Google Ads (Search; termos: clínica especializada em dor, médico especialista em dor, clínica da dor em Campo Grande).
 
-## Números de referência (01 a 22/10/2026, do PDF)
-Total R$ 2.233,89 (Topo 797,52 = seguidores 588,39 + vídeo 209,13 · Fundo 1.436,37).
-- Instagram: alcance 142.925, visitas 1,7 mil, cliques na bio 1,4 mil, 372 seguidores, R$ 1,82/seguidor.
-- Dor: R$ 581,78, 44 conversas, R$ 13,22. Nova Andradina: R$ 585,93, 28 conversas, R$ 20,93. Ivinhema: R$ 268,66, 30 conversas, R$ 8,96.
-- Vídeo topo: 15 seg 3.186 (R$ 0,07).
+## JSON do relatório
 
-Gasto no mês inteiro de out/2026 (conector): seguidores 464,79 + 401,53; vídeo 309,30; Dor 853,88; Nova Andradina 849,33; Ivinhema 392,64.
-
-## Configuração do relatório (layout no Midas, 15/11/2026)
-
-Copiar para `clientes/dr-paulo-rosenbaum.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
+É o cadastro e a configuração do relatório. O `coletor-dados` lê este bloco direto daqui e grava nele a classificação nova e a foto; mudança de campanha, layout ou tema também se faz aqui. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
 
 ```json
 {
+  "nome": "Dr. Paulo Cesar Rosenbaum",
+  "apelidos": [],
+  "descricao": "",
+  "ad_account_id": "725094333687912",
+  "instagram": "@drpaulocesar.rosenbaum",
+  "foto": null,
+  "tema_video": null,
   "classificacao": {
     "120230805172670041": "instagram",
     "120241749296960041": "instagram",
@@ -56,17 +57,3 @@ Copiar para `clientes/dr-paulo-rosenbaum.json` (`classificacao` e `layout`). Com
   }
 }
 ```
-
-## Conferência: relatório feito à mão (out/2026) x layout novo
-
-| No PDF | No Midas |
-|---|---|
-| Investimento (Total, Topo, Meio, Fundo) | igual: bloco "Investimento do período" soma por etapa |
-| Crescimento do Instagram (2 campanhas somadas) | igual (somadas; alcance somado de 2 campanhas vira pendência) |
-| 3 blocos de Captação de Leads: Dor, Nova Andradina, Ivinhema | igual: três blocos "Leads no WhatsApp · <bloco>" |
-| Topo de Funil Video View | igual: página "Vídeo de topo de funil" (azul), mesmos cards e funil |
-| Página de Google Ads | **fica de fora**: Google Ads é fase futura do Midas |
-
-- Instagram + 3 blocos de WhatsApp = 4 blocos: viram 2 páginas de 2 blocos (testado, cabe).
-- Sem vídeo de meio: o investimento mostra só Topo e Fundo, como no PDF.
-- O Midas acrescenta páginas que o PDF não tinha: fluxos ("Do anúncio ao resultado"), comparação com o período anterior e evolução mensal.

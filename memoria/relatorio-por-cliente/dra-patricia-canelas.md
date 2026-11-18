@@ -1,5 +1,7 @@
 # Dra. Patrícia Canelas
 
+Este arquivo é a fonte do relatório deste cliente: como ele é montado e o JSON que o gerador usa. Instagram, Drive e demais dados do Notion: `memoria/CLIENTES-ATIVOS.md`.
+
 Fonte: `[Patricia_Canela]_Relatórios_FB_3.0.pdf` (out/2026) e campanhas lidas no Meta Ads em 15/11/2026.
 
 ## Identificação
@@ -23,15 +25,19 @@ Instagram + vídeo de topo + vídeo de meio + WhatsApp.
 2. Investimento + Topo de Funil Video View + Meio de Funil Video View (cards padrão).
 3. Google Ads (várias campanhas de Search por tema).
 
-## Números de referência (out/2026)
-Total R$ 1.621,36 (Topo 522,20 = seguidores 173,62 + vídeo 348,58 · Meio 243,18 · Fundo 855,98). Instagram: alcance 5.865, visitas 2.003 (R$ 0,08/visita), cliques na bio 623, 336 seguidores, R$ 0,51/seguidor. WhatsApp: 34.230 impressões, 155 cliques, 63 conversas, R$ 13,59. Vídeo topo: 15 seg 5.594 (R$ 0,06). Vídeo meio: 15 seg 2.220 (R$ 0,06).
+## JSON do relatório
 
-## Configuração do relatório (layout no Midas, 15/11/2026)
-
-Copiar para `clientes/dra-patricia-canelas.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
+É o cadastro e a configuração do relatório. O `coletor-dados` lê este bloco direto daqui e grava nele a classificação nova e a foto; mudança de campanha, layout ou tema também se faz aqui. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
 
 ```json
 {
+  "nome": "Dra. Patrícia Canelas",
+  "apelidos": [],
+  "descricao": "",
+  "ad_account_id": "352376624307091",
+  "instagram": "@patricia.urologista",
+  "foto": null,
+  "tema_video": null,
   "classificacao": {
     "120233309208820345": "instagram",
     "120210684872620345": "video_topo",
@@ -45,17 +51,3 @@ Copiar para `clientes/dra-patricia-canelas.json` (`classificacao` e `layout`). C
   }
 }
 ```
-
-## Conferência: relatório feito à mão (out/2026) x layout novo
-
-| No PDF | No Midas |
-|---|---|
-| Investimento (Total, Topo, Meio, Fundo) | igual: bloco "Investimento do período" soma por etapa |
-| Crescimento do Instagram com 7 cards (inclui "Custo/Visitas ao perfil") | igual: card extra "Custo por visita ao perfil" (`instagram_extras`), grade de 4 colunas |
-| Captação de Leads (WhatsApp) | igual, com o card Alcance a mais |
-| Topo de Funil Video View | igual: página "Vídeo de topo de funil" (azul), mesmos cards e funil |
-| Meio de Funil Video View | igual: página "Vídeo de meio de funil" (laranja) |
-| Página de Google Ads | **fica de fora**: Google Ads é fase futura do Midas |
-
-- No PDF, vídeo de topo e de meio dividiam a mesma página; no Midas cada um tem a sua (cabe o funil de cada).
-- O Midas acrescenta páginas que o PDF não tinha: fluxos ("Do anúncio ao resultado"), comparação com o período anterior e evolução mensal.

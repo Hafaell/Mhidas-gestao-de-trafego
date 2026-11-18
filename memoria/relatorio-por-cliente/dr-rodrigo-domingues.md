@@ -1,6 +1,8 @@
 # Dr. Rodrigo Domingues
 
-Fonte: `[Dr_Rodrigo_Domingues]_Relatórios_FB_3.0.pdf` (out/2026), campanhas lidas no Meta Ads em 15/11/2026 e `clientes/dr-rodrigo-domingues.json`.
+Este arquivo é a fonte do relatório deste cliente: como ele é montado e o JSON que o gerador usa. Instagram, Drive e demais dados do Notion: `memoria/CLIENTES-ATIVOS.md`.
+
+Fonte: `[Dr_Rodrigo_Domingues]_Relatórios_FB_3.0.pdf` (out/2026), campanhas lidas no Meta Ads em 15/11/2026 e o JSON abaixo.
 
 ## Identificação
 - Notion: "Rodrigo Domingues". Tags: Planilha Div, Seguidores, Caixinhas de Pergunta. **Prioridade 5** (a mais alta do Notion).
@@ -8,7 +10,7 @@ Fonte: `[Dr_Rodrigo_Domingues]_Relatórios_FB_3.0.pdf` (out/2026), campanhas lid
 - Conta de anúncio: 4949141168532200 ("CA - Dr. Rodrigo Domingues"), conector ok. A conta "CA - Dr Rodrigo Domingues Médicos" (1978845849442334) não é a do relatório.
 - Negócio: ortopedista especialista em coluna, Brasília.
 - É um cliente diferente do Instituto Domingues (estética, `instituto-domingues.md`).
-- Foi o cliente usado para montar o modelo atual do relatório. Cadastro, classificação e tema do vídeo ("Coluna") já estão em `clientes/dr-rodrigo-domingues.json`.
+- Foi o cliente usado para montar o modelo atual do relatório. Cadastro, classificação e tema do vídeo ("Coluna") estão no JSON abaixo.
 
 ## Tipo de campanha
 Instagram + vídeo de meio + WhatsApp. **Sem vídeo de topo.**
@@ -25,5 +27,29 @@ Instagram + vídeo de meio + WhatsApp. **Sem vídeo de topo.**
 2. Investimento + "Meio de Funil Video View Coluna" (cards padrão).
 3. Google Ads (Search de agendamento; termos: ortopedista especialista em coluna).
 
-## Números de referência (out/2026)
-Total R$ 3.738,54 (Topo 931,18 · Meio 933,22 · Fundo 1.874,14). Instagram: alcance 199.852, visitas 4.735, cliques na bio 74, 507 seguidores, R$ 1,83/seguidor. WhatsApp: 40.288 impressões, 17.856 alcance, 317 cliques, 155 conversas, R$ 12,09. Vídeo: 15 seg 9.156 (R$ 0,10).
+## JSON do relatório
+
+É o cadastro e a configuração do relatório. O `coletor-dados` lê este bloco direto daqui e grava nele a classificação nova e a foto; mudança de campanha, layout ou tema também se faz aqui. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
+
+```json
+{
+  "nome": "Dr. Rodrigo Domingues",
+  "apelidos": [
+    "rodrigo",
+    "dr rodrigo",
+    "rodrigo domingues",
+    "dr rodrigo domingues"
+  ],
+  "descricao": "Ortopedista, especialista em coluna · Brasília",
+  "ad_account_id": "4949141168532200",
+  "instagram": "@dr.rodrigodomingues",
+  "foto": "dr-rodrigo-domingues.jpg",
+  "tema_video": "Coluna",
+  "classificacao": {
+    "23862269286960250": "instagram",
+    "120250760906110251": "video",
+    "120229418324530251": "whatsapp"
+  },
+  "layout": {}
+}
+```

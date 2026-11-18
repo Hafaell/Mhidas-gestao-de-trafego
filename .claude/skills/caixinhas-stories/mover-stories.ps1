@@ -1,6 +1,7 @@
-# Move stories baixados pelo SnapInsta (pasta Downloads) para Desktop\Stories\<Cliente>.
+# Move os stories baixados (pelo Spector, via Fast Save) da pasta Downloads para Downloads\<usuario>\.
 # Uso:
-#   powershell -NoProfile -ExecutionPolicy Bypass -File mover-stories.ps1 -Cliente "Gustavo Samico" -Desde "2026-11-15 11:40:00" -Esperados 2
+#   powershell -NoProfile -ExecutionPolicy Bypass -File mover-stories.ps1 -Cliente "drraphaelkondo" -Desde "2026-11-17 01:16:00" -Esperados 1
+# -Cliente: nome da pasta (o @ do Instagram sem o @).
 # -Desde: horario anotado ANTES do primeiro clique em "Baixar" (so arquivos depois dele sao movidos).
 # -Esperados: quantos cliques em "Baixar" foram feitos (espera ate esse numero de arquivos chegar).
 # Saida: uma linha por arquivo: SALVO <caminho> | JA_EXISTIA <caminho> | NENHUM_ARQUIVO
@@ -11,25 +12,27 @@ param(
   [int]$Esperados = 1,
   [int]$TimeoutSeg = 90,
   [string]$Origem = (Join-Path $env:USERPROFILE 'Downloads'),
-  [string]$Raiz = (Join-Path ([Environment]::GetFolderPath('Desktop')) 'Stories')
+  [string]$Raiz = (Join-Path $env:USERPROFILE 'Downloads')
 )
 $ErrorActionPreference = 'Stop'
 
 $invalidos = [IO.Path]::GetInvalidFileNameChars()
 $nomePasta = (-join ($Cliente.ToCharArray() | Where-Object { $invalidos -notcontains $_ })).Trim().TrimEnd('.')
-if (-not $nomePasta) { throw 'Nome do cliente ficou vazio depois de limpar caracteres invalidos.' }
+if (-not $nomePasta) { throw 'Nome da pasta ficou vazio depois de limpar caracteres invalidos.' }
 $destino = Join-Path $Raiz $nomePasta
+$extensoes = @('.jpg', '.jpeg', '.png', '.webp', '.mp4', '.mov')
 
-function Get-Novos($filtro) {
-  @(Get-ChildItem -LiteralPath $Origem -File -Filter $filtro -ErrorAction SilentlyContinue |
+function Get-Novos {
+  @(Get-ChildItem -LiteralPath $Origem -File -ErrorAction SilentlyContinue |
     Where-Object { $_.LastWriteTime -ge $Desde -or $_.CreationTime -ge $Desde })
 }
 
 # Espera os downloads terminarem (Chrome usa .crdownload enquanto baixa).
 $limite = (Get-Date).AddSeconds($TimeoutSeg)
 do {
-  $parciais = Get-Novos '*.crdownload'
-  $prontos = @(Get-Novos 'SnapInsta.to_*' | Where-Object { $_.Extension -ne '.crdownload' })
+  $novos = Get-Novos
+  $parciais = @($novos | Where-Object { $_.Extension -eq '.crdownload' })
+  $prontos = @($novos | Where-Object { $extensoes -contains $_.Extension.ToLower() })
   if ($prontos.Count -ge $Esperados -and $parciais.Count -eq 0) { break }
   Start-Sleep -Seconds 2
 } while ((Get-Date) -lt $limite)
@@ -40,15 +43,13 @@ if ($prontos.Count -lt $Esperados) { "AVISO: esperava $Esperados, chegaram $($pr
 New-Item -ItemType Directory -Force -Path $destino | Out-Null
 $hoje = Get-Date -Format 'yyyy-MM-dd'
 foreach ($f in $prontos) {
-  # Nome original traz o id da midia: SnapInsta.to_<id>_<id>_<id>_n.jpg
-  $base = $f.Name -replace '^SnapInsta\.to_', ''
-  $existente = @(Get-ChildItem -LiteralPath $destino -File | Where-Object { $_.Name -eq $base -or $_.Name.EndsWith("_$base") })
+  $existente = @(Get-ChildItem -LiteralPath $destino -File | Where-Object { $_.Name -eq $f.Name -or $_.Name.EndsWith("_$($f.Name)") })
   if ($existente.Count -gt 0) {
     Remove-Item -LiteralPath $f.FullName
     "JA_EXISTIA $($existente[0].FullName)"
     continue
   }
-  $alvo = Join-Path $destino "${hoje}_$base"
+  $alvo = Join-Path $destino "${hoje}_$($f.Name)"
   Move-Item -LiteralPath $f.FullName -Destination $alvo
   "SALVO $alvo"
 }

@@ -1,5 +1,7 @@
 # Clínica Lis
 
+Este arquivo é a fonte do relatório deste cliente: como ele é montado e o JSON que o gerador usa. Instagram, Drive e demais dados do Notion: `memoria/CLIENTES-ATIVOS.md`.
+
 Fonte: `[Clinia_Lis]_Relatórios_FB_3.0.pdf` (out/2026) e campanhas lidas no Meta Ads em 15/11/2026.
 
 ## Identificação
@@ -25,5 +27,22 @@ Foco total em **WhatsApp** (92% do investimento). Tem topo e meio, mas eles não
 ## Decisão do gestor (15/11/2026)
 - O Topo Institucional e o Meio Remarketing ficam fora do relatório **de propósito**. O gasto deles aparece só no bloco de investimento.
 
-## Números de referência (out/2026)
-Total R$ 5.045,74 (Topo 202,46 · Meio 202,01 · Fundo 4.641,27). WhatsApp: 250.446 impressões, 2.710 cliques, 1.064 conversas, R$ 4,36/conversa.
+## JSON do relatório
+
+É o cadastro e a configuração do relatório. O `coletor-dados` lê este bloco direto daqui e grava nele a classificação nova e a foto; mudança de campanha, layout ou tema também se faz aqui. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
+
+```json
+{
+  "nome": "Clínica Lis",
+  "apelidos": [],
+  "descricao": "",
+  "ad_account_id": "542875426658220",
+  "instagram": "@clinica.lis",
+  "foto": null,
+  "tema_video": null,
+  "classificacao": {},
+  "layout": {}
+}
+```
+
+`classificacao` vazia: o `coletor-dados` classifica as campanhas na primeira geração (Passo 1b) e o resultado volta para este bloco.

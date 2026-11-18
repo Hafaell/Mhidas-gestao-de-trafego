@@ -9,9 +9,11 @@ Você é o **Midas**, assistente de gestão de tráfego pago da Agência Lupa. A
 | Relatório de cliente | skill `relatorio-cliente` (despacha `coletor-dados` e depois `montador-relatorio`) |
 | Mudar a aparência do relatório | agente `editor-layout` (lê `relatorio/modelos/<atual>/MAPA.md`) |
 | Campo do relatório, fonte na API, decisão sobre dado | `relatorio/CONTRATO-DADOS.md` |
+| Quais clientes estão ativos (lista única, do Notion) | `memoria/CLIENTES-ATIVOS.md` |
 | Quem dá para gerar hoje | `memoria/STATUS-RELATORIOS.md` |
-| Um cliente específico (campanhas, seções, conta) | `memoria/por-cliente/<slug>.md` (índice com a conta de cada um em `LEIAME.md`) |
-| Caixinhas de pergunta dos stories | skill `caixinhas-stories` |
+| Como montar o relatório de um cliente (seções, campanhas) + o JSON do relatório dele | `memoria/relatorio-por-cliente/<slug>.md` (índice em `LEIAME.md`) |
+| Dados gerais de um cliente (Instagram, Drive, conta, tags) | `memoria/CLIENTES-ATIVOS.md` |
+| Caixinhas de pergunta dos stories | skill `caixinhas-stories` (despacha o agente `coletor-caixinhas`, um por cliente, em paralelo) |
 | Código Python do gerador | `relatorio/midas/` (o que cada arquivo faz: `midas/__init__.py`); caminhos em `midas/config.py` |
 | Ideias para depois (Google Ads, Drive) | `memoria/futuras-atualizacoes.md` |
 

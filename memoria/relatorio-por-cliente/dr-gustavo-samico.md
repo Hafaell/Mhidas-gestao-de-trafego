@@ -1,5 +1,7 @@
 # Dr. Gustavo Samico
 
+Este arquivo é a fonte do relatório deste cliente: como ele é montado e o JSON que o gerador usa. Instagram, Drive e demais dados do Notion: `memoria/CLIENTES-ATIVOS.md`.
+
 Fonte: `[Dr_Gustavo_Samico]_Relatórios_FB_3.0.pdf` (out/2026) e campanhas lidas no Meta Ads em 15/11/2026.
 
 ## Identificação
@@ -22,15 +24,19 @@ Só WhatsApp. **Sem campanha de seguidores e sem vídeo.**
 ## Decisão do gestor (15/11/2026)
 - O bloco do Instagram **continua sendo esperado** mesmo sem campanha de seguidores (números orgânicos do perfil).
 
-## Números de referência (out/2026)
-Total R$ 910,41. Instagram (perfil): alcance 72.267, visitas 4.027, 273 novos seguidores, 69 cliques na bio. WhatsApp: 41.258 impressões, 129 cliques, 56 conversas, R$ 16,26/conversa.
+## JSON do relatório
 
-## Configuração do relatório (layout no Midas, 15/11/2026)
-
-Copiar para `clientes/dr-gustavo-samico.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
+É o cadastro e a configuração do relatório. O `coletor-dados` lê este bloco direto daqui e grava nele a classificação nova e a foto; mudança de campanha, layout ou tema também se faz aqui. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
 
 ```json
 {
+  "nome": "Dr. Gustavo Samico",
+  "apelidos": [],
+  "descricao": "",
+  "ad_account_id": "4249069415413930",
+  "instagram": "@gustavosamico.oftalmo",
+  "foto": null,
+  "tema_video": null,
   "classificacao": {
     "120238532655900189": "whatsapp"
   },
@@ -39,14 +45,3 @@ Copiar para `clientes/dr-gustavo-samico.json` (`classificacao` e `layout`). Com 
   }
 }
 ```
-
-## Conferência: relatório feito à mão (out/2026) x layout novo
-
-| No PDF | No Midas |
-|---|---|
-| Investimento (Total, Topo, Meio, Fundo) | igual: bloco "Investimento do período" soma por etapa |
-| Crescimento do Instagram sem valor investido (Alcance, Visitas, Novos Seguidores, Cliques na Bio) | igual: seção `instagram_organico`, números do perfil, fora do total |
-| Captação de Leads (WhatsApp) | igual, com o card Alcance a mais |
-| Página de Google Ads | **fica de fora**: Google Ads é fase futura do Midas |
-
-- O Midas acrescenta páginas que o PDF não tinha: fluxos ("Do anúncio ao resultado"), comparação com o período anterior e evolução mensal.

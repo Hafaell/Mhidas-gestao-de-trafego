@@ -9,7 +9,7 @@ Regras gerais do relatório. Decisões do gestor de 13 a 15/11/2026, salvo outra
 | Como o visual é montado, cards de cada seção, regras de visual fechadas | `relatorio/modelos/<atual>/MAPA.md` | `editor-layout` |
 | Despacho dos agentes, entrega em localhost, servidores e portas | `.claude/skills/relatorio-cliente/SKILL.md` | sessão principal |
 | Quem dá e quem não dá para gerar hoje (4 bloqueados pela Meta) | `memoria/STATUS-RELATORIOS.md` | sessão principal, antes de despachar |
-| O que o relatório de cada cliente tem (seções, campanhas, configuração) | `memoria/por-cliente/<slug>.md`, índice em `LEIAME.md` | `coletor-dados` |
+| O que o relatório de cada cliente tem (seções, campanhas, configuração) | `memoria/relatorio-por-cliente/<slug>.md`, índice em `LEIAME.md` | `coletor-dados` |
 | Google Ads e envio para o Drive | `memoria/futuras-atualizacoes.md` | só quando entrar |
 
 Regra nova do gestor vai para o arquivo do assunto dela (dados, visual, entrega), não para cá, a menos que seja geral.
@@ -39,7 +39,7 @@ Coletor e editor combinam pelo `relatorio/CONTRATO-DADOS.md`: o editor pede camp
 
 | O quê | Onde | Dura |
 |---|---|---|
-| Cadastro do cliente (conta, @, classificação das campanhas, `layout`) | `clientes/<slug>.json` (fora do git) | sempre |
+| Cadastro do cliente (conta, @, classificação das campanhas, `layout`) | bloco "JSON do relatório" em `memoria/relatorio-por-cliente/<slug>.md` | sempre |
 | Foto do cliente | `clientes/fotos/<slug>.jpg` (fora do git) | sempre |
 | Histórico mensal (gráfico de evolução) | `clientes/historico/<slug>.json` (fora do git, gravado por `gerar.py --registrar-historico`) | sempre |
 | Relatórios feitos à mão de out/2026 (PDFs, fonte da memória por cliente) | `memoria/relatorios-feitos-a-mão-dos-clientes/` (só no computador do gestor, fora do git) | sempre |

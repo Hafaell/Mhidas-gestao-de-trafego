@@ -12,13 +12,12 @@ Outros coletores rodam ao mesmo tempo para outros clientes: só escreva arquivos
 
 ## Entrada
 
-O prompt traz: arquivo `clientes/<slug>.json`, período e período anterior. Use o período anterior exatamente como veio; não recalcule.
+O prompt traz: a memória do cliente (`memoria/relatorio-por-cliente/<slug>.md`), período e período anterior. Use o período anterior exatamente como veio; não recalcule.
 
 Leia antes de começar:
 1. `relatorio/CONTRATO-DADOS.md`: **o que entregar** (campos de cada seção, de onde vem cada um e as decisões do gestor sobre os dados) e os **Pedidos do layout** em aberto.
-2. O `clientes/<slug>.json` do cliente.
-3. A memória do cliente em `memoria/por-cliente/` (ache pelo nome ou pela conta no `LEIAME.md` de lá). Sem arquivo, siga e diga isso nas pendências.
-4. O exemplo que mais se parece com o cliente: `relatorio/exemplos/cliente-exemplo.json`, `-completo.json` (vídeo de topo, landing page, WhatsApp em blocos, card extra, rótulo de etapa) ou `-organico.json`.
+2. A memória do cliente (`memoria/relatorio-por-cliente/<slug>.md`): como o relatório dele é montado e o bloco **"JSON do relatório"** (nome, conta, Instagram, foto, tema, `classificacao`, `layout`). Esse bloco é a configuração do cliente; não existe outro arquivo de cadastro. Sem arquivo da memória, siga e diga isso nas pendências.
+3. O exemplo que mais se parece com o cliente: `relatorio/exemplos/cliente-exemplo.json`, `-completo.json` (vídeo de topo, landing page, WhatsApp em blocos, card extra, rótulo de etapa) ou `-organico.json`.
 
 ## Passo 0: pedidos do layout
 
@@ -28,7 +27,7 @@ Se a tabela "Pedidos do layout" (parte 4 do contrato) tiver linha sem resposta: 
 
 Chame `ads_get_ad_entities` com `level: "adset"`, `time_range` do período, campos `campaign_id`, `campaign_name`, `optimization_goal`, `destination_type`, `amount_spent`. Pegue todas as páginas. Ignore conjuntos com gasto zero.
 
-Classifique cada **campanha** numa seção. Se `classificacao` do `clientes/<slug>.json` já tem a campanha, use. Senão:
+Classifique cada **campanha** numa seção. Se `classificacao` do bloco JSON da memória do cliente já tem a campanha, use. Senão:
 
 | Sinal no conjunto | Seção |
 |---|---|
@@ -39,11 +38,11 @@ Classifique cada **campanha** numa seção. Se `classificacao` do `clientes/<slu
 | `CONVERSATIONS`, ou destino WhatsApp/Messenger/Direct | `whatsapp` (com `layout.blocos_whatsapp`: `whatsapp:<bloco>`) |
 | Ambíguo | pelo nome da campanha; ainda ambíguo: `fora_do_modelo` |
 
-`fora_do_modelo` (formulário nativo, engajamento etc.) não tem página: devolva como pendência com o gasto. Grave classificação nova em `classificacao` do `clientes/<slug>.json`.
+`fora_do_modelo` (formulário nativo, engajamento etc.) não tem página: devolva como pendência com o gasto. Grave classificação nova em `classificacao` do bloco JSON da memória do cliente (edite só o bloco, no `.md` do seu cliente).
 
 ## Passo 1b: layout do cliente
 
-Leia `layout` do `clientes/<slug>.json` (se faltar, copie o bloco "Configuração do relatório" da memória do cliente e grave). Isso é configuração por cliente, não é edição do modelo:
+Leia `layout` do bloco JSON da memória do cliente. Isso é configuração por cliente, não é edição do modelo:
 
 | Campo | Vira no JSON |
 |---|---|
@@ -68,7 +67,7 @@ Campos e fontes: partes 2 e 3 do `relatorio/CONTRATO-DADOS.md`. Como buscar:
 
 ## Passo 3: foto
 
-Sem `foto` no `clientes/<slug>.json`: `ads_get_ig_accounts`, ache a conta do `instagram` do cliente, baixe a foto de perfil para `clientes/fotos/<slug>.jpg` e grave `"foto": "<slug>.jpg"` no `clientes/<slug>.json` e no JSON de dados. Sem foto, `null`.
+Sem `foto` no bloco JSON da memória do cliente: `ads_get_ig_accounts`, ache a conta do `instagram` do cliente, baixe a foto de perfil para `clientes/fotos/<slug>.jpg` e grave `"foto": "<slug>.jpg"` no bloco JSON da memória do cliente e no JSON de dados. Sem foto, `null`.
 
 ## Passo 4: gravar e conferir
 

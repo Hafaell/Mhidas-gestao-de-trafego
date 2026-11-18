@@ -1,5 +1,7 @@
 # Dr. Gustavo Mesquita
 
+Este arquivo é a fonte do relatório deste cliente: como ele é montado e o JSON que o gerador usa. Instagram, Drive e demais dados do Notion: `memoria/CLIENTES-ATIVOS.md`.
+
 Fonte: campanhas lidas no Meta Ads em 15/11/2026 e Notion. **Não há relatório antigo (PDF) desse cliente.**
 
 ## Identificação
@@ -18,18 +20,22 @@ Estrutura padrão completa: Instagram + vídeo de topo + vídeo de meio + WhatsA
 | 120246829291620711 | [MEIO][VV] CP2 Div | Meio de Funil Video View |
 | 120246828272020711 | [FUNDO][MSG] Agendamento | Captação de Leads (WhatsApp) |
 
-## Gasto em out/2026 (conector)
-Seguidores R$ 468,19 · vídeo topo R$ 270,61 · vídeo meio R$ 184,35 · WhatsApp R$ 591,11. Total R$ 1.514,26.
-
 ## Em aberto
 - Sem PDF: não se sabe se o relatório dele tinha rótulos próprios, Alcance no WhatsApp ou página de Google Ads.
 
-## Configuração do relatório (layout no Midas, 15/11/2026)
+## JSON do relatório
 
-Copiar para `clientes/dr-gustavo-mesquita.json` (`classificacao` e `layout`). Com isso o relatório sai igual ao feito à mão. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
+É o cadastro e a configuração do relatório. O `coletor-dados` lê este bloco direto daqui e grava nele a classificação nova e a foto; mudança de campanha, layout ou tema também se faz aqui. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
 
 ```json
 {
+  "nome": "Dr. Gustavo Mesquita",
+  "apelidos": [],
+  "descricao": "",
+  "ad_account_id": "2012998965793310",
+  "instagram": "@drgustavomesquita",
+  "foto": null,
+  "tema_video": null,
   "classificacao": {
     "120246829138020711": "instagram",
     "120246829208720711": "video_topo",
@@ -39,13 +45,3 @@ Copiar para `clientes/dr-gustavo-mesquita.json` (`classificacao` e `layout`). Co
   "layout": {}
 }
 ```
-
-## Conferência: relatório feito à mão (out/2026) x layout novo
-
-| No PDF | No Midas |
-|---|---|
-| Investimento (Total, Topo, Meio, Fundo) | igual: bloco "Investimento do período" soma por etapa |
-| (sem PDF para comparar) | estrutura padrão completa, igual à da Dra. Cleanir [Provável] |
-
-- Sem relatório feito à mão: não dá para conferir rótulos nem Google Ads. Perguntar ao gestor se algo muda.
-- O Midas acrescenta páginas que o PDF não tinha: fluxos ("Do anúncio ao resultado"), comparação com o período anterior e evolução mensal.

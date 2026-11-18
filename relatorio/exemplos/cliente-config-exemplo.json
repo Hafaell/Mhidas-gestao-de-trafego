@@ -1,5 +1,5 @@
 {
-  "_comentario": "Cadastro FICTÍCIO de um cliente. Os cadastros reais ficam em clientes/<slug>.json (fora do git). A skill relatorio-cliente cria o arquivo (copiando o bloco 'Configuração do relatório' da memória do cliente) e o agente montador-relatorio completa classificacao, tema e foto. Seções da classificação: instagram, video_topo, video, landing_page, whatsapp, whatsapp:<bloco>, fora_do_modelo. 'layout' é opcional: só o que o relatório feito à mão do cliente tinha de diferente.",
+  "_comentario": "Cadastro FICTÍCIO de um cliente. Os cadastros reais ficam no bloco 'JSON do relatório' de memoria/relatorio-por-cliente/<slug>.md; o agente coletor-dados completa classificacao, tema e foto nele. Seções da classificação: instagram, video_topo, video, landing_page, whatsapp, whatsapp:<bloco>, fora_do_modelo. 'layout' é opcional: só o que o relatório feito à mão do cliente tinha de diferente.",
   "nome": "Dra. Ana Exemplo",
   "apelidos": [
     "ana",

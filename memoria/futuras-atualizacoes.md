@@ -6,7 +6,7 @@ Ideias aprovadas pelo gestor em 14/11/2026 para uma fase posterior. Nada daqui e
 
 - **O que faz:** depois que o gestor aprova o relatório, o PDF é gerado na pasta temporária e enviado para a pasta do cliente no Google Drive. Hoje o gestor baixa e sobe à mão, cliente por cliente.
 - **Caminhos possíveis:** a skill `googleworkspace/cli@gws-drive-upload` (ferramenta oficial de linha de comando do Google Workspace, 51 mil instalações no skills.sh em 14/11/2026) ou o conector do Google Drive do claude.ai.
-- **A decidir antes:** onde fica a pasta de cada cliente (guardar o ID da pasta em `clientes/<slug>.json`), se o envio é sempre manual ("manda para o Drive") ou automático, e o nome padrão do arquivo.
+- **A decidir antes:** onde fica a pasta de cada cliente (guardar o ID da pasta no bloco JSON do `.md` do cliente), se o envio é sempre manual ("manda para o Drive") ou automático, e o nome padrão do arquivo.
 - **Combina com:** geração agendada no início do mês. O link em localhost só funciona no computador onde o relatório foi gerado, então rodando na nuvem o PDF teria de ir para o Drive.
 
 ## 2. Google Ads

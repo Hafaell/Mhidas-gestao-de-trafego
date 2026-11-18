@@ -1,5 +1,7 @@
 # Dr. Bernardo Mercante
 
+Este arquivo é a fonte do relatório deste cliente: como ele é montado e o JSON que o gerador usa. Instagram, Drive e demais dados do Notion: `memoria/CLIENTES-ATIVOS.md`.
+
 Fonte: `[Dr_Bernardo_Mercante]_Relatórios_FB_3.0.pdf` (out/2026) e campanhas lidas no Meta Ads em 15/11/2026.
 
 ## Identificação
@@ -25,5 +27,22 @@ Instagram (post impulsionado) + WhatsApp em duas campanhas (coluna e joelho). O 
 ## Decisão do gestor (15/11/2026)
 - O Meio Video View Institucional fica fora do relatório **de propósito**. O gasto aparece só no bloco de investimento.
 
-## Números de referência (out/2026)
-Total R$ 2.750,59 (Topo 926,14 · Meio 155,59 · Fundo 1.668,86). Instagram: alcance 232.406, visitas 72.435, cliques na bio 605, 627 seguidores, R$ 1,47/seguidor. WhatsApp: 59.232 impressões, 929 cliques, 310 conversas, R$ 5,38/conversa.
+## JSON do relatório
+
+É o cadastro e a configuração do relatório. O `coletor-dados` lê este bloco direto daqui e grava nele a classificação nova e a foto; mudança de campanha, layout ou tema também se faz aqui. Significado dos campos: `.claude/agents/coletor-dados.md`, Passo 1b.
+
+```json
+{
+  "nome": "Dr. Bernardo Mercante",
+  "apelidos": [],
+  "descricao": "",
+  "ad_account_id": "637111717776472",
+  "instagram": "@drbernardomercante",
+  "foto": null,
+  "tema_video": null,
+  "classificacao": {},
+  "layout": {}
+}
+```
+
+`classificacao` vazia: o `coletor-dados` classifica as campanhas na primeira geração (Passo 1b) e o resultado volta para este bloco.
