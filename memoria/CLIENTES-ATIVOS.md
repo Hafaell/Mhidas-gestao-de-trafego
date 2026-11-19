@@ -1,6 +1,6 @@
 # Clientes ativos (fonte única da lista)
 
-Lido do banco **Clientes** do Notion (`36e000c2-d60a-451b-9f3d-7ec1332f2105`) em **17/11/2026**. Regra: cliente ativo = linha **sem** a tag `DESATIVADOS` (o checkbox "Ativo" está vazio em todas). Das 71 linhas, **22 são ativas** e 49 estão desativadas.
+Lido do banco **Clientes** do Notion (`36e000c2-d60a-451b-9f3d-7ec1332f2105`) em **17/11/2026**. Regra: cliente ativo = linha **sem** a tag `DESATIVADOS` (o checkbox "Ativo" está vazio em todas). Das 71 linhas, **21 são ativas** e 50 estão desativadas (Patrícia Canelas saiu da clínica, marcada em 18/11/2026).
 
 **Qualquer tarefa que precise "dos clientes" (relatório, caixinhas dos stories, conferência, verba) parte desta lista.** Não consulte o Notion de novo a cada tarefa. Para atualizar (cliente novo ou desativado), refaça a leitura do Notion e corrija este arquivo e o `memoria/relatorio-por-cliente/LEIAME.md`.
 
@@ -28,14 +28,13 @@ Tags do Notion: **Cx** = tag "Caixinhas de Pergunta" (o cliente posta caixinha n
 | 12 | Dra. Patrícia Cabrejos | @drapatriciacabrejos | dra-patricia-cabrejos.md | PD, Cx | – |
 | 13 | Dr. Raphael Kondo | @drraphaelkondo | dr-raphael-kondo.md | PD, Cx, Seg | – |
 | 14 | CEIOF (@ceiof) | @ceiof | clinica-ceiof.md | sem tags | – |
-| 15 | Patrícia Canelas | @patricia.urologista | dra-patricia-canelas.md | PD, Cx | – |
-| 16 | Clínica Lis | @clinica.lis | clinica-lis.md | sem tags | – |
-| 17 | Instituto Domingues | @instituto.domingues | instituto-domingues.md | PD, Seg, Cx | 2 |
-| 18 | Defesa Plena (Denis) | @defesaplena | defesa-plena.md | Seg, Seguidores Campanha | 3 |
-| 19 | COG Centro Ortopédico Grajaú | @grajaucentroortopedico | cog-centro-ortopedico.md | Seg, Verba | 3 |
-| 20 | Sanos Life (Tratamento da Dor Crônica) | @sanoslife | sanos-life.md | Seg, Verba | 3 |
-| 21 | Dr. Bernardo Mercante | @drbernardomercante | dr-bernardo-mercante.md | Cx, Seg | 2 |
-| 22 | Rodrigo Domingues | @dr.rodrigodomingues | dr-rodrigo-domingues.md | PD, Seg, Cx | 5 |
+| 15 | Clínica Lis | @clinica.lis | clinica-lis.md | sem tags | – |
+| 16 | Instituto Domingues | @instituto.domingues | instituto-domingues.md | PD, Seg, Cx | 2 |
+| 17 | Defesa Plena (Denis) | @defesaplena | defesa-plena.md | Seg, Seguidores Campanha | 3 |
+| 18 | COG Centro Ortopédico Grajaú | @grajaucentroortopedico | cog-centro-ortopedico.md | Seg, Verba | 3 |
+| 19 | Sanos Life (Tratamento da Dor Crônica) | @sanoslife | sanos-life.md | Seg, Verba | 3 |
+| 20 | Dr. Bernardo Mercante | @drbernardomercante | dr-bernardo-mercante.md | Cx, Seg | 2 |
+| 21 | Rodrigo Domingues | @dr.rodrigodomingues | dr-rodrigo-domingues.md | PD, Seg, Cx | 5 |
 
 ## Conta de anúncio e links (do Notion)
 
@@ -57,7 +56,6 @@ Link do Gerenciador de Anúncios de qualquer conta: `https://adsmanager.facebook
 | Patrícia Cabrejos | 662414357579318 | [pasta](https://drive.google.com/drive/u/1/folders/1xeZ5OpqplJgNnIQan1uvnf4s_FjVWKsT) | [doc](https://docs.google.com/document/d/1-ipcbTEZG45QkJZP-HYUEj25hOU6DoK9zG-AzpAUELY/edit?tab=t.0) | – |
 | Raphael Kondo | 319841613840597 | [pasta](https://drive.google.com/drive/u/1/folders/1SQBS-U_D7lNwQHuGKgUXasNuXd6ttwgq) | [doc](https://docs.google.com/document/d/1w-IfuygAa9AEcxMK__BgE7QRDbz-F68YtV58D-0CdnE/edit?tab=t.0) | [link](https://app.notjustanalytics.com/analysis/drraphaelkondo) |
 | CEIOF | 1231637101726635 | – | – | – |
-| Patrícia Canelas | 352376624307091 | [pasta](https://drive.google.com/drive/u/1/folders/1Qm21--_ixZRBEy_nydsiWux0WO2w7k9I) | [doc](https://docs.google.com/document/d/10ASWPZFApEY8UTjcGfhfWB3U_rrLcVNxDG_Lzv1vjKM/edit?tab=t.0) | – |
 | Clínica Lis | 542875426658220 | – | – | – |
 | Instituto Domingues | 880566547457944 | [pasta](https://drive.google.com/drive/u/1/folders/1beUz7d36udvdDaQPHxScfi-8Q71cA6an) | [doc](https://docs.google.com/document/d/1ju5IDpu-NmDXnkZNxGG8Evs5PkXhXLSbbsvPCXWBd4g/edit?tab=t.0) | [link](https://app.notjustanalytics.com/analysis/instituto.domingues) |
 | Defesa Plena | 392732128512252 | – | – | [link](https://app.notjustanalytics.com/analysis/defesaplena) |
@@ -68,9 +66,9 @@ Link do Gerenciador de Anúncios de qualquer conta: `https://adsmanager.facebook
 
 ## Quem tem caixinha de pergunta (tag Cx)
 
-Para a skill `caixinhas-stories` ("tem caixinha hoje?" sem dizer o cliente): são **15** perfis com a tag:
+Para a skill `caixinhas-stories` ("tem caixinha hoje?" sem dizer o cliente): são **14** perfis com a tag:
 
-Cleanir Sandi, Gustavo Mesquita, Renovare, Rodrigo Villalva, Rhaiana Gondim, Instituto Reluz, Gustavo Samico, Gustavo Langen, Paulo Rosenbaum, Patrícia Cabrejos, Raphael Kondo, Patrícia Canelas, Instituto Domingues, Bernardo Mercante, Rodrigo Domingues.
+Cleanir Sandi, Gustavo Mesquita, Renovare, Rodrigo Villalva, Rhaiana Gondim, Instituto Reluz, Gustavo Samico, Gustavo Langen, Paulo Rosenbaum, Patrícia Cabrejos, Raphael Kondo, Instituto Domingues, Bernardo Mercante, Rodrigo Domingues.
 
 Os 7 sem a tag (Sotre, Carlos Alexandre, CEIOF, Clínica Lis, Defesa Plena, COG, Sanos Life) só entram se o gestor pedir.
 
@@ -80,4 +78,4 @@ Os 7 sem a tag (Sotre, Carlos Alexandre, CEIOF, Clínica Lis, Defesa Plena, COG,
 
 ## Desativados (não usar)
 
-49 linhas com a tag `DESATIVADOS`, entre elas: Dra. Renata Domingues, Dra. Aline Vaz Borges, Clínica Revo, Clínica Woitas, Clínica BioLife, Dr. Guilherme Losso, Dr. Fabio Yanagui, Ricardo Tunes, JK Ortopedia, Ortopedia Noroeste. Não gerar relatório nem checar caixinha deles.
+50 linhas com a tag `DESATIVADOS` (Patrícia Canelas saiu da clínica e foi marcada no Notion em 18/11/2026), entre elas: Dra. Patrícia Canelas, Dra. Renata Domingues, Dra. Aline Vaz Borges, Clínica Revo, Clínica Woitas, Clínica BioLife, Dr. Guilherme Losso, Dr. Fabio Yanagui, Ricardo Tunes, JK Ortopedia, Ortopedia Noroeste. Não gerar relatório nem checar caixinha deles.

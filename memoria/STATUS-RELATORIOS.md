@@ -7,7 +7,7 @@
 | | Clientes | Quantos |
 |---|---|---|
 | ✅ Dá para gerar, o modelo atual cobre tudo | Sanos Life, Dr. Bernardo Mercante, Dr. Rodrigo Domingues, Clínica Sotre, Renovare, Clínica Lis | 6 |
-| ✅ Dá para gerar, **layout novo pronto** (seções criadas em 15/11/2026 a partir do relatório feito à mão) | Carlos Alexandre, Dr. Raphael Kondo, Dr. Gustavo Langen, Dra. Patrícia Cabrejos, Instituto Domingues, Dra. Patrícia Canelas, Dr. Paulo Rosenbaum, Dra. Cleanir Sandi, Dra. Rhaiana Gondim, Dr. Gustavo Mesquita, Dr. Gustavo Samico, Instituto Reluz | 12 |
+| ✅ Dá para gerar, **layout novo pronto** (seções criadas em 15/11/2026 a partir do relatório feito à mão) | Carlos Alexandre, Dr. Raphael Kondo, Dr. Gustavo Langen, Dra. Patrícia Cabrejos, Instituto Domingues, Dr. Paulo Rosenbaum, Dra. Cleanir Sandi, Dra. Rhaiana Gondim, Dr. Gustavo Mesquita, Dr. Gustavo Samico, Instituto Reluz | 11 |
 | ⛔ **Não dá para gerar**: a Meta não liberou a conta no conector | COG, CEIOF, Dr. Rodrigo Villalva, Defesa Plena | 4 |
 | ❓ Faltam dados | Doc Circle (conta de anúncio não achada) | 1 |
 
@@ -32,7 +32,7 @@ Motivo: a Meta mantém desligado o conector de IA (Ads MCP) nessas contas. Mensa
 ### Quando reconferir
 Antes de pedir o relatório de um desses quatro, rodar `ads_get_ad_accounts` e olhar `is_ads_mcp_enabled` da conta. Se virar `true`, o agente passa a funcionar sem mudar mais nada: atualizar esta tabela e o arquivo do cliente.
 
-## ✅ Os 12 que ganharam layout próprio (15/11/2026)
+## ✅ Os 11 que ganharam layout próprio (15/11/2026)
 
 Antes saíam com partes faltando. Agora o modelo tem vídeo de **topo** separado, **landing page**, WhatsApp **em blocos** (cidade/tema), **Instagram sem campanha** (números do perfil), card extra e rótulos/temas por cliente. A configuração de cada um está na memória dele (bloco "Configuração do relatório"), com a conferência PDF x layout novo. Testado com os números de out/2026 dos PDFs: todas as páginas cabem.
 
@@ -43,7 +43,6 @@ Antes saíam com partes faltando. Agora o modelo tem vídeo de **topo** separado
 | Dr. Gustavo Langen | vídeo de topo; WhatsApp **São Paulo** e **Campinas** | não |
 | Dra. Patrícia Cabrejos | **Instagram orgânico**; WhatsApp "Tricologia" | não |
 | Instituto Domingues | vídeo de topo; tema "Mela"; rótulo "Meio · Pessoas engajadas" | não (campanhas pausadas) |
-| Dra. Patrícia Canelas | vídeo de topo; card "Custo por visita ao perfil" | não |
 | Dr. Paulo Rosenbaum | vídeo de topo; WhatsApp **Dor**, **Nova Andradina**, **Ivinhema** | não |
 | Dra. Cleanir Sandi | vídeo de topo (estrutura padrão completa) | não |
 | Dra. Rhaiana Gondim | vídeo de topo | não |

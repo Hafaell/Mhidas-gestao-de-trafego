@@ -49,7 +49,6 @@ Leia `layout` do bloco JSON da memória do cliente. Isso é configuração por c
 | `rotulos_etapa` | `rotulos_etapa` na raiz |
 | `temas` | `tema` na seção |
 | `blocos_whatsapp` | `{"[SP]": "São Paulo"}`: um item da lista `whatsapp` por bloco, com `bloco`. Campanha sem marca: pendência |
-| `instagram_extras` | `extras` na seção `instagram` |
 | `instagram_organico` | `true` e sem campanha de Instagram no mês: monte `instagram_organico` |
 | `nome_resultado_lp` | `nome_resultado` na `landing_page` |
 

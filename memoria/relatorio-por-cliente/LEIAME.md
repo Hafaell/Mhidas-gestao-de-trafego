@@ -21,7 +21,6 @@ Dados gerais do cliente (Instagram, Drive, Planilha Div, tags do Notion, quem es
 | Dr. Gustavo Langen | `dr-gustavo-langen.md` | 507254411405150 | sim | sim | sim (2 somadas) | sim, por cidade | – | – |
 | Dra. Patrícia Cabrejos | `dra-patricia-cabrejos.md` | 662414357579318 | orgânico | – | – | sim | – | sim |
 | Instituto Domingues | `instituto-domingues.md` | 880566547457944 | sim | sim | sim | sim | – | – |
-| Patrícia Canelas | `dra-patricia-canelas.md` | 352376624307091 | sim | sim | sim | sim | – | sim |
 | Paulo Cesar Rosenbaum | `dr-paulo-rosenbaum.md` | 725094333687912 | sim (2 somadas) | sim | – | sim, por tema/cidade | – | sim |
 | Rodrigo Domingues | `dr-rodrigo-domingues.md` | 4949141168532200 | sim | – | sim | sim | – | sim |
 | Clínica Sotre | `clinica-sotre.md` | 1299560581140296 | – | – | – | sim (2 somadas) | – | sim |
@@ -69,7 +68,6 @@ Cada arquivo de cliente tem o bloco **"JSON do relatório"** (cadastro, `classif
 | **WhatsApp dividido** por cidade ou tema (Langen, Paulo Rosenbaum) | lista `whatsapp` com `bloco`; `layout.blocos_whatsapp` diz a marca no nome da campanha |
 | **Landing Page** (Raphael Kondo, Doc Circle) | seção `landing_page` |
 | **Instagram orgânico** sem campanha de seguidores (Samico, Cabrejos) | seção `instagram_organico` (`layout.instagram_organico: true`) |
-| Card **Custo/Visitas ao perfil** (Canelas) | `layout.instagram_extras: ["custo_visita_perfil"]` |
 | Rótulos próprios de etapa (Villalva, Instituto Domingues) | `layout.rotulos_etapa` |
 | Tema no título (Mela, Tricologia) | `layout.temas` |
 | Card **Alcance** no WhatsApp | já existia (todos têm) |

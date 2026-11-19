@@ -54,17 +54,7 @@ class SecaoInstagram(Secao):
                       nota="vindos de todas as campanhas"),
             Kpi.criar("Custo por seguidor", self.custo("novos_seguidores"), F.moeda,
                       self.custo_anterior("novos_seguidores"), menor_melhor=True, destaque=True),
-        ] + self._kpis_extras()
-
-    # Cards a mais que só alguns clientes têm. No JSON: "extras": ["custo_visita_perfil"].
-    EXTRAS = {"custo_visita_perfil": "Custo por visita ao perfil"}   # Dra. Patrícia Canelas
-
-    def _kpis_extras(self):
-        cards = []
-        if "custo_visita_perfil" in self.extras:
-            cards.append(Kpi.criar(self.EXTRAS["custo_visita_perfil"], self.custo("visitas_perfil"), F.moeda,
-                                   self.custo_anterior("visitas_perfil"), menor_melhor=True))
-        return cards
+        ]
 
     def montar_fluxo(self):
         # Alcance e visitas vêm do anúncio de seguidores; seguidores, de todas as campanhas (regras de 15/11/2026).

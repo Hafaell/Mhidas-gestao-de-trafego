@@ -32,7 +32,7 @@ Em toda seção paga: `investido` (soma de `amount_spent` das campanhas da seç�
 
 Seção repetida (WhatsApp por cidade/tema): a chave recebe uma **lista**, cada item com `bloco` (`"whatsapp": [{"bloco": "São Paulo", ...}, ...]`).
 
-Campos opcionais em qualquer seção: `tema` (vai no título), e em `instagram`: `extras: ["custo_visita_perfil"]`; em `landing_page`: `nome_resultado` ("Leads" ou "Conversões").
+Campos opcionais em qualquer seção: `tema` (vai no título); em `landing_page`: `nome_resultado` ("Leads" ou "Conversões").
 
 ### `instagram` (Topo, campanha de seguidores)
 
